@@ -1,0 +1,381 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin · XI.2 Creative Lab</title><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="../config.js"></script><style>
+:root{font-family:Inter,system-ui,sans-serif;color:#17251e;background:#f3f7f3}*{box-sizing:border-box}body{margin:0}.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{background:#173d30;color:#effaf3;padding:26px 18px;display:flex;flex-direction:column;gap:24px}.brand{font-weight:850;font-size:19px}.muted{opacity:.68;font-size:12px}.nav button{display:block;width:100%;text-align:left;border:0;background:transparent;color:inherit;padding:13px;border-radius:13px;margin:4px 0;cursor:pointer}.nav button.active,.nav button:hover{background:#ffffff20}.main{padding:30px;max-width:1300px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}h1{margin:0;font-size:28px}.sub{color:#65746a;margin-top:7px}.btn{border:0;border-radius:12px;padding:11px 15px;background:#1b6b51;color:white;font-weight:700;cursor:pointer}.btn.secondary{background:#e1ece5;color:#214b39}.btn.danger{background:#a43d3d}.panel,.stat{background:white;border:1px solid #e1e9e2;border-radius:19px;padding:20px;box-shadow:0 8px 25px #193c2910}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:24px 0}.stat strong{font-size:28px;display:block;margin-top:9px}.tabs{display:flex;gap:8px;margin:22px 0}.tabs button{background:#e5eee7;color:#294b39}.tabs button.active{background:#1b6b51;color:white}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:grid;gap:6px;margin:12px 0}label{font-size:13px;font-weight:700}input,textarea,select{width:100%;padding:12px;border:1px solid #d5e0d7;border-radius:11px;font:inherit;background:#fff}textarea{min-height:120px;resize:vertical}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:1px solid #e8eee9;padding:15px 0}.item:first-child{border-top:0}.pill{font-size:11px;border-radius:20px;padding:5px 9px;background:#e3f2e7;color:#22553a}.hidden{display:none!important}.notice{padding:12px 14px;border-radius:12px;background:#e6f1e9;margin:14px 0;font-size:13px}.notice.err{background:#fbe8e5;color:#8b2929}.login{max-width:430px;margin:9vh auto;padding:26px}.small{font-size:12px;color:#65746a}.preview{width:56px;height:46px;object-fit:cover;border-radius:8px}@media(max-width:800px){.shell{grid-template-columns:1fr}.side{padding:15px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;width:auto}.main{padding:18px}.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}@media(max-width:450px){.stats{grid-template-columns:1fr}}
+h4{margin:18px 0 4px;font-size:14px}h4:first-child{margin-top:0}.sep{border:0;border-top:1px solid #e8eee9;margin:22px 0}</style></head><body><div id="login" class="panel login"><div class="brand">XI.2 Creative Lab</div><p class="sub">Administrator workspace</p><div id="login-msg" class="notice hidden"></div><form id="login-form"><div class="field"><label>Email admin</label><input id="email" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" required autocomplete="current-password"></div><button class="btn" style="width:100%">Masuk ke dashboard</button></form><p class="small">Akun dibuat oleh pengelola Supabase. Tidak tersedia pendaftaran publik.</p></div>
+<div id="app" class="shell hidden"><aside class="side"><div><div class="brand">XI.2 Creative Lab</div><div class="muted">ADMIN CONSOLE</div></div><nav class="nav"><button class="active" data-tab="dashboard">▦ &nbsp; Dashboard</button><button data-tab="news">▤ &nbsp; Berita & Pengumuman</button><button data-tab="tasks">✓ &nbsp; Manajemen Tugas</button><button data-tab="schedule">◷ &nbsp; Jadwal & Piket</button><button data-tab="members">☺ &nbsp; Anggota Kelas</button><button data-tab="media">▧ &nbsp; Media & Lampiran</button><button data-tab="settings">⚙ &nbsp; Pengaturan Situs</button></nav><div style="margin-top:auto"><div id="who" class="muted"></div><button id="logout" class="btn secondary" style="width:100%;margin-top:12px">Keluar</button></div></aside><main class="main"><div class="top"><div><div class="muted">ADMINISTRATOR WORKSPACE</div><h1 id="page-title">Dashboard</h1><div class="sub">Kelola konten yang akan tampil di website kelas.</div></div><a href="../index.html" target="_blank" class="btn secondary">Lihat Website ↗</a></div><div id="notice" class="notice hidden"></div>
+<section id="tab-dashboard"><div class="stats"><div class="stat">Berita terpublikasi<strong id="count-news">—</strong></div><div class="stat">Tugas aktif (belum lewat deadline)<strong id="count-tasks">—</strong></div><div class="stat">File media<strong id="count-media">—</strong></div></div><div class="panel"><h3>Alur sinkronisasi</h3><p class="small">Simpan/publish di sini → Supabase Database/Storage → halaman utama membaca konten published. Perubahan langsung tersedia setelah refresh/sinkronisasi.</p><button class="btn" id="refresh">Sinkronkan data</button></div></section>
+<section id="tab-news" class="hidden"><div class="grid"><form id="news-form" class="panel"><h3 id="news-form-title">Buat berita / pengumuman</h3><input type="hidden" id="news-id"><div class="field"><label>Judul</label><input id="news-title" required maxlength="140"></div><div class="field"><label>Kategori</label><select id="news-category"><option>Pengumuman</option><option>Berita Kelas</option><option>Kegiatan</option><option>Informasi</option></select></div><div class="field"><label>Lokasi (opsional)</label><input id="news-location" maxlength="80" placeholder="Contoh: Aula sekolah"></div><div class="field"><label>Isi</label><textarea id="news-body" required></textarea></div><div class="field"><label>Gambar (opsional)</label><input id="news-image" type="file" accept="image/*"><div class="small">Maks 5 MB. Pilih file baru untuk mengganti gambar lama.</div></div><label class="row hidden" id="news-remove-image-wrap"><input id="news-remove-image" type="checkbox" style="width:auto"> Hapus gambar saat ini</label><div class="field"><label>Lampiran (opsional)</label><input id="news-file" type="file"><div class="small">Maks 10 MB.</div></div><label class="row hidden" id="news-remove-file-wrap"><input id="news-remove-file" type="checkbox" style="width:auto"> Hapus lampiran saat ini</label><label class="row"><input id="news-published" type="checkbox" style="width:auto" checked> Publikasikan sekarang</label><div class="row" style="margin-top:15px"><button class="btn" id="news-save">Simpan berita</button><button type="button" class="btn secondary" id="news-reset">Batal / reset</button></div></form><div class="panel"><h3>Daftar berita</h3><div id="news-list">Memuat…</div></div></div></section>
+<section id="tab-tasks" class="hidden"><div class="grid"><form id="task-form" class="panel"><h3 id="task-form-title">Buat tugas</h3><input type="hidden" id="task-id"><div class="field"><label>Nama tugas</label><input id="task-title" required maxlength="140"></div><div class="field"><label>Mata pelajaran</label><input id="task-subject" placeholder="Contoh: Matematika"></div><div class="field"><label>Deskripsi / instruksi</label><textarea id="task-description"></textarea></div><div class="field"><label>Deadline</label><input id="task-deadline" type="date"></div><div class="field"><label>Lampiran (opsional)</label><input id="task-file" type="file"><div class="small">Maks 10 MB.</div></div><label class="row hidden" id="task-remove-file-wrap"><input id="task-remove-file" type="checkbox" style="width:auto"> Hapus lampiran saat ini</label><label class="row"><input id="task-published" type="checkbox" style="width:auto" checked> Tampilkan ke siswa</label><div class="row" style="margin-top:15px"><button class="btn" id="task-save">Simpan tugas</button><button type="button" class="btn secondary" id="task-reset">Batal / reset</button></div></form><div class="panel"><h3>Daftar tugas</h3><div id="task-list">Memuat…</div></div></div></section>
+<section id="tab-media" class="hidden"><div class="panel"><h3>Media yang diunggah</h3><p class="small">File disimpan di Supabase Storage bucket <b>class-media</b>. Menghapus berita atau tugas ikut menghapus file lampirannya.</p><div id="media-list">Memuat…</div></div></section><section id="tab-schedule" class="hidden"><div class="grid"><div><form id="lesson-form" class="panel"><h3 id="lesson-form-title">Tambah mata pelajaran</h3><input type="hidden" id="lesson-id"><div class="field"><label>Hari</label><select id="lesson-day"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option></select></div><div class="field"><label>Jam</label><input id="lesson-time" maxlength="30" placeholder="Contoh: 07.00 - 08.30"></div><div class="field"><label>Mata pelajaran</label><input id="lesson-subject" required maxlength="100"></div><div class="field"><label>Guru</label><input id="lesson-teacher" maxlength="100"></div><div class="field"><label>Ruang</label><input id="lesson-room" maxlength="60" placeholder="Contoh: R. XI.2"></div><div class="field"><label>Urutan tampil</label><input id="lesson-order" type="number" value="0"><div class="small">Angka kecil tampil lebih dulu.</div></div><div class="row" style="margin-top:15px"><button class="btn" id="lesson-save">Simpan pelajaran</button><button type="button" class="btn secondary" id="lesson-reset">Batal / reset</button></div></form><form id="piket-form" class="panel" style="margin-top:18px"><h3>Regu piket</h3><div class="field"><label>Hari</label><select id="piket-day"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option></select></div><div class="field"><label>Nama petugas (pisahkan dengan koma atau baris baru)</label><textarea id="piket-members"></textarea></div><button class="btn" id="piket-save">Simpan piket</button></form></div><div class="panel"><h3>Jadwal per hari</h3><div id="schedule-list">Memuat…</div></div></div></section>
+<section id="tab-members" class="hidden"><div class="grid"><div><form id="member-form" class="panel"><h3 id="member-form-title">Tambah anggota</h3><input type="hidden" id="member-id"><div class="field"><label>Nama</label><input id="member-name" required maxlength="80"></div><div class="field"><label>Jabatan</label><input id="member-role" maxlength="80" placeholder="Contoh: Ketua Kelas"></div><div class="field"><label>Kategori</label><select id="member-category"><option value="pengurus">Pengurus Inti</option><option value="koordinator">Seksi Bidang</option><option value="anggota" selected>Anggota</option></select></div><div class="field"><label>Motto (opsional)</label><input id="member-motto" maxlength="120"></div><div class="field"><label>Urutan tampil</label><input id="member-order" type="number" value="0"></div><div class="row" style="margin-top:15px"><button class="btn" id="member-save">Simpan anggota</button><button type="button" class="btn secondary" id="member-reset">Batal / reset</button></div></form><form id="bulk-form" class="panel" style="margin-top:18px"><h3>Tambah banyak sekaligus</h3><div class="field"><label>Satu nama per baris (maks 100)</label><textarea id="bulk-names"></textarea></div><div class="field"><label>Kategori</label><select id="bulk-category"><option value="anggota" selected>Anggota</option><option value="koordinator">Seksi Bidang</option><option value="pengurus">Pengurus Inti</option></select></div><button class="btn" id="bulk-save">Tambah semua</button></form></div><div class="panel"><h3>Daftar anggota</h3><div id="member-list">Memuat…</div></div></div></section>
+<section id="tab-settings" class="hidden"><form id="settings-form" class="panel" style="max-width:640px"><h3>Pengaturan situs</h3><div class="field"><label>Nama portal kelas</label><input id="set-class" maxlength="60"></div><div class="field"><label>Sekolah &amp; tahun ajaran</label><input id="set-school" maxlength="100"></div><div class="field"><label>Wali kelas (kosongkan untuk menyembunyikan)</label><input id="set-homeroom" maxlength="100"></div><div class="field"><label>Jumlah siswa</label><input id="set-students" type="number" min="0" max="999"></div><div class="field"><label>Slogan kelas (opsional)</label><input id="set-slogan" maxlength="100"></div><div class="field"><label>Foto utama beranda (opsional)</label><input id="set-hero" type="file" accept="image/*"><div class="small" id="set-hero-current"></div><div class="small">Maks 5 MB.</div></div><label class="row hidden" id="set-hero-remove-wrap"><input id="set-hero-remove" type="checkbox" style="width:auto"> Hapus foto saat ini</label><div style="margin-top:15px"><button class="btn" id="settings-save">Simpan pengaturan</button></div></form></section>
+</main></div><script>
+const C=window.XIA_CONFIG||{};
+const BUCKET=C.STORAGE_BUCKET||'class-media';
+const configured=!!(C.SUPABASE_URL&&!/YOUR_/.test(C.SUPABASE_URL)&&C.SUPABASE_ANON_KEY&&!/^YOUR_/.test(C.SUPABASE_ANON_KEY));
+let db=null,user=null,entering=false,newsRows=[],taskRows=[],mediaCount=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(String(u||''))?String(u):'';
+const fmtDate=s=>{if(!s)return '—';const d=new Date(String(s).length<=10?s+'T00:00:00':s);return isNaN(d)?String(s):d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});};
+const todayStr=()=>new Date().toLocaleDateString('sv-SE');
+function notice(msg,err=false){const n=$('notice');n.textContent=msg;n.className='notice'+(err?' err':'');}
+function hideNotice(){$('notice').classList.add('hidden');}
+function loginMsg(msg){const m=$('login-msg');if(!msg){m.classList.add('hidden');return;}m.textContent=msg;m.classList.remove('hidden');}
+const errText=e=>(e&&e.message)||String(e||'Terjadi kesalahan.');
+
+function setup(){
+  if(!configured||!window.supabase){loginMsg('Isi config.js dengan URL dan anon/publishable key Supabase, lalu muat ulang.');$('login-form').querySelector('button').disabled=true;return;}
+  db=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
+  db.auth.onAuthStateChange((event,session)=>{
+    if(event==='TOKEN_REFRESHED'||event==='USER_UPDATED')return;
+    setTimeout(()=>{session?enter(session.user):leave();},0);
+  });
+  db.auth.getSession().then(({data})=>{if(data.session&&!user)enter(data.session.user);}).catch(()=>{});
+}
+function leave(){user=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');}
+async function enter(u){
+  if(entering||(user&&user.id===u.id))return;
+  entering=true;
+  try{
+    const {data,error}=await db.from('admin_users').select('user_id').eq('user_id',u.id).maybeSingle();
+    if(error||!data){await db.auth.signOut();loginMsg(error?'Gagal memeriksa akses: '+error.message:'Akun ini belum diberi akses administrator.');return;}
+    user=u;loginMsg('');
+    $('login').classList.add('hidden');$('app').classList.remove('hidden');
+    $('who').textContent=u.email||'Administrator';
+    await refreshAll();
+  }catch(e){loginMsg(errText(e));}
+  finally{entering=false;}
+}
+$('login-form').addEventListener('submit',async e=>{
+  e.preventDefault();if(!db)return;
+  const btn=e.target.querySelector('button');btn.disabled=true;loginMsg('');
+  try{
+    const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+    if(error)loginMsg(/invalid login/i.test(error.message)?'Email atau password salah.':error.message);
+  }catch(err){loginMsg(errText(err));}
+  finally{btn.disabled=false;}
+});
+$('logout').onclick=()=>db&&db.auth.signOut();
+
+const TITLES={dashboard:'Dashboard',news:'Berita & Pengumuman',tasks:'Manajemen Tugas',schedule:'Jadwal & Piket',members:'Anggota Kelas',media:'Media & Lampiran',settings:'Pengaturan Situs'};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function showTab(tab){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  Object.keys(TITLES).forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==tab));
+  $('page-title').textContent=TITLES[tab];hideNotice();
+}
+
+/* ---------- Storage ---------- */
+function checkFile(file,maxMB){if(file&&file.size>maxMB*1048576)throw new Error(`File "${file.name}" terlalu besar (maks ${maxMB} MB).`);}
+async function upload(file){
+  if(!file)return null;
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const path=`${user.id}/${Date.now()}-${safe}`;
+  const {error}=await db.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type||undefined});
+  if(error)throw error;
+  return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+function pathFromUrl(url){
+  if(!url)return null;
+  const parts=String(url).split('/object/public/'+BUCKET+'/');
+  if(parts.length<2)return null;
+  try{return decodeURIComponent(parts[1].split('?')[0]);}catch(_){return null;}
+}
+async function removeFiles(urls){
+  const paths=urls.map(pathFromUrl).filter(Boolean);
+  if(!paths.length)return;
+  try{await db.storage.from(BUCKET).remove(paths);}catch(_){}
+}
+
+/* ---------- Load ---------- */
+async function refreshAll(){
+  const res=await Promise.allSettled([loadNews(),loadTasks(),loadMedia(),loadSchedule(),loadMembers(),loadSettings()]);
+  const errs=res.filter(r=>r.status==='rejected').map(r=>errText(r.reason));
+  renderStats();
+  if(errs.length)notice('Sebagian data gagal dimuat: '+errs.join('; '),true);
+  return errs;
+}
+function renderStats(){
+  $('count-news').textContent=newsRows.filter(r=>r.published).length;
+  const t=todayStr();
+  $('count-tasks').textContent=taskRows.filter(r=>r.published&&(!r.deadline||r.deadline>=t)).length;
+  $('count-media').textContent=mediaCount;
+}
+async function loadNews(){
+  const {data,error}=await db.from('announcements').select('*').order('created_at',{ascending:false});
+  if(error){$('news-list').innerHTML='<p class="small">Gagal memuat.</p>';throw error;}
+  newsRows=data||[];
+  $('news-list').innerHTML=newsRows.map(x=>`<div class="item"><div class="row" style="flex-wrap:nowrap;align-items:flex-start">${safeUrl(x.image_url)?`<img class="preview" alt="" src="${esc(safeUrl(x.image_url))}">`:''}<div><b>${esc(x.title)}</b><div class="small">${esc(x.category||'')} · ${x.published?'Published':'Draft'} · ${esc(fmtDate(x.created_at))}</div></div></div><div class="row"><button class="btn secondary" data-act="edit-news" data-id="${esc(x.id)}">Edit</button><button class="btn danger" data-act="del-news" data-id="${esc(x.id)}">Hapus</button></div></div>`).join('')||'<p class="small">Belum ada konten.</p>';
+}
+async function loadTasks(){
+  const {data,error}=await db.from('assignments').select('*').order('created_at',{ascending:false});
+  if(error){$('task-list').innerHTML='<p class="small">Gagal memuat.</p>';throw error;}
+  taskRows=data||[];
+  $('task-list').innerHTML=taskRows.map(x=>`<div class="item"><div><b>${esc(x.title)}</b><div class="small">${esc(x.subject||'Umum')} · Deadline ${esc(fmtDate(x.deadline))} · ${x.published?'Published':'Draft'}</div></div><div class="row"><button class="btn secondary" data-act="edit-task" data-id="${esc(x.id)}">Edit</button><button class="btn danger" data-act="del-task" data-id="${esc(x.id)}">Hapus</button></div></div>`).join('')||'<p class="small">Belum ada tugas.</p>';
+}
+async function listAll(bucket,path){
+  const out=[];
+  for(let off=0;off<5000;off+=100){
+    const {data,error}=await bucket.list(path,{limit:100,offset:off,sortBy:{column:'created_at',order:'desc'}});
+    if(error)throw error;
+    out.push(...(data||[]));
+    if(!data||data.length<100)break;
+  }
+  return out;
+}
+async function loadMedia(){
+  const bucket=db.storage.from(BUCKET),files=[];
+  let root;
+  try{root=await listAll(bucket,'');}
+  catch(error){$('media-list').innerHTML='<p class="small">Gagal memuat.</p>';throw error;}
+  const folders=root.filter(x=>!x.id);
+  root.filter(x=>x.id).forEach(x=>files.push({path:x.name,name:x.name,size:x.metadata?.size,at:x.created_at}));
+  const lists=await Promise.all(folders.map(f=>listAll(bucket,f.name).catch(()=>[])));
+  lists.forEach((r,i)=>r.filter(x=>x.id).forEach(x=>files.push({path:folders[i].name+'/'+x.name,name:x.name,size:x.metadata?.size,at:x.created_at})));
+  files.sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));
+  mediaCount=files.length;
+  $('media-list').innerHTML=files.map(f=>{const url=safeUrl(bucket.getPublicUrl(f.path).data.publicUrl);return `<div class="item"><div><a href="${esc(url)}" target="_blank" rel="noopener">${esc(f.name)}</a><div class="small">${f.size?Math.round(f.size/1024)+' KB':''}</div></div><div class="row"><button class="btn secondary" data-act="copy-media" data-url="${esc(url)}">Salin URL</button><button class="btn danger" data-act="del-media" data-path="${esc(f.path)}">Hapus</button></div></div>`;}).join('')||'<p class="small">Belum ada file yang diunggah.</p>';
+}
+
+/* ---------- Form helpers ---------- */
+function resetNews(){
+  $('news-form').reset();$('news-id').value='';$('news-form-title').textContent='Buat berita / pengumuman';
+  $('news-remove-image-wrap').classList.add('hidden');$('news-remove-file-wrap').classList.add('hidden');
+}
+function resetTask(){
+  $('task-form').reset();$('task-id').value='';$('task-form-title').textContent='Buat tugas';
+  $('task-remove-file-wrap').classList.add('hidden');
+}
+$('news-reset').onclick=resetNews;$('task-reset').onclick=resetTask;
+
+$('news-form').onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$('news-save');if(btn.disabled)return;btn.disabled=true;
+  const uploaded=[];
+  try{
+    const id=$('news-id').value,old=id?newsRows.find(r=>r.id===id):null;
+    if(id&&!old)throw new Error('Berita yang diedit tidak ditemukan. Sinkronkan data lalu coba lagi.');
+    const imgF=$('news-image').files[0],fileF=$('news-file').files[0];
+    checkFile(imgF,5);checkFile(fileF,10);
+    const payload={title:$('news-title').value.trim(),category:$('news-category').value,location:$('news-location').value.trim()||null,body:$('news-body').value.trim(),published:$('news-published').checked,updated_at:new Date().toISOString()};
+    if(!payload.title||!payload.body)throw new Error('Judul dan isi wajib diisi.');
+    const del=[];
+    if(imgF){payload.image_url=await upload(imgF);uploaded.push(payload.image_url);if(old&&old.image_url)del.push(old.image_url);}
+    else if(old&&$('news-remove-image').checked){payload.image_url=null;if(old.image_url)del.push(old.image_url);}
+    if(fileF){payload.attachment_url=await upload(fileF);uploaded.push(payload.attachment_url);if(old&&old.attachment_url)del.push(old.attachment_url);}
+    else if(old&&$('news-remove-file').checked){payload.attachment_url=null;if(old.attachment_url)del.push(old.attachment_url);}
+    if(id){const {data,error}=await db.from('announcements').update(payload).eq('id',id).select('id');if(error)throw error;if(!data||!data.length)throw new Error('Perubahan ditolak atau data sudah tidak ada.');}
+    else{const {error}=await db.from('announcements').insert({...payload,author_id:user.id});if(error)throw error;}
+    await removeFiles(del);
+    resetNews();
+    const errs=await refreshAll();if(!errs.length)notice('Berita berhasil disimpan.');
+  }catch(err){await removeFiles(uploaded);notice(errText(err),true);}
+  finally{btn.disabled=false;}
+};
+$('task-form').onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$('task-save');if(btn.disabled)return;btn.disabled=true;
+  const uploaded=[];
+  try{
+    const id=$('task-id').value,old=id?taskRows.find(r=>r.id===id):null;
+    if(id&&!old)throw new Error('Tugas yang diedit tidak ditemukan. Sinkronkan data lalu coba lagi.');
+    const f=$('task-file').files[0];checkFile(f,10);
+    const p={title:$('task-title').value.trim(),subject:$('task-subject').value.trim()||null,description:$('task-description').value.trim()||null,deadline:$('task-deadline').value||null,published:$('task-published').checked,updated_at:new Date().toISOString()};
+    if(!p.title)throw new Error('Nama tugas wajib diisi.');
+    const del=[];
+    if(f){p.attachment_url=await upload(f);uploaded.push(p.attachment_url);if(old&&old.attachment_url)del.push(old.attachment_url);}
+    else if(old&&$('task-remove-file').checked){p.attachment_url=null;if(old.attachment_url)del.push(old.attachment_url);}
+    if(id){const {data,error}=await db.from('assignments').update(p).eq('id',id).select('id');if(error)throw error;if(!data||!data.length)throw new Error('Perubahan ditolak atau data sudah tidak ada.');}
+    else{const {error}=await db.from('assignments').insert({...p,author_id:user.id});if(error)throw error;}
+    await removeFiles(del);
+    resetTask();
+    const errs=await refreshAll();if(!errs.length)notice('Tugas berhasil disimpan.');
+  }catch(err){await removeFiles(uploaded);notice(errText(err),true);}
+  finally{btn.disabled=false;}
+};
+
+function editNews(id){
+  const x=newsRows.find(r=>r.id===id);if(!x)return;
+  resetNews();
+  $('news-id').value=id;$('news-title').value=x.title||'';
+  const sel=$('news-category');
+  if(x.category&&![...sel.options].some(o=>o.value===x.category))sel.add(new Option(x.category,x.category));
+  sel.value=x.category||'Pengumuman';
+  $('news-location').value=x.location||'';$('news-body').value=x.body||'';$('news-published').checked=!!x.published;
+  $('news-remove-image-wrap').classList.toggle('hidden',!x.image_url);
+  $('news-remove-file-wrap').classList.toggle('hidden',!x.attachment_url);
+  $('news-form-title').textContent='Edit berita';showTab('news');$('news-title').focus();
+}
+function editTask(id){
+  const x=taskRows.find(r=>r.id===id);if(!x)return;
+  resetTask();
+  $('task-id').value=id;$('task-title').value=x.title||'';$('task-subject').value=x.subject||'';
+  $('task-description').value=x.description||'';$('task-deadline').value=x.deadline||'';$('task-published').checked=!!x.published;
+  $('task-remove-file-wrap').classList.toggle('hidden',!x.attachment_url);
+  $('task-form-title').textContent='Edit tugas';showTab('tasks');$('task-title').focus();
+}
+async function delRow(table,id){
+  if(!confirm('Hapus konten ini beserta file lampirannya?'))return;
+  try{
+    const rows=table==='announcements'?newsRows:taskRows,row=rows.find(r=>r.id===id);
+    const {data,error}=await db.from(table).delete().eq('id',id).select('id');
+    if(error)throw error;
+    if(!data||!data.length)throw new Error('Penghapusan ditolak atau data sudah tidak ada.');
+    if(row)await removeFiles([row.image_url,row.attachment_url].filter(Boolean));
+    if($('news-id').value===id)resetNews();
+    if($('task-id').value===id)resetTask();
+    const errs=await refreshAll();if(!errs.length)notice('Konten dihapus.');
+  }catch(err){notice(errText(err),true);}
+}
+async function delMedia(path){
+  if(!confirm('Hapus file ini dari Storage? Tautan yang masih memakainya akan rusak.'))return;
+  try{
+    const {error}=await db.storage.from(BUCKET).remove([path]);if(error)throw error;
+    const errs=await refreshAll();if(!errs.length)notice('File dihapus.');
+  }catch(err){notice(errText(err),true);}
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act;
+  if(a==='edit-news')editNews(b.dataset.id);
+  else if(a==='del-news')delRow('announcements',b.dataset.id);
+  else if(a==='edit-task')editTask(b.dataset.id);
+  else if(a==='del-task')delRow('assignments',b.dataset.id);
+  else if(a==='del-media')delMedia(b.dataset.path);
+  else if(a==='edit-lesson')editLesson(b.dataset.id);
+  else if(a==='del-lesson')delSimple('schedule_items',b.dataset.id,'Hapus mata pelajaran ini dari jadwal?');
+  else if(a==='edit-member')editMember(b.dataset.id);
+  else if(a==='del-member')delSimple('members',b.dataset.id,'Hapus anggota ini?');
+  else if(a==='copy-media'){
+    const u=b.dataset.url;
+    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>notice('URL disalin.')).catch(()=>window.prompt('Salin URL ini:',u));
+  }
+});
+$('refresh').onclick=async()=>{const errs=await refreshAll();if(!errs.length)notice('Data berhasil disinkronkan.');};
+/* ---------- Jadwal, piket, anggota, pengaturan ---------- */
+const DAYS=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+let lessonRows=[],piketRows=[],memberRows=[],settingsMap={};
+const catLabel={pengurus:'Pengurus Inti',koordinator:'Seksi Bidang',anggota:'Anggota'};
+async function loadSchedule(){
+  const [a,b]=await Promise.all([db.from('schedule_items').select('*').order('sort_order',{ascending:true}),db.from('piket').select('*')]);
+  if(a.error||b.error){$('schedule-list').innerHTML='<p class="small">Gagal memuat.</p>';throw a.error||b.error;}
+  lessonRows=a.data||[];piketRows=b.data||[];
+  const pm={};piketRows.forEach(r=>pm[r.day]=r.members);
+  $('schedule-list').innerHTML=DAYS.map(d=>{
+    const items=lessonRows.filter(r=>r.day===d).sort((x,y)=>((x.sort_order||0)-(y.sort_order||0))||String(x.time_label||'').localeCompare(String(y.time_label||'')));
+    if(!items.length&&!pm[d])return '';
+    return `<h4>${d}</h4>`+items.map(x=>`<div class="item"><div><b>${esc(x.subject)}</b><div class="small">${esc(x.time_label||'—')} · ${esc(x.teacher||'—')} · ${esc(x.room||'—')}</div></div><div class="row"><button class="btn secondary" data-act="edit-lesson" data-id="${esc(x.id)}">Edit</button><button class="btn danger" data-act="del-lesson" data-id="${esc(x.id)}">Hapus</button></div></div>`).join('')+(pm[d]?`<div class="small" style="padding:8px 0"><b>Piket:</b> ${esc(pm[d])}</div>`:'');
+  }).join('')||'<p class="small">Belum ada jadwal.</p>';
+  fillPiket();
+}
+function fillPiket(){const r=piketRows.find(x=>x.day===$('piket-day').value);$('piket-members').value=r?r.members:'';}
+$('piket-day').onchange=fillPiket;
+function resetLesson(){$('lesson-form').reset();$('lesson-id').value='';$('lesson-form-title').textContent='Tambah mata pelajaran';}
+$('lesson-reset').onclick=resetLesson;
+$('lesson-form').onsubmit=async e=>{
+  e.preventDefault();const btn=$('lesson-save');if(btn.disabled)return;btn.disabled=true;
+  try{
+    const id=$('lesson-id').value;
+    const p={day:$('lesson-day').value,time_label:$('lesson-time').value.trim()||null,subject:$('lesson-subject').value.trim(),teacher:$('lesson-teacher').value.trim()||null,room:$('lesson-room').value.trim()||null,sort_order:parseInt($('lesson-order').value,10)||0};
+    if(!p.subject)throw new Error('Nama pelajaran wajib diisi.');
+    if(id){const {data,error}=await db.from('schedule_items').update(p).eq('id',id).select('id');if(error)throw error;if(!data||!data.length)throw new Error('Perubahan ditolak atau data sudah tidak ada.');}
+    else{const {error}=await db.from('schedule_items').insert(p);if(error)throw error;}
+    const day=p.day;resetLesson();$('lesson-day').value=day;
+    const errs=await refreshAll();if(!errs.length)notice('Jadwal disimpan.');
+  }catch(err){notice(errText(err),true);}finally{btn.disabled=false;}
+};
+$('piket-form').onsubmit=async e=>{
+  e.preventDefault();const btn=$('piket-save');if(btn.disabled)return;btn.disabled=true;
+  try{
+    const day=$('piket-day').value,members=$('piket-members').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean).join(', ');
+    if(members){const {error}=await db.from('piket').upsert({day,members},{onConflict:'day'});if(error)throw error;}
+    else{const {error}=await db.from('piket').delete().eq('day',day);if(error)throw error;}
+    const errs=await refreshAll();if(!errs.length)notice('Piket hari '+day+' disimpan.');
+  }catch(err){notice(errText(err),true);}finally{btn.disabled=false;}
+};
+function editLesson(id){
+  const x=lessonRows.find(r=>r.id===id);if(!x)return;
+  $('lesson-id').value=id;$('lesson-day').value=x.day;$('lesson-time').value=x.time_label||'';$('lesson-subject').value=x.subject||'';
+  $('lesson-teacher').value=x.teacher||'';$('lesson-room').value=x.room||'';$('lesson-order').value=x.sort_order||0;
+  $('lesson-form-title').textContent='Edit mata pelajaran';showTab('schedule');$('lesson-subject').focus();
+}
+
+async function loadMembers(){
+  const {data,error}=await db.from('members').select('*').order('sort_order',{ascending:true}).order('name',{ascending:true});
+  if(error){$('member-list').innerHTML='<p class="small">Gagal memuat.</p>';throw error;}
+  memberRows=data||[];
+  $('member-list').innerHTML=memberRows.map(x=>`<div class="item"><div><b>${esc(x.name)}</b><div class="small">${esc(x.role||'Anggota')} · ${esc(catLabel[x.category]||x.category)}</div></div><div class="row"><button class="btn secondary" data-act="edit-member" data-id="${esc(x.id)}">Edit</button><button class="btn danger" data-act="del-member" data-id="${esc(x.id)}">Hapus</button></div></div>`).join('')||'<p class="small">Belum ada anggota.</p>';
+}
+function resetMember(){$('member-form').reset();$('member-id').value='';$('member-form-title').textContent='Tambah anggota';}
+$('member-reset').onclick=resetMember;
+$('member-form').onsubmit=async e=>{
+  e.preventDefault();const btn=$('member-save');if(btn.disabled)return;btn.disabled=true;
+  try{
+    const id=$('member-id').value;
+    const p={name:$('member-name').value.trim(),role:$('member-role').value.trim()||'Anggota',category:$('member-category').value,motto:$('member-motto').value.trim()||null,sort_order:parseInt($('member-order').value,10)||0};
+    if(!p.name)throw new Error('Nama wajib diisi.');
+    if(id){const {data,error}=await db.from('members').update(p).eq('id',id).select('id');if(error)throw error;if(!data||!data.length)throw new Error('Perubahan ditolak atau data sudah tidak ada.');}
+    else{const {error}=await db.from('members').insert(p);if(error)throw error;}
+    resetMember();const errs=await refreshAll();if(!errs.length)notice('Anggota disimpan.');
+  }catch(err){notice(errText(err),true);}finally{btn.disabled=false;}
+};
+$('bulk-form').onsubmit=async e=>{
+  e.preventDefault();const btn=$('bulk-save');if(btn.disabled)return;btn.disabled=true;
+  try{
+    const names=[...new Set($('bulk-names').value.split('\n').map(s=>s.trim()).filter(Boolean))].slice(0,100);
+    if(!names.length)throw new Error('Isi minimal satu nama (satu nama per baris).');
+    const existing=new Set(memberRows.map(m=>m.name.toLowerCase()));
+    const fresh=names.filter(n=>!existing.has(n.toLowerCase()));
+    if(!fresh.length)throw new Error('Semua nama sudah ada di daftar.');
+    let start=memberRows.reduce((m,r)=>Math.max(m,r.sort_order||0),0)+1;
+    const cat=$('bulk-category').value;
+    const {error}=await db.from('members').insert(fresh.map((name,i)=>({name,role:'Anggota',category:cat,sort_order:start+i})));
+    if(error)throw error;
+    $('bulk-names').value='';
+    const errs=await refreshAll();if(!errs.length)notice(`${fresh.length} anggota ditambahkan${names.length-fresh.length?`, ${names.length-fresh.length} dilewati karena sudah ada`:''}.`);
+  }catch(err){notice(errText(err),true);}finally{btn.disabled=false;}
+};
+function editMember(id){
+  const x=memberRows.find(r=>r.id===id);if(!x)return;
+  $('member-id').value=id;$('member-name').value=x.name||'';$('member-role').value=x.role||'';$('member-category').value=x.category||'anggota';
+  $('member-motto').value=x.motto||'';$('member-order').value=x.sort_order||0;
+  $('member-form-title').textContent='Edit anggota';showTab('members');$('member-name').focus();
+}
+async function delSimple(table,id,msg){
+  if(!confirm(msg))return;
+  try{
+    const {data,error}=await db.from(table).delete().eq('id',id).select('id');if(error)throw error;
+    if(!data||!data.length)throw new Error('Penghapusan ditolak atau data sudah tidak ada.');
+    if($('lesson-id').value===id)resetLesson();if($('member-id').value===id)resetMember();
+    const errs=await refreshAll();if(!errs.length)notice('Data dihapus.');
+  }catch(err){notice(errText(err),true);}
+}
+
+async function loadSettings(){
+  const {data,error}=await db.from('site_settings').select('key,value');
+  if(error)throw error;
+  settingsMap={};(data||[]).forEach(r=>settingsMap[r.key]=r.value||'');
+  $('set-class').value=settingsMap.class_name||'';$('set-school').value=settingsMap.school_year||'';
+  $('set-homeroom').value=settingsMap.homeroom_teacher||'';$('set-students').value=settingsMap.student_count||'';$('set-slogan').value=settingsMap.slogan||'';
+  const u=safeUrl(settingsMap.hero_image_url);
+  $('set-hero-current').innerHTML=u?`Foto saat ini: <a href="${esc(u)}" target="_blank" rel="noopener">lihat</a>`:'Belum ada foto (memakai ilustrasi bawaan).';
+  $('set-hero-remove-wrap').classList.toggle('hidden',!u);
+}
+$('settings-form').onsubmit=async e=>{
+  e.preventDefault();const btn=$('settings-save');if(btn.disabled)return;btn.disabled=true;
+  let uploaded=null;
+  try{
+    const f=$('set-hero').files[0];checkFile(f,5);
+    const rows=[{key:'class_name',value:$('set-class').value.trim()},{key:'school_year',value:$('set-school').value.trim()},{key:'homeroom_teacher',value:$('set-homeroom').value.trim()},{key:'student_count',value:(n=>isNaN(n)?'':String(n))(parseInt($('set-students').value,10))},{key:'slogan',value:$('set-slogan').value.trim()}];
+    const old=settingsMap.hero_image_url||'';let del=null;
+    if(f){uploaded=await upload(f);rows.push({key:'hero_image_url',value:uploaded});if(old)del=old;}
+    else if($('set-hero-remove').checked&&old){rows.push({key:'hero_image_url',value:''});del=old;}
+    const {error}=await db.from('site_settings').upsert(rows,{onConflict:'key'});if(error)throw error;
+    if(del)await removeFiles([del]);
+    $('set-hero').value='';$('set-hero-remove').checked=false;
+    const errs=await refreshAll();if(!errs.length)notice('Pengaturan disimpan.');
+  }catch(err){if(uploaded)await removeFiles([uploaded]);notice(errText(err),true);}finally{btn.disabled=false;}
+};
+
+setup();
+</script></body></html>
