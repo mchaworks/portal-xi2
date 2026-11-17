@@ -954,6 +954,26 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
                     </div>
 
                     <div id="tasks-list" class="space-y-3"></div>
+
+                    <div class="pt-1">
+                        <button id="suggest-toggle" type="button" class="m3-spring-btn px-5 py-3 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer font-bold text-sm flex items-center gap-1.5">
+                            <span class="material-symbols-rounded text-[18px]">add</span>
+                            <span>Usulkan tugas</span>
+                        </button>
+                        <form id="suggest-form" class="hidden space-y-2.5 mt-3" autocomplete="off">
+                            <p class="text-xs opacity-70 px-1">Usulanmu akan dicek admin dulu sebelum tampil di daftar tugas.</p>
+                            <input name="title" type="text" required minlength="3" maxlength="140" placeholder="Nama tugas *" class="w-full bg-m3-surfaceHigh px-4 py-3 rounded-full text-sm border border-m3-outlineVariant/50 focus:outline-none focus:border-m3-primary">
+                            <input name="subject" type="text" maxlength="60" placeholder="Mata pelajaran (opsional)" class="w-full bg-m3-surfaceHigh px-4 py-3 rounded-full text-sm border border-m3-outlineVariant/50 focus:outline-none focus:border-m3-primary">
+                            <textarea name="description" rows="2" maxlength="500" placeholder="Keterangan (opsional)" class="w-full bg-m3-surfaceHigh px-4 py-3 rounded-3xl text-sm border border-m3-outlineVariant/50 focus:outline-none focus:border-m3-primary"></textarea>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input name="deadline" type="date" aria-label="Deadline" class="bg-m3-surfaceHigh px-4 py-3 rounded-full text-sm border border-m3-outlineVariant/50 focus:outline-none focus:border-m3-primary">
+                                <input name="sender" type="text" maxlength="40" placeholder="Namamu (opsional)" class="bg-m3-surfaceHigh px-4 py-3 rounded-full text-sm border border-m3-outlineVariant/50 focus:outline-none focus:border-m3-primary">
+                            </div>
+                            <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+                            <button type="submit" class="m3-spring-btn px-5 py-3 rounded-full bg-m3-primary text-m3-onPrimary font-bold text-sm">Kirim usulan</button>
+                        </form>
+                        <p id="suggest-msg" class="hidden text-xs font-medium mt-2 px-1" role="status"></p>
+                    </div>
                 </div>
 
                 <div class="lg:col-span-5 space-y-4">
@@ -964,6 +984,34 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
         </section>
 
     </main>
+<script>
+(function(){
+ const tgl=document.getElementById('suggest-toggle'),form=document.getElementById('suggest-form'),msg=document.getElementById('suggest-msg');
+ if(!tgl||!form||!msg)return;
+ let cl=null;
+ const cfg=()=>{const c=window.XIA_CONFIG||{};return (c.SUPABASE_URL&&!/YOUR_/.test(c.SUPABASE_URL)&&c.SUPABASE_ANON_KEY&&!/^YOUR_/.test(c.SUPABASE_ANON_KEY))?c:null};
+ const say=(t,bad)=>{msg.textContent=t;msg.style.color=bad?'#b3261e':'';msg.classList.remove('hidden')};
+ tgl.addEventListener('click',()=>{form.classList.toggle('hidden');msg.classList.add('hidden')});
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(form.elements.website.value)return;
+  const c=cfg();if(!c||!window.supabase){say('Belum bisa mengirim usulan sekarang.',1);return}
+  let last=0;try{last=+localStorage.getItem('xia_suggest_t')||0}catch(_){}
+  if(Date.now()-last<60000){say('Tunggu sebentar sebelum mengirim usulan lagi.',1);return}
+  const v=n=>form.elements[n].value.trim();
+  const title=v('title');if(title.length<3){say('Nama tugas minimal 3 huruf.',1);return}
+  const btn=form.querySelector('button[type=submit]');btn.disabled=true;
+  try{
+   cl=cl||window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+   const {error}=await cl.from('task_suggestions').insert({title:title.slice(0,140),subject:v('subject').slice(0,60)||null,description:v('description').slice(0,500)||null,deadline:v('deadline')||null,sender_name:v('sender').slice(0,40)||null});
+   if(error)throw error;
+   try{localStorage.setItem('xia_suggest_t',String(Date.now()))}catch(_){}
+   form.reset();form.classList.add('hidden');say('Usulan terkirim! Tugas akan tampil setelah disetujui admin.');
+  }catch(err){say(/penuh/i.test((err&&err.message)||'')?'Antrean usulan lagi penuh, coba lagi nanti.':'Gagal mengirim usulan. Coba lagi ya.',1)}
+  finally{btn.disabled=false}
+ });
+})();
+</script>
 
     <!-- Footer -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-8 border-t border-m3-outlineVariant/40 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-m3-onSurfaceVariant">
