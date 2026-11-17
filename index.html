@@ -3058,8 +3058,9 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
  const cfg=()=>{const c=window.XIA_CONFIG||{};return (c.SUPABASE_URL&&!/YOUR_/.test(c.SUPABASE_URL)&&c.SUPABASE_ANON_KEY&&!/^YOUR_/.test(c.SUPABASE_ANON_KEY))?c:null};
  const history=[];let busy=false;
  const send=document.getElementById('xia-chatbot-send'),note=document.getElementById('xia-chat-note');
- const bubble=(who,text)=>{const d=document.createElement('div');if(who==='user'){d.className='ml-auto max-w-[88%] rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#dceee3;overflow-wrap:anywhere;white-space:pre-wrap'}else{d.className='max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#e8f0e9;overflow-wrap:anywhere;white-space:pre-wrap'}d.textContent=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d};
- if(note&&!cfg())note.textContent='AI belum terhubung ke API. Pesan tidak dikirim ke server.';
+ const setText=(d,t)=>{d.textContent='';String(t).split(/\*\*([\s\S]+?)\*\*/g).forEach((p,i)=>{if(!p)return;if(i%2){const b=document.createElement('strong');b.textContent=p;d.appendChild(b)}else d.appendChild(document.createTextNode(p))})};
+ const bubble=(who,text)=>{const d=document.createElement('div');if(who==='user'){d.className='ml-auto max-w-[88%] rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#dceee3;overflow-wrap:anywhere;white-space:pre-wrap'}else{d.className='max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#e8f0e9;overflow-wrap:anywhere;white-space:pre-wrap'}if(who==='user')d.textContent=text;else setText(d,text);messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d};
+ const chkNote=()=>{if(note&&!cfg())note.textContent='AI belum terhubung ke API. Pesan tidak dikirim ke server.'};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',chkNote);else chkNote();
  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&matchMedia('(hover:hover) and (pointer:fine)').matches){e.preventDefault();form.requestSubmit()}});
  form.addEventListener('submit',async e=>{
   e.preventDefault();if(busy)return;const value=input.value.trim();if(!value)return;
@@ -3074,7 +3075,7 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
    const res=await fetch(c.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/'+(c.CHAT_FUNCTION||'chat'),{method:'POST',headers:{'Content-Type':'application/json','apikey':c.SUPABASE_ANON_KEY},body:JSON.stringify({messages:history.slice(-8)}),signal:ac.signal});
    const j=await res.json().catch(()=>({}));
    if(!res.ok||!j.reply)throw new Error(j.error||'Gagal menghubungi AI.');
-   typing.style.opacity='';typing.textContent=j.reply;history.push({role:'assistant',text:j.reply});
+   typing.style.opacity='';setText(typing,j.reply);history.push({role:'assistant',text:j.reply});
   }catch(err){
    history.pop();typing.style.opacity='';
    typing.textContent=err&&err.name==='AbortError'?'Koneksi terlalu lama. Coba lagi ya.':(err&&err.message)||'Terjadi kesalahan. Coba lagi ya.';
