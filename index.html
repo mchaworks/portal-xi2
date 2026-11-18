@@ -3766,7 +3766,7 @@ const fileIn=h('input');fileIn.type='file';fileIn.accept='image/*';fileIn.setAtt
 fileIn.onchange=async()=>{const f=fileIn.files&&fileIn.files[0];fileIn.value='';if(!f||!left())return;const i=new Image();i.onload=async()=>{await send(await toBlob(i,i.naturalWidth,i.naturalHeight,0,{look:LOOKS[look]}));URL.revokeObjectURL(i.src)};i.src=URL.createObjectURL(f)};
 /* ---- gerbang kode kamera (sementara: kode dari config.js CAMERA_CODE, default 2222; cek di sisi klien) ---- */
 const CODE=String((window.XIA_CONFIG||{}).CAMERA_CODE||'2222');
-const okDay=()=>{try{return localStorage.getItem('xia_cam_ok')===dk()}catch(_){return false}};
+let unlocked=false;const okDay=()=>unlocked;
 let gOv=null,gRes=null,gBuf='',gFail=0,gLock=0;
 const gSay=t=>{const m=gOv&&gOv.querySelector('.cg-msg');if(m)m.textContent=t};
 const gDots=()=>gOv.querySelectorAll('.cg-dot').forEach((d,i)=>d.classList.toggle('on',i<gBuf.length));
@@ -3775,7 +3775,7 @@ const gKey=e=>{if(/^\d$/.test(e.key))gPress(e.key);else if(e.key==='Backspace')g
 const gPress=k=>{if(!gRes)return;AC();sfx.tick();const now=Date.now();if(now<gLock){gSay('Coba lagi '+Math.ceil((gLock-now)/1000)+' detik');return}
  if(k==='<'){gBuf=gBuf.slice(0,-1);gDots();return}
  if(gBuf.length>=4)return;gBuf+=k;gDots();
- if(gBuf.length===4){if(gBuf===CODE){try{localStorage.setItem('xia_cam_ok',dk())}catch(_){}gSay('');gOv.querySelector('.cg-box').classList.add('ok');setTimeout(()=>gClose(true),260)}
+ if(gBuf.length===4){if(gBuf===CODE){unlocked=true;gSay('');gOv.querySelector('.cg-box').classList.add('ok');setTimeout(()=>gClose(true),260)}
   else{gFail++;try{navigator.vibrate&&navigator.vibrate([30,40,30])}catch(_){}retrig(gOv.querySelector('.cg-dots'),'bad');
    if(gFail>=5){gLock=Date.now()+30000;gFail=0;gSay('Terlalu banyak salah. Tunggu 30 detik.')}else gSay('Kode salah, coba lagi.');
    setTimeout(()=>{gBuf='';gDots()},350)}}};
