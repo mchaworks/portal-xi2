@@ -162,7 +162,10 @@ const load=async more=>{const c=client(),g=$('cam-grid');if(!c||!g)return;const 
  if(error){if(!more)g.appendChild(h('p','empty','Galeri belum bisa dimuat.'));return}
  if(!data.length&&!more){g.appendChild(h('p','empty','Belum ada foto. Jadi yang pertama!'));mb.hidden=true;return}
  data.forEach((x,i)=>g.appendChild(tile(x,i)));pg++;mb.hidden=data.length<PS};
-const init=()=>{$('more').onclick=()=>load(true);load(false)};
+
+/* real-time: update otomatis saat admin menyetujui/menghapus */
+const live=()=>{const c=client();if(!c||!c.channel)return;let t=0;try{c.channel('pub-class_moments').on('postgres_changes',{event:'*',schema:'public',table:'class_moments'},()=>{clearTimeout(t);t=setTimeout(()=>{load(false)},700)}).subscribe()}catch(_){}};
+const init=()=>{live();$('more').onclick=()=>load(true);load(false)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 

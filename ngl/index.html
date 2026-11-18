@@ -342,7 +342,10 @@ let wallLoaded=false;
 const mode=()=>{const isWall=location.hash==='#semua';$('v-send').hidden=isWall;$('v-wall').hidden=!isWall;
  document.title=(isWall?'Semua Pesan Anonim':'Pesan Anonim')+' — '+BRAND;
  if(isWall){close();if(!wallLoaded){wallLoaded=true;wall(false)}}};
-const init=()=>{$('nl-card').addEventListener('click',open);$('more').onclick=()=>wall(true);tick();sync();mode();
+
+/* real-time: update otomatis saat admin menyetujui/menghapus */
+const live=()=>{const c=client();if(!c||!c.channel)return;let t=0;try{c.channel('pub-ngl_messages').on('postgres_changes',{event:'*',schema:'public',table:'ngl_messages'},()=>{clearTimeout(t);t=setTimeout(()=>{if(!$('v-wall').hidden)wall(false)},700)}).subscribe()}catch(_){}};
+const init=()=>{live();$('nl-card').addEventListener('click',open);$('more').onclick=()=>wall(true);tick();sync();mode();
  window.addEventListener('hashchange',mode);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
  /* buka link langsung ke bagian mengetik */

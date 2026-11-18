@@ -806,7 +806,7 @@ async function enter(u){
     user=u;loginMsg('');
     $('login').classList.add('hidden');$('app').classList.remove('hidden');document.body.classList.add('is-in');
     $('who').textContent=u.email||'Administrator';
-    await refreshAll();showTab((location.hash||'').slice(1)||'dashboard');
+    await refreshAll();showTab((location.hash||'').slice(1)||'dashboard');startLive();
   }catch(e){loginMsg(errText(e));}
   finally{entering=false;}
 }
@@ -857,6 +857,18 @@ async function removeFiles(urls){
 }
 
 /* ---------- Load ---------- */
+let liveCh=null,liveT=0;
+/* real-time: foto/pesan baru langsung muncul tanpa refresh */
+function startLive(){
+  if(liveCh||!db.channel)return;
+  const bump=()=>{clearTimeout(liveT);liveT=setTimeout(()=>{refreshAll();},500);};
+  try{
+    liveCh=db.channel('admin-live')
+      .on('postgres_changes',{event:'*',schema:'public',table:'class_moments'},p=>{if(p.eventType==='INSERT')notice('Foto baru masuk, menunggu persetujuan.');bump();})
+      .on('postgres_changes',{event:'*',schema:'public',table:'ngl_messages'},p=>{if(p.eventType==='INSERT')notice('Pesan anonim baru masuk, menunggu persetujuan.');bump();})
+      .subscribe();
+  }catch(_){liveCh=null;}
+}
 async function refreshAll(){
   const res=await Promise.allSettled([loadNews(),loadTasks(),loadSuggestions(),loadMoments(),loadNgl(),loadMedia(),loadSchedule(),loadMembers(),loadSettings()]);
   const errs=res.filter(r=>r.status==='rejected').map(r=>errText(r.reason));
