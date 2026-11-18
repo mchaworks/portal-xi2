@@ -903,6 +903,9 @@ html[data-perf="lite"] .dcw-leak{display:none}
 .xia-absen{position:absolute;right:10px;bottom:-14px;z-index:0;font-size:clamp(88px,11vw,118px);line-height:1;letter-spacing:-.06em;color:var(--md-sys-color-on-surface-variant);opacity:.13;font-variant-numeric:tabular-nums;-webkit-mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));transition:opacity .3s ease,transform .4s cubic-bezier(.32,.72,0,1)}
 .group:hover .xia-absen{opacity:.2;transform:translate3d(0,-4px,0) scale(1.03)}
 #member-filters{row-gap:8px}
+.xia-absen-off{right:8px;bottom:-8px;font-size:clamp(64px,17vw,104px)}
+.xia-absen.xia-absen-row{right:14px;bottom:auto;top:50%;font-size:48px;transform:translate3d(0,-50%,0);opacity:.16;-webkit-mask-image:none;mask-image:none}
+.group:hover .xia-absen.xia-absen-row{opacity:.24;transform:translate3d(0,-50%,0) scale(1.05)}
 </style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
@@ -2087,30 +2090,39 @@ html[data-perf="lite"] .dcw-leak{display:none}
                 return;
             }
 
-            grid.innerHTML = filtered.map((person, idx) => {
-                const officer = person.category !== 'anggota';
-                const avatarShape = officer ? 'm3-shape-cookie' : 'm3-avatar-morph';
-                const no = person.absen ? String(person.absen).padStart(2, '0') : '';
+            const officers = filtered.filter(m => m.category !== 'anggota');
+            const regulars = filtered.filter(m => m.category === 'anggota');
+            const numOf = m => m.absen ? String(m.absen).padStart(2, '0') : '';
+            const officerCard = person => {
+                const no = numOf(person);
                 return `
-                <div class="relative overflow-hidden bg-m3-surfaceLow hover:bg-m3-surfaceMid ${idx % 3 === 0 ? 'm3-expressive-asymmetric' : 'm3-card-surface'} p-5 border border-m3-outlineVariant/35 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
-                    ${no ? `<span aria-hidden="true" class="xia-absen font-display font-extrabold select-none pointer-events-none">${no}</span>` : ''}
-                    <div class="relative" style="z-index:1">
-                        <div class="flex items-start justify-between gap-2 mb-4">
-                            <div class="w-14 h-14 ${avatarShape} group-hover:scale-110 transition-all duration-300 bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono font-bold text-lg flex items-center justify-center shadow-sm">
-                                ${xiaEsc(person.initials)}
-                            </div>
-                            <span class="px-3.5 py-1 rounded-full text-[11px] font-bold ${officer ? 'bg-m3-primary text-m3-onPrimary' : 'bg-m3-secondaryContainer text-m3-onSecondaryContainer'}">
-                                ${xiaEsc(person.badge)}
-                            </span>
-                        </div>
-                        <h3 class="font-display font-bold text-lg leading-snug">${xiaEsc(person.name)}</h3>
-                        ${no ? `<p class="text-xs font-semibold text-m3-primary mt-0.5">Absen ${no}</p>` : ''}
+                <div class="relative overflow-hidden bg-m3-surfaceLow hover:bg-m3-surfaceMid m3-card-surface p-4 sm:p-5 border border-m3-outlineVariant/35 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group min-h-[176px]">
+                    ${no ? `<span aria-hidden="true" class="xia-absen xia-absen-off font-display font-extrabold select-none pointer-events-none">${no}</span>` : ''}
+                    <div class="relative flex flex-col gap-3" style="z-index:1">
+                        <div class="w-12 h-12 m3-shape-cookie bg-m3-primary text-m3-onPrimary font-mono font-bold text-base flex items-center justify-center shadow-sm">${xiaEsc(person.initials)}</div>
+                        <span class="self-start px-3 py-1 rounded-full text-[11px] font-bold bg-m3-primaryContainer text-m3-onPrimaryContainer">${xiaEsc(person.badge)}</span>
                     </div>
-                    <p class="relative text-xs text-m3-onSurfaceVariant italic mt-4 pt-3 border-t border-m3-outlineVariant/25" style="z-index:1">
-                        ${person.motto ? '“' + xiaEsc(person.motto) + '”' : '&nbsp;'}
-                    </p>
-                </div>
-            `}).join('');
+                    <div class="relative mt-3" style="z-index:1">
+                        <h3 class="font-display font-bold text-base sm:text-lg leading-snug">${xiaEsc(person.name)}</h3>
+                        ${person.motto ? `<p class="text-[11px] text-m3-onSurfaceVariant italic mt-1 line-clamp-2">“${xiaEsc(person.motto)}”</p>` : ''}
+                    </div>
+                </div>`;
+            };
+            const memberRow = person => {
+                const no = numOf(person);
+                return `
+                <div class="relative overflow-hidden bg-m3-surfaceLow hover:bg-m3-surfaceMid border border-m3-outlineVariant/35 rounded-3xl pl-3 pr-4 py-3 flex items-center gap-3 transition-all duration-300 hover:-translate-y-0.5 group min-h-[72px]">
+                    ${no ? `<span aria-hidden="true" class="xia-absen xia-absen-row font-display font-extrabold select-none pointer-events-none">${no}</span>` : ''}
+                    <div class="relative shrink-0 w-12 h-12 m3-avatar-morph bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono font-bold text-base flex items-center justify-center" style="z-index:1">${xiaEsc(person.initials)}</div>
+                    <div class="relative min-w-0 pr-14" style="z-index:1">
+                        <h3 class="font-display font-bold text-[15px] leading-snug truncate">${xiaEsc(person.name)}</h3>
+                        <p class="text-[11px] text-m3-onSurfaceVariant truncate">${person.motto ? '“' + xiaEsc(person.motto) + '”' : (no ? 'Absen ' + no : 'Anggota')}</p>
+                    </div>
+                </div>`;
+            };
+            grid.innerHTML =
+                (officers.length ? `<div class="col-span-full grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">${officers.map(officerCard).join('')}</div>` : '') +
+                (regulars.length ? `<div class="col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">${regulars.map(memberRow).join('')}</div>` : '');
         }
 
         function setupMemberFilters() {
