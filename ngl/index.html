@@ -344,7 +344,9 @@ const mode=()=>{const isWall=location.hash==='#semua';$('v-send').hidden=isWall;
  if(isWall){close();if(!wallLoaded){wallLoaded=true;wall(false)}}};
 
 /* real-time: update otomatis saat admin menyetujui/menghapus */
-const live=()=>{const c=client();if(!c||!c.channel)return;let t=0;try{c.channel('pub-ngl_messages').on('postgres_changes',{event:'*',schema:'public',table:'ngl_messages'},()=>{clearTimeout(t);t=setTimeout(()=>{if(!$('v-wall').hidden)wall(false)},700)}).subscribe()}catch(_){}};
+let sig='';const sigOf=d=>(d||[]).map(x=>x.id+(x.reply||'')).join();
+const poll=async()=>{if(document.hidden||$('v-wall').hidden)return;const c=client();if(!c)return;try{const r=await c.from('ngl_messages').select('id,reply').eq('status','approved').order('created_at',{ascending:false}).range(0,PS-1);if(r.error)return;const n=sigOf(r.data);if(sig&&n!==sig){wall(false)}sig=n}catch(_){}};
+const live=()=>{const c=client();if(!c||!c.channel)return;setInterval(poll,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});setTimeout(poll,3000);let t=0;try{c.channel('pub-ngl_messages').on('postgres_changes',{event:'*',schema:'public',table:'ngl_messages'},()=>{clearTimeout(t);t=setTimeout(()=>{if(!$('v-wall').hidden)wall(false)},700)}).subscribe()}catch(_){}};
 const init=()=>{live();$('nl-card').addEventListener('click',open);$('more').onclick=()=>wall(true);tick();sync();mode();
  window.addEventListener('hashchange',mode);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});

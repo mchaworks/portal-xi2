@@ -866,8 +866,18 @@ function startLive(){
     liveCh=db.channel('admin-live')
       .on('postgres_changes',{event:'*',schema:'public',table:'class_moments'},p=>{if(p.eventType==='INSERT')notice('Foto baru masuk, menunggu persetujuan.');bump();})
       .on('postgres_changes',{event:'*',schema:'public',table:'ngl_messages'},p=>{if(p.eventType==='INSERT')notice('Pesan anonim baru masuk, menunggu persetujuan.');bump();})
-      .subscribe();
+      .subscribe(st=>{if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){try{db.removeChannel(liveCh);}catch(_){}liveCh=null;setTimeout(startLive,5000);}});
   }catch(_){liveCh=null;}
+  if(!window.__livePoll){
+    window.__livePoll=setInterval(async()=>{
+      if(document.hidden||!user)return;
+      const pm=momRows.filter(x=>x.status==='pending').length,pn=nglRows.filter(x=>x.status==='pending').length;
+      try{await Promise.all([loadMoments(),loadNgl()]);renderStats();}catch(_){return;}
+      const m2=momRows.filter(x=>x.status==='pending').length,n2=nglRows.filter(x=>x.status==='pending').length;
+      if(m2>pm)notice('Foto baru masuk, menunggu persetujuan.');else if(n2>pn)notice('Pesan anonim baru masuk, menunggu persetujuan.');
+    },10000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user){startLive();Promise.all([loadMoments(),loadNgl()]).then(renderStats).catch(()=>{});}});
+  }
 }
 async function refreshAll(){
   const res=await Promise.allSettled([loadNews(),loadTasks(),loadSuggestions(),loadMoments(),loadNgl(),loadMedia(),loadSchedule(),loadMembers(),loadSettings()]);
