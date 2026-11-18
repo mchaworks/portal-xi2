@@ -1,0 +1,48 @@
+name: Build Admin APK
+
+on:
+  push:
+    paths:
+      - 'android-admin/**'
+      - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build APK
+        working-directory: android-admin
+        run: gradle assembleRelease --no-daemon
+
+      - name: Rename APK
+        run: cp android-admin/app/build/outputs/apk/release/app-release.apk XI2-Admin.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: XI2-Admin-APK
+          path: XI2-Admin.apk
+
+      - name: Publish to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: admin-latest
+          name: XI.2 Admin (APK terbaru)
+          body: Unduh XI2-Admin.apk di bawah ini lalu pasang di HP.
+          files: XI2-Admin.apk

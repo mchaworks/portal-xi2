@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'id.xi2.admin'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'id.xi2.admin'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    // Keystore tetap (bukan acak per build) supaya APK versi baru bisa menimpa yang lama.
+    signingConfigs {
+        release {
+            storeFile file('xi2-admin.keystore')
+            storePassword 'xi2admin'
+            keyAlias 'xi2admin'
+            keyPassword 'xi2admin'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+}
