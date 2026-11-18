@@ -889,9 +889,15 @@ html[data-perf="lite"] .dcw-leak{display:none}
 </style>
 <style>
 /* modal Sorotan: bisa di-scroll kalau teks panjang, tidak tertutup dock, paragraf tetap terpisah */
-#story-modal{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start!important;z-index:70!important;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
-#story-modal-sheet{margin-top:auto;margin-bottom:auto}
-#modal-desc{white-space:pre-line;overflow-wrap:anywhere}
+#story-modal{z-index:70!important;overflow:hidden;align-items:center!important;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+#story-modal-sheet{display:flex!important;flex-direction:column;max-height:100%;margin:0}
+#story-modal-sheet .xia-modal-photo-frame{flex:0 0 auto;max-height:34dvh}
+#story-modal-sheet .xia-modal-photo-frame img{max-height:34dvh}
+#story-modal-sheet .xia-modal-body{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;padding:20px 22px 18px}
+@media(min-width:640px){#story-modal-sheet .xia-modal-body{padding:26px 30px 22px}}
+#story-modal-sheet .xia-modal-body>*{flex:0 0 auto}
+#modal-desc{flex:1 1 auto!important;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;white-space:pre-line;overflow-wrap:anywhere;padding-right:4px;scrollbar-width:thin}
+#modal-desc.is-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent)}
 </style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
@@ -1363,7 +1369,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
                 </div>
             </div>
 
-            <div class="relative z-10 p-6 sm:p-8 space-y-4">
+            <div class="relative z-10 xia-modal-body space-y-4">
                 <div class="flex items-center justify-between text-xs font-semibold text-m3-onSurfaceVariant">
                     <span id="modal-date">Tanggal Kegiatan</span>
                     <span class="text-m3-primary font-bold">Arsip Kelas</span>
@@ -2936,6 +2942,10 @@ html body #story-modal.is-drag #story-modal-sheet,html body #story-modal.is-drag
  var modal=$('story-modal'),sheet=$('story-modal-sheet'),back=$('story-modal-backdrop');
  if(!modal||!sheet||!back)return;
  var isOpen=false,timer=0,prevOv='';
+ var desc=$('modal-desc');
+ function moreCheck(){desc.classList.toggle('is-more',desc.scrollHeight>desc.clientHeight+2&&desc.scrollTop+desc.clientHeight<desc.scrollHeight-4)}
+ desc.addEventListener('scroll',moreCheck,{passive:true});
+ window.addEventListener('resize',function(){if(isOpen)moreCheck()},{passive:true});
  function fill(s){
   $('modal-img').src=s.image;$('modal-tag').textContent=s.tag;$('modal-date').textContent=s.date;
   $('modal-location').textContent=s.location;$('modal-title').textContent=s.title;$('modal-desc').textContent=s.fullText;
@@ -2945,13 +2955,13 @@ html body #story-modal.is-drag #story-modal-sheet,html body #story-modal.is-drag
  window.openStoryModal=function(index){
   if(isOpen)return;
   var s=(typeof carouselStories!=='undefined')?carouselStories[index]:null;if(!s)return;
-  fill(s);clearTimeout(timer);isOpen=true;
+  fill(s);clearTimeout(timer);isOpen=true;desc.scrollTop=0;desc.classList.remove('is-more');
   sheet.style.removeProperty('--dy');modal.style.removeProperty('--bo');
   modal.classList.remove('hidden','is-closing','is-drag','is-on');modal.classList.add('flex');
-  back.style.visibility='visible';sheet.style.visibility='visible';modal.scrollTop=0;
+  back.style.visibility='visible';sheet.style.visibility='visible';
   prevOv=document.body.style.overflow;document.body.style.overflow='hidden';
   void sheet.offsetWidth;
-  requestAnimationFrame(function(){requestAnimationFrame(function(){modal.classList.add('is-on')})});
+  requestAnimationFrame(function(){requestAnimationFrame(function(){modal.classList.add('is-on');moreCheck()})});
  };
  window.closeStoryModal=function(){
   if(!isOpen)return;isOpen=false;
@@ -2970,7 +2980,7 @@ html body #story-modal.is-drag #story-modal-sheet,html body #story-modal.is-drag
  sheet.addEventListener('touchmove',function(e){
   if(!isOpen||e.touches.length!==1)return;
   var d=e.touches[0].clientY-y0;
-  if(!drag){if(d>8&&modal.scrollTop<=0){drag=true;modal.classList.add('is-drag')}else return}
+  if(!drag){if(d>8&&desc.scrollTop<=0){drag=true;modal.classList.add('is-drag')}else return}
   dy=Math.max(0,d);e.preventDefault();
   sheet.style.setProperty('--dy',dy+'px');modal.style.setProperty('--bo',String(Math.max(.2,1-dy/420)));
  },{passive:false});
