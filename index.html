@@ -618,7 +618,7 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
 </style>
 
 <style id="dc-css">
-/* ===== KAMERA SEKALI PAKAI (disposable camera) — memakai token tema web utama ===== */
+/* ===== KAMERA MOMEN (disposable camera) — memakai token tema web utama ===== */
 :root{--dc-body:#1B6B51;--dc-body-dk:#0D3F2E;--dc-label:#F4EACB;--dc-ink:#2B2615;--dc-red:#E5532D;--dc-red-dk:#B03212;--dc-lcd:#C8D5B6}
 @supports (color:color-mix(in srgb,red,blue)){:root{--dc-body:var(--md-sys-color-primary);--dc-body-dk:color-mix(in srgb,var(--md-sys-color-primary) 56%,#000)}}
 .dc-wrap{container-type:inline-size;width:min(100%,600px);margin:0 auto;padding:6px 0 10px}
@@ -627,7 +627,7 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
  box-shadow:inset 0 .5cqw 0 rgba(255,255,255,.3),inset 0 -2cqw 3cqw rgba(0,0,0,.28),0 5cqw 6cqw -3cqw rgba(0,0,0,.5),0 1px 2px rgba(0,0,0,.2);
  transition:transform var(--spring-duration) var(--spring-curve)}
 @media(hover:hover){.dc:hover{transform:translateY(-4px) rotate(-.4deg)}}
-.dc::after{content:"XI.2 CREATIVE LAB · KAMERA SEKALI PAKAI";position:absolute;left:0;right:0;bottom:3.6cqw;text-align:center;font:700 max(7px,1.7cqw)/1 'Space Grotesk',monospace;letter-spacing:.2em;color:rgba(255,255,255,.55);pointer-events:none}
+.dc::after{content:"XI.2 CREATIVE LAB · KAMERA MOMEN";position:absolute;left:0;right:0;bottom:3.6cqw;text-align:center;font:700 max(7px,1.7cqw)/1 'Space Grotesk',monospace;letter-spacing:.2em;color:rgba(255,255,255,.55);pointer-events:none}
 .dc-grip{position:absolute;top:22cqw;bottom:4cqw;width:6.5cqw;border-radius:3cqw;background:repeating-linear-gradient(180deg,rgba(0,0,0,.3) 0 .7cqw,transparent .7cqw 2cqw);box-shadow:inset 0 0 0 .4cqw rgba(255,255,255,.06)}
 .dc-grip.l{left:2cqw}.dc-grip.r{right:2cqw}
 .dc-vf{position:absolute;left:11cqw;top:6cqw;width:17cqw;height:11cqw;border-radius:1.6cqw;background:radial-gradient(120% 120% at 30% 25%,#2d4a5c,#0a1218 70%);border:.8cqw solid rgba(0,0,0,.5);box-shadow:inset 0 0 1.4cqw rgba(0,0,0,.8),0 .3cqw 0 rgba(255,255,255,.18);overflow:hidden}
@@ -889,7 +889,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
 </style>
 <style>
 /* modal Sorotan: bisa di-scroll kalau teks panjang, tidak tertutup dock, paragraf tetap terpisah */
-#story-modal{z-index:70!important;overflow:hidden;align-items:center!important;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+#story-modal{z-index:100!important;overflow:hidden;align-items:center!important;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
 #story-modal-sheet{display:flex!important;flex-direction:column;max-height:100%;margin:0}
 #story-modal-sheet .xia-modal-photo-frame{flex:0 0 auto;max-height:34dvh}
 #story-modal-sheet .xia-modal-photo-frame img{max-height:34dvh}
@@ -898,6 +898,11 @@ html[data-perf="lite"] .dcw-leak{display:none}
 #story-modal-sheet .xia-modal-body>*{flex:0 0 auto}
 #modal-desc{flex:1 1 auto!important;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;white-space:pre-line;overflow-wrap:anywhere;padding-right:4px;scrollbar-width:thin}
 #modal-desc.is-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent)}
+</style>
+<style id="xia-absen-css">
+.xia-absen{position:absolute;right:10px;bottom:-14px;z-index:0;font-size:clamp(88px,11vw,118px);line-height:1;letter-spacing:-.06em;color:var(--md-sys-color-on-surface-variant);opacity:.13;font-variant-numeric:tabular-nums;-webkit-mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));transition:opacity .3s ease,transform .4s cubic-bezier(.32,.72,0,1)}
+.group:hover .xia-absen{opacity:.2;transform:translate3d(0,-4px,0) scale(1.03)}
+#member-filters{row-gap:8px}
 </style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
@@ -1133,7 +1138,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
 
         <div id="kamera" class="space-y-5 pt-2">
             <div>
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-m3-primary mb-1.5"><span class="material-symbols-rounded text-[16px]">auto_awesome</span>Kamera Sekali Pakai</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-m3-primary mb-1.5"><span class="material-symbols-rounded text-[16px]">auto_awesome</span>Kamera Momen</span>
                 <h2 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight">Momen Kelas</h2>
                 <p class="text-sm opacity-70 mt-1">Maksimal 5 foto per hari. Foto tampil di galeri setelah disetujui admin.</p>
             </div>
@@ -1251,8 +1256,11 @@ html[data-perf="lite"] .dcw-leak{display:none}
 
                 <div class="flex flex-wrap gap-2" id="member-filters">
                     <button data-filter="all" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-primary text-m3-onPrimary">Semua (0)</button>
-                    <button data-filter="pengurus" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Pengurus Inti</button>
-                    <button data-filter="koordinator" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Seksi Bidang</button>
+                    <button data-filter="ketua" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Ketua</button>
+                    <button data-filter="waketu" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Wakil Ketua</button>
+                    <button data-filter="sekretaris" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Sekretaris</button>
+                    <button data-filter="bendahara" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Bendahara</button>
+                    <button data-filter="adiwiyata" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Adiwiyata</button>
                     <button data-filter="anggota" class="filter-chip m3-spring-btn px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-m3-surfaceHigh text-m3-onSurfaceVariant">Anggota</button>
                 </div>
             </div>
@@ -1487,6 +1495,13 @@ html[data-perf="lite"] .dcw-leak{display:none}
                                 <div class="text-[11px] text-m3-onSurfaceVariant">Getaran halus saat menggeser dock di HP</div>
                             </div>
                             <input id="toggle-haptic" type="checkbox" checked onchange="updateSetting('haptic', this.checked)" class="w-5 h-5 accent-[var(--md-sys-color-primary)] cursor-pointer">
+                        </label>
+                        <label class="flex items-center justify-between p-3 rounded-2xl bg-m3-surfaceLow border border-m3-outlineVariant/35 cursor-pointer">
+                            <div>
+                                <div class="text-xs font-bold">Efek Suara</div>
+                                <div class="text-[11px] text-m3-onSurfaceVariant">Bunyi halus saat pindah halaman dan menekan tombol</div>
+                            </div>
+                            <input id="toggle-sfx" type="checkbox" checked class="w-5 h-5 accent-[var(--md-sys-color-primary)] cursor-pointer">
                         </label>
                     </div>
                 </div>
@@ -2052,6 +2067,16 @@ html[data-perf="lite"] .dcw-leak{display:none}
         /* ----------------------------------------------------------------------
            7. MEMBERS & INTERACTIVE TASKS
            ---------------------------------------------------------------------- */
+        const XIA_JAB = { ketua:'Ketua Kelas', waketu:'Wakil Ketua', sekretaris:'Sekretaris', bendahara:'Bendahara', adiwiyata:'Adiwiyata', anggota:'Anggota' };
+        function xiaRoleKey(role) {
+            const r = String(role || '').toLowerCase();
+            if (/wakil|waket/.test(r)) return 'waketu';
+            if (/ketua/.test(r)) return 'ketua';
+            if (/sekre/.test(r)) return 'sekretaris';
+            if (/bendahara/.test(r)) return 'bendahara';
+            if (/adiwiyata/.test(r)) return 'adiwiyata';
+            return 'anggota';
+        }
         function renderMembers(filter = 'all') {
             const grid = document.getElementById('members-grid');
             const filtered = filter === 'all' ? membersData : membersData.filter(m => m.category === filter);
@@ -2063,22 +2088,25 @@ html[data-perf="lite"] .dcw-leak{display:none}
             }
 
             grid.innerHTML = filtered.map((person, idx) => {
-                const avatarShape = person.category === 'pengurus' ? 'm3-shape-cookie' : 'm3-avatar-morph';
+                const officer = person.category !== 'anggota';
+                const avatarShape = officer ? 'm3-shape-cookie' : 'm3-avatar-morph';
+                const no = person.absen ? String(person.absen).padStart(2, '0') : '';
                 return `
-                <div class="bg-m3-surfaceLow hover:bg-m3-surfaceMid ${idx % 3 === 0 ? 'm3-expressive-asymmetric' : 'm3-card-surface'} p-5 border border-m3-outlineVariant/35 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
-                    <div>
+                <div class="relative overflow-hidden bg-m3-surfaceLow hover:bg-m3-surfaceMid ${idx % 3 === 0 ? 'm3-expressive-asymmetric' : 'm3-card-surface'} p-5 border border-m3-outlineVariant/35 transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
+                    ${no ? `<span aria-hidden="true" class="xia-absen font-display font-extrabold select-none pointer-events-none">${no}</span>` : ''}
+                    <div class="relative" style="z-index:1">
                         <div class="flex items-start justify-between gap-2 mb-4">
                             <div class="w-14 h-14 ${avatarShape} group-hover:scale-110 transition-all duration-300 bg-m3-primaryContainer text-m3-onPrimaryContainer font-mono font-bold text-lg flex items-center justify-center shadow-sm">
                                 ${xiaEsc(person.initials)}
                             </div>
-                            <span class="px-3.5 py-1 rounded-full text-[11px] font-bold ${person.category === 'pengurus' ? 'bg-m3-primary text-m3-onPrimary' : 'bg-m3-secondaryContainer text-m3-onSecondaryContainer'}">
+                            <span class="px-3.5 py-1 rounded-full text-[11px] font-bold ${officer ? 'bg-m3-primary text-m3-onPrimary' : 'bg-m3-secondaryContainer text-m3-onSecondaryContainer'}">
                                 ${xiaEsc(person.badge)}
                             </span>
                         </div>
                         <h3 class="font-display font-bold text-lg leading-snug">${xiaEsc(person.name)}</h3>
-                        <p class="text-xs font-semibold text-m3-primary mt-0.5">${xiaEsc(person.role)}</p>
+                        ${no ? `<p class="text-xs font-semibold text-m3-primary mt-0.5">Absen ${no}</p>` : ''}
                     </div>
-                    <p class="text-xs text-m3-onSurfaceVariant italic mt-4 pt-3 border-t border-m3-outlineVariant/25">
+                    <p class="relative text-xs text-m3-onSurfaceVariant italic mt-4 pt-3 border-t border-m3-outlineVariant/25" style="z-index:1">
                         ${person.motto ? '“' + xiaEsc(person.motto) + '”' : '&nbsp;'}
                     </p>
                 </div>
@@ -2529,7 +2557,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
      tasks:client.from('assignments').select('id,title,subject,description,deadline,attachment_url,updated_at').eq('published',true).order('deadline',{ascending:false,nullsFirst:true}).limit(40),
      schedule:client.from('schedule_items').select('id,day,time_label,subject,teacher,room,sort_order').order('sort_order',{ascending:true}).limit(300),
      piket:client.from('piket').select('day,members'),
-     members:client.from('members').select('id,name,role,category,motto,sort_order').order('sort_order',{ascending:true}).order('name',{ascending:true}).limit(300),
+     members:client.from('members').select('id,name,role,category,motto,sort_order,absen').order('absen',{ascending:true,nullsFirst:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}).limit(300),
      settings:client.from('site_settings').select('key,value'),
      newsCount:client.from('announcements').select('id',{count:'exact',head:true}).eq('published',true)
    };
@@ -2557,7 +2585,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
      }
      const m=get('members');
      if((m&&changed('members',m))||first){
-       if(m)membersData.splice(0,membersData.length,...m.map(x=>{const nm=String(x.name||'').trim(),parts=nm.split(/\s+/).filter(Boolean);return{name:nm,role:x.role||'Anggota',category:['pengurus','koordinator','anggota'].includes(x.category)?x.category:'anggota',initials:((parts[0]||'?')[0]+(parts.length>1?parts[parts.length-1][0]:'')).toUpperCase(),badge:x.category==='pengurus'?'Pengurus':x.category==='koordinator'?'Seksi':'Anggota',motto:x.motto||''};}));
+       if(m)membersData.splice(0,membersData.length,...m.map(x=>{const nm=String(x.name||'').trim(),parts=nm.split(/\s+/).filter(Boolean),rk=xiaRoleKey(x.role),ab=(x.absen==null||x.absen==='')?null:+x.absen;return{name:nm,role:XIA_JAB[rk],category:rk,absen:Number.isFinite(ab)?ab:null,initials:((parts[0]||'?')[0]+(parts.length>1?parts[parts.length-1][0]:'')).toUpperCase(),badge:XIA_JAB[rk],motto:x.motto||''};}));
        renderMembers(currentFilter());
      }
      const s=get('settings');if(s&&changed('settings',s))applySettings(s);
@@ -3200,31 +3228,68 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
 
 
 <style id="xia-ai-chatbot-focus-layer">
-  #xia-chatbot-backdrop{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:rgba(12,18,16,.22);-webkit-backdrop-filter:blur(var(--xia-chat-blur,5px)) saturate(82%);backdrop-filter:blur(var(--xia-chat-blur,5px)) saturate(82%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility .28s ease;}
+  #xia-chatbot-backdrop{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));background:rgba(10,24,17,.34);-webkit-backdrop-filter:blur(var(--xia-chat-blur,8px)) saturate(90%);backdrop-filter:blur(var(--xia-chat-blur,8px)) saturate(90%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
   #xia-chatbot-backdrop.is-open{opacity:1;visibility:visible;pointer-events:auto}
-  #xia-chatbot-window{width:min(680px,100%);height:min( min(760px, calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))), 88vh);max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.48);border-radius:30px;background:rgba(248,250,247,.94);color:#17231e;box-shadow:0 28px 90px rgba(0,0,0,.28);transform:translate3d(0,18px,0) scale(.975);opacity:0;transition:transform .38s cubic-bezier(.2,.8,.2,1),opacity .28s ease;will-change:transform,opacity;}
+  #xia-chatbot-window{position:relative;isolation:isolate;width:min(680px,100%);height:min(min(760px,calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))),88vh);max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.65);border-radius:34px;background:rgba(var(--glass-rgb),.95);color:var(--md-sys-color-on-surface);box-shadow:0 30px 90px -20px rgba(8,30,20,.45),inset 0 1px 0 rgba(255,255,255,.7);transform:translate3d(0,26px,0) scale(.96);opacity:0;transition:transform .5s cubic-bezier(.32,.72,0,1),opacity .3s ease;will-change:transform,opacity}
   #xia-chatbot-backdrop.is-open #xia-chatbot-window{transform:translate3d(0,0,0) scale(1);opacity:1}
-  #xia-chatbot-window .xia-chat-scroll{overflow:auto;overscroll-behavior:contain;}
   #xia-chatbot-window button,#xia-chatbot-window textarea{font:inherit}
-  #xia-chatbot-input{resize:none;min-height:48px;max-height:120px;outline:none;background:transparent;width:100%;}
-  #xia-chatbot-send{width:46px;height:46px;flex:0 0 46px;border-radius:16px;background:#28634d;color:white;display:grid;place-items:center;}
-  #xia-chatbot-send:disabled{opacity:.45}
-  @media(max-width:640px){#xia-chatbot-backdrop{padding:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}#xia-chatbot-window{height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:none;border-radius:26px}}
-  @media(prefers-reduced-motion:reduce){#xia-chatbot-backdrop,#xia-chatbot-window{transition:none!important;transform:none!important}}
+  .xc-aura{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(65% 38% at 12% 0%,rgba(166,242,209,.62),transparent 72%),radial-gradient(55% 34% at 100% 6%,rgba(193,232,251,.55),transparent 72%),radial-gradient(60% 30% at 50% 100%,rgba(206,233,218,.5),transparent 75%)}
+  .xc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px 12px 20px}
+  .xc-brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .xc-avatar{width:46px;height:46px;flex:none;display:grid;place-items:center;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:0 8px 20px -8px rgba(27,107,81,.7)}
+  .xc-title{font-family:'Bricolage Grotesque','Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.02em;line-height:1.1}
+  .xc-sub{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--md-sys-color-on-surface-variant);margin-top:2px}
+  .xc-dot{width:7px;height:7px;border-radius:50%;background:#2fbf86;box-shadow:0 0 0 3px rgba(47,191,134,.22);animation:xcPulse 2.4s ease-in-out infinite}
+  @keyframes xcPulse{50%{box-shadow:0 0 0 5px rgba(47,191,134,.06)}}
+  .xc-close{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;background:rgba(var(--glass-rgb),.9);border:1px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface);transition:transform .25s cubic-bezier(.32,.72,0,1),background .2s}
+  .xc-close:active{transform:scale(.9)}
+  #xia-chatbot-messages{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:10px 18px 14px;scroll-behavior:smooth}
+  .xc-msg{max-width:86%;padding:12px 16px;font-size:14.5px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap;animation:xcIn .38s cubic-bezier(.32,.72,0,1) both}
+  .xc-msg strong{font-weight:800}
+  .xc-bot{position:relative;margin-left:40px;align-self:flex-start;background:var(--md-sys-color-surface-container-highest);color:var(--md-sys-color-on-surface);border-radius:6px 22px 22px 22px}
+  .xc-bot::before{content:"";position:absolute;left:-40px;top:0;width:30px;height:30px;border-radius:11px;background:var(--md-sys-color-primary-container) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231B6B51'%3E%3Cpath d='M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM18.5 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z'/%3E%3C/svg%3E") center/18px no-repeat}
+  .xc-user{align-self:flex-end;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);border-radius:22px 22px 6px 22px;box-shadow:0 8px 20px -10px rgba(27,107,81,.7)}
+  .xc-typing{opacity:.75}
+  @keyframes xcIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.97)}to{opacity:1;transform:none}}
+  .xc-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 18px 12px;scrollbar-width:none;transition:max-height .35s ease,opacity .25s ease,padding .35s ease;max-height:64px}
+  .xc-chips::-webkit-scrollbar{display:none}
+  #xia-chatbot-window.xc-started .xc-chips{max-height:0;opacity:0;padding-top:0;padding-bottom:0;pointer-events:none}
+  .xc-chip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);border:1px solid rgba(76,99,88,.14);transition:transform .25s cubic-bezier(.32,.72,0,1),background .2s}
+  .xc-chip:active{transform:scale(.94)}
+  #xia-chatbot-form{padding:4px 14px calc(14px + 0px)}
+  .xc-composer{display:flex;align-items:flex-end;gap:8px;padding:7px 7px 7px 18px;border-radius:30px;background:rgba(255,255,255,.82);border:1px solid var(--md-sys-color-outline-variant);box-shadow:0 10px 30px -18px rgba(27,107,81,.6);transition:border-color .2s,box-shadow .2s}
+  .xc-composer:focus-within{border-color:var(--md-sys-color-primary);box-shadow:0 0 0 3px rgba(27,107,81,.14),0 10px 30px -18px rgba(27,107,81,.6)}
+  #xia-chatbot-input{resize:none;min-height:40px;max-height:120px;outline:none;background:transparent;width:100%;padding:9px 0;font-size:15px;color:var(--md-sys-color-on-surface)}
+  #xia-chatbot-send{width:44px;height:44px;flex:0 0 44px;border-radius:50%;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);display:grid;place-items:center;transition:transform .25s cubic-bezier(.32,.72,0,1),opacity .2s}
+  #xia-chatbot-send:active{transform:scale(.88)}
+  #xia-chatbot-send:disabled{opacity:.4}
+  #xia-chat-note{font-size:10.5px;opacity:.55;margin:8px 8px 0;text-align:center}
+  @media(max-width:640px){#xia-chatbot-backdrop{padding:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}#xia-chatbot-window{height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:none;border-radius:28px}}
+  @media(prefers-reduced-motion:reduce){#xia-chatbot-backdrop,#xia-chatbot-window{transition:none!important;transform:none!important}.xc-msg,.xc-dot{animation:none!important}}
   html[data-perf="lite"] #xia-chatbot-backdrop{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 </style>
 <div id="xia-chatbot-backdrop" aria-hidden="true">
   <section id="xia-chatbot-window" role="dialog" aria-modal="true" aria-labelledby="xia-chatbot-title">
-    <header class="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b" style="border-color:rgba(35,70,54,.12);background:rgba(255,255,255,.58)">
-      <div class="flex items-center gap-3 min-w-0"><div class="w-11 h-11 rounded-2xl grid place-items-center" style="background:#dceee3;color:#245b43"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg></div><div class="min-w-0"><h2 id="xia-chatbot-title" class="font-extrabold text-lg leading-tight">Labz AI</h2><p class="text-xs opacity-65">Asisten XI.2 Creative Lab</p></div></div>
-      <button type="button" onclick="closeChatbot()" aria-label="Tutup Labz AI" class="w-10 h-10 rounded-full grid place-items-center hover:bg-black/5"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    <div class="xc-aura" aria-hidden="true"></div>
+    <header class="xc-head">
+      <div class="xc-brand">
+        <div class="xc-avatar m3-shape-cookie"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM18.5 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg></div>
+        <div class="min-w-0"><h2 id="xia-chatbot-title" class="xc-title">Labz AI</h2><p class="xc-sub"><span class="xc-dot"></span>Asisten XI.2 Creative Lab</p></div>
+      </div>
+      <button type="button" onclick="closeChatbot()" aria-label="Tutup Labz AI" class="xc-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </header>
-    <div id="xia-chatbot-messages" class="xia-chat-scroll flex-1 px-5 sm:px-6 py-5 space-y-4" aria-live="polite">
-      <div class="max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed" style="background:#e8f0e9">Halo! Aku Labz, asisten XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
+    <div id="xia-chatbot-messages" aria-live="polite">
+      <div class="xc-msg xc-bot">Halo! Aku <strong>Labz</strong>, asisten XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
     </div>
-    <form id="xia-chatbot-form" class="p-4 sm:p-5 border-t" style="border-color:rgba(35,70,54,.12);background:rgba(255,255,255,.62)">
-      <div class="flex items-end gap-2 rounded-3xl p-2 pl-4 border" style="border-color:rgba(35,70,54,.18);background:rgba(255,255,255,.8)"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk Labz AI"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button></div>
-      <p id="xia-chat-note" class="text-[10px] opacity-55 mt-2 px-2">Jawaban AI bisa keliru. Pesan dikirim ke server untuk diproses.</p>
+    <div class="xc-chips" id="xc-chips">
+      <button type="button" class="xc-chip" data-q="Jadwal pelajaran hari ini apa aja?">📅 Jadwal hari ini</button>
+      <button type="button" class="xc-chip" data-q="Siapa yang piket hari ini?">🧹 Piket hari ini</button>
+      <button type="button" class="xc-chip" data-q="Tugas apa yang deadline-nya paling dekat?">✅ Tugas terdekat</button>
+      <button type="button" class="xc-chip" data-q="Ada pengumuman terbaru apa?">📣 Pengumuman</button>
+    </div>
+    <form id="xia-chatbot-form">
+      <div class="xc-composer"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk Labz AI"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+      <p id="xia-chat-note">Jawaban AI bisa keliru. Pesan dikirim ke server untuk diproses.</p>
     </form>
   </section>
 </div>
@@ -3251,7 +3316,7 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
    messages.scrollTop=messages.scrollHeight;
    if(i<chars.length)setTimeout(step,18);else res()};
   step()});
- const bubble=(who,text)=>{const d=document.createElement('div');if(who==='user'){d.className='ml-auto max-w-[88%] rounded-2xl rounded-tr-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#dceee3;overflow-wrap:anywhere;white-space:pre-wrap'}else{d.className='max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed';d.style.cssText='background:#e8f0e9;overflow-wrap:anywhere;white-space:pre-wrap'}if(who==='user')d.textContent=text;else setText(d,text);messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d};
+ const bubble=(who,text)=>{const d=document.createElement('div');d.className='xc-msg '+(who==='user'?'xc-user':'xc-bot');if(who==='user')d.textContent=text;else setText(d,text);messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d};
  const chkNote=()=>{if(note&&!cfg())note.textContent='AI belum terhubung ke API. Pesan tidak dikirim ke server.'};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',chkNote);else chkNote();
  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&matchMedia('(hover:hover) and (pointer:fine)').matches){e.preventDefault();form.requestSubmit()}});
  form.addEventListener('submit',async e=>{
@@ -3261,15 +3326,15 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
   if(!c){bubble('bot','UI chatbot sudah aktif, tetapi AI/API belum dikonfigurasi. Isi config.js dan deploy fungsi chat di Supabase agar aku bisa menjawab berdasarkan data kelas.');return}
   busy=true;if(send)send.disabled=true;
   history.push({role:'user',text:value});
-  const typing=bubble('bot','Sedang mengetik…');typing.style.opacity='.6';
+  const typing=bubble('bot','Sedang mengetik…');typing.classList.add('xc-typing');
   const ac=new AbortController(),to=setTimeout(()=>ac.abort(),30000);
   try{
    const res=await fetch(c.SUPABASE_URL.replace(/\/$/,'')+'/functions/v1/'+(c.CHAT_FUNCTION||'chat'),{method:'POST',headers:{'Content-Type':'application/json','apikey':c.SUPABASE_ANON_KEY},body:JSON.stringify({messages:history.slice(-8)}),signal:ac.signal});
    const j=await res.json().catch(()=>({}));
    if(!res.ok||!j.reply)throw new Error(j.error||'Gagal menghubungi AI.');
-   typing.style.opacity='';history.push({role:'assistant',text:j.reply});await typeText(typing,j.reply);
+   typing.classList.remove('xc-typing');history.push({role:'assistant',text:j.reply});await typeText(typing,j.reply);
   }catch(err){
-   history.pop();typing.style.opacity='';
+   history.pop();typing.classList.remove('xc-typing');
    typing.textContent=err&&err.name==='AbortError'?'Koneksi terlalu lama. Coba lagi ya.':(err&&err.message)||'Terjadi kesalahan. Coba lagi ya.';
   }finally{clearTimeout(to);busy=false;if(send)send.disabled=false;messages.scrollTop=messages.scrollHeight}
  });
@@ -3510,7 +3575,7 @@ const shoot=async()=>{if(busy||!left()||!vid||!vid.videoWidth)return;busy=true;
   if(!left())setTimeout(close,1300);
   await wait(750);
  }finally{busy=false}};
-const build=()=>{ov=h('div','dcw-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kamera sekali pakai');
+const build=()=>{ov=h('div','dcw-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kamera Momen');
  ov.innerHTML='<div class="dcw-back glass-modal-backdrop"></div><div class="dcw"><div class="dcw-head"><button type="button" class="dcw-chip" id="dcw-x" aria-label="Tutup kamera">'+ICO_X+'</button><span class="dcw-brand">XI.2 Fun Saver</span><div class="dcw-tools"><button type="button" class="dcw-chip" id="dcw-snd" aria-label="Suara kamera">'+(snd?ICO_ON:ICO_OFF)+'</button><button type="button" class="dcw-chip" id="dcw-flip" aria-label="Balik kamera">'+ICO_FLIP+'</button></div></div>'+
  '<div class="dcw-vf" id="dcw-vf"><video playsinline muted autoplay></video><div class="dcw-grain"></div><div class="dcw-leak"></div><div class="dcw-vig"></div><i class="dcw-br a"></i><i class="dcw-br b"></i><i class="dcw-br c"></i><i class="dcw-br d"></i><div class="dcw-looks">'+LOOKS.map((l,i)=>'<button type="button" data-l="'+i+'">'+l.n+'</button>').join('')+'</div><span class="dcw-date" id="dcw-date"></span><div class="dcw-blade"><i></i><i></i></div><div class="dcw-flash" id="dcw-flash"></div></div>'+
  '<div class="dcw-bar"><div class="dcw-wheel" id="dcw-wheel" aria-hidden="true"></div><div class="dcw-lcd" role="status" aria-live="polite"><b id="dcw-cnt">05</b><span>EXP</span></div><button type="button" class="dcw-shot" id="dcw-shot" aria-label="Ambil foto"></button></div><div class="dcw-status" id="dcw-status" role="status" aria-live="polite"></div></div>';
@@ -3661,6 +3726,66 @@ function fit(){var ov=document.querySelector('.nl-ov');if(!ov)return;var sh=ov.q
 vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit);
 document.addEventListener('focusin',function(){setTimeout(fit,250);setTimeout(fit,600)});
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#nl-card,.nl-x,.nl-back')){setTimeout(fit,100);setTimeout(fit,500)}});
+})();
+</script>
+<script id="xia-sfx-and-chat-chips">
+(function(){
+ var store=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(_){return null}};
+ var on=store('xia_sfx')!=='0',ac=null,last=0,pushed=0,boot=Date.now();
+ var AC=function(){if(!on)return null;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(_){return null}return ac};
+ /* satu nada lembut: sine/triangle dengan envelope pendek */
+ var tone=function(c,f0,f1,t0,dur,vol,type){var o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();o.type=type||'sine';lp.type='lowpass';lp.frequency.value=3200;
+  o.frequency.setValueAtTime(f0,t0);if(f1&&f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t0+dur);
+  g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+.008);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+dur+.03)};
+ var P={
+  tap:function(c,t){tone(c,820,560,t,.07,.07,'triangle')},
+  open:function(c,t){tone(c,420,720,t,.11,.07,'sine');tone(c,630,1080,t+.04,.12,.04,'sine')},
+  close:function(c,t){tone(c,640,380,t,.13,.07,'sine');tone(c,480,300,t+.03,.12,.035,'triangle')},
+  page:function(c,t){tone(c,523,523,t,.11,.06,'sine');tone(c,784,784,t+.07,.16,.06,'sine');tone(c,1046,1046,t+.14,.18,.03,'sine')},
+  send:function(c,t){tone(c,640,1000,t,.1,.07,'triangle')},
+  recv:function(c,t){tone(c,988,988,t,.09,.05,'sine');tone(c,1319,1319,t+.07,.13,.05,'sine')}
+ };
+ var play=function(k){if(!on)return;var c=AC();if(!c)return;var n=Date.now();if(n-last<45)return;last=n;try{P[k](c,c.currentTime+.005)}catch(_){}};
+ window.xiaSfx={play:play,enabled:function(){return on}};
+ /* buka kunci audio pada gestur pertama (kebijakan autoplay browser) */
+ ['pointerdown','keydown','touchstart'].forEach(function(e){addEventListener(e,function(){AC()},{once:true,passive:true,capture:true})});
+ /* toggle di Pengaturan */
+ var bindToggle=function(){var t=document.getElementById('toggle-sfx');if(!t)return;t.checked=on;t.addEventListener('change',function(){on=t.checked;store('xia_sfx',on?'1':'0');if(on)play('tap')})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindToggle);else bindToggle();
+ /* pindah halaman: setiap pushState baru / back-forward */
+ var ps=history.pushState;
+ history.pushState=function(st,ti,url){var before=location.href,r=ps.apply(this,arguments);if(location.href!==before&&Date.now()-boot>800){pushed++;play('page')}return r};
+ addEventListener('popstate',function(){if(Date.now()-boot>800){pushed++;play('page')}});
+ /* klik apa pun (tap, bukan geser/scroll) */
+ var SEL='button,a[href],[role="button"],summary,label,select,input[type="checkbox"],input[type="radio"],.fluid-card,.filter-chip,.dock-nav-btn,[onclick]';
+ var CLOSE=/tutup|close|kembali|batal/i;
+ document.addEventListener('click',function(e){
+  if(!e.isTrusted||!on)return;
+  var t=e.target&&e.target.closest?e.target.closest(SEL):null;if(!t||t.disabled||t.getAttribute('aria-disabled')==='true')return;
+  if(t.closest('.dcw-ov,.cg-ov,.nl-ov,.dcw-viewer'))return; /* kamera/NGL punya suara sendiri */
+  var lbl=(t.getAttribute('aria-label')||t.id||'')+'';
+  if(t.id==='xia-chatbot-send')return; /* suara kirim diputar saat submit */
+  if(CLOSE.test(lbl)){play('close');return}
+  var href=t.getAttribute&&t.getAttribute('href');
+  if(href&&href.charAt(0)==='#'||t.classList.contains('dock-nav-btn')){var n0=pushed;setTimeout(function(){if(pushed===n0)play('tap')},70);return}
+  if(/buka|open|chatbot|labz/i.test(lbl)||t.classList.contains('fluid-card')||t.matches('[data-dock-action="chatbot"]')){play('open');return}
+  play('tap');
+ },true);
+ /* keluar dari UI kamera: bunyi saat overlay kehilangan is-open */
+ var watchCam=function(){var ov=document.querySelector('.dcw-ov');if(!ov||ov.__sfx)return;ov.__sfx=1;var was=ov.classList.contains('is-open');
+  new MutationObserver(function(){var now=ov.classList.contains('is-open');if(was&&!now)play('close');if(!was&&now)play('open');was=now}).observe(ov,{attributes:true,attributeFilter:['class']})};
+ new MutationObserver(watchCam).observe(document.documentElement,{childList:true,subtree:true});watchCam();
+ /* Labz AI: kirim + balasan, dan chip saran */
+ var form=document.getElementById('xia-chatbot-form'),msgs=document.getElementById('xia-chatbot-messages'),win=document.getElementById('xia-chatbot-window'),inp=document.getElementById('xia-chatbot-input');
+ if(form)form.addEventListener('submit',function(){if(inp&&inp.value.trim())play('send')},true);
+ if(msgs)new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){
+   if(n.nodeType!==1)return;
+   if(n.classList.contains('xc-user')&&win)win.classList.add('xc-started');
+  })});
+  ms.forEach(function(m){if(m.type==='attributes'&&m.target.classList&&m.target.classList.contains('xc-bot')&&/xc-typing/.test(m.oldValue||'')&&!m.target.classList.contains('xc-typing')&&/xc-bot/.test(m.target.className))play('recv')})
+ }).observe(msgs,{childList:true,attributes:true,attributeFilter:['class'],attributeOldValue:true,subtree:true});
+ document.querySelectorAll('.xc-chip').forEach(function(b){b.addEventListener('click',function(){if(!inp||!form)return;inp.value=b.getAttribute('data-q')||b.textContent;form.requestSubmit()})});
 })();
 </script>
 </body>
