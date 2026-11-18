@@ -852,6 +852,22 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
         <!-- ==================================================================
              3. JADWAL PELAJARAN & PIKET (M3 EXPRESSIVE SEGMENTED TABS)
              ================================================================== -->
+        <section id="kamera" class="space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-m3-primary mb-1.5"><span class="material-symbols-rounded text-[16px]">auto_awesome</span>Kamera Sekali Pakai</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight">Momen Kelas</h2>
+                    <p class="text-sm opacity-70 mt-1">Maksimal 5 foto per hari. Foto tampil di galeri setelah disetujui admin.</p>
+                </div>
+                <div class="flex items-center gap-3 self-start sm:self-auto">
+                    <span id="cam-left" class="px-3.5 py-1 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer text-xs font-bold">5 foto tersisa hari ini</span>
+                    <button id="cam-open" type="button" class="m3-spring-btn px-5 py-3 rounded-full bg-m3-primary text-m3-onPrimary font-bold text-sm inline-flex items-center gap-1.5"><span class="material-symbols-rounded text-[18px]">photo_camera</span>Buka kamera</button>
+                </div>
+            </div>
+            <p id="cam-msg" class="hidden text-xs font-medium px-1" role="status"></p>
+            <div id="cam-grid" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3"></div>
+        </section>
+
         <section id="jadwal" class="space-y-6">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
@@ -3264,6 +3280,65 @@ const upd=()=>{const sd=SD();if(!Object.keys(sd).some(d=>(sd[d].lessons||[]).len
  else if(nxt){l1.textContent='Pelajaran berikutnya';l2.textContent=nxt.l.subject||'Pelajaran';l3.textContent='Mulai '+f(nxt.t[0])+' · '+(nxt.t[0]-now)+' menit lagi'+det(nxt.l)}
  else{l1.textContent='Pelajaran';l2.textContent=ls.length?'Pelajaran hari ini sudah selesai':'Tidak ada pelajaran hari ini';l3.textContent=day||''}};
 upd();setInterval(upd,5000)})();
+})();
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id),MAX=5;
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const cfg=()=>{const c=window.XIA_CONFIG||{};return (c.SUPABASE_URL&&!/YOUR_/.test(c.SUPABASE_URL)&&c.SUPABASE_ANON_KEY&&!/^YOUR_/.test(c.SUPABASE_ANON_KEY))?c:null};
+let cl=null;const client=()=>{const c=cfg();if(!c||!window.supabase)return null;return cl=cl||window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}})};
+const dev=(()=>{try{let d=localStorage.getItem('xia_dev');if(!d){d=((crypto.randomUUID&&crypto.randomUUID())||(Math.random().toString(36).slice(2)+Date.now().toString(36)+'abcdefgh')).replace(/-/g,'');localStorage.setItem('xia_dev',d)}return d}catch(_){return 'tmp'+Math.random().toString(36).slice(2,12)+'xyz'}})();
+const dk=()=>new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
+const used=()=>{try{const o=JSON.parse(localStorage.getItem('xia_cam')||'{}');return o.d===dk()?o.n:0}catch(_){return 0}};
+const setUsed=n=>{try{localStorage.setItem('xia_cam',JSON.stringify({d:dk(),n:n}))}catch(_){}};
+const msg=(t,bad)=>{const m=$('cam-msg');if(!m)return;m.textContent=t;m.style.color=bad?'#b3261e':'';m.classList.remove('hidden')};
+const left=()=>Math.max(0,MAX-used());
+const refresh=()=>{const l=$('cam-left'),b=$('cam-open');if(l)l.textContent=left()+' foto tersisa hari ini';if(b){b.disabled=!left();b.style.opacity=left()?'':'.5'}};
+
+/* ---- galeri ---- */
+const viewer=src=>{const v=h('div');v.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:12px';
+ const i=h('img');i.src=src;i.alt='Momen kelas';i.style.cssText='max-width:100%;max-height:92vh;border-radius:16px';v.appendChild(i);v.onclick=()=>v.remove();document.body.appendChild(v)};
+const load=async()=>{const c=client(),g=$('cam-grid');if(!c||!g)return;
+ const {data,error}=await c.from('class_moments').select('path,caption').eq('status','approved').order('created_at',{ascending:false}).limit(60);
+ g.textContent='';if(error){g.appendChild(h('p','text-sm opacity-60 col-span-full','Galeri belum bisa dimuat.'));return}
+ if(!data||!data.length){g.appendChild(h('p','text-sm opacity-60 col-span-full','Belum ada foto. Jadi yang pertama!'));return}
+ data.forEach(x=>{const u=c.storage.from('moments').getPublicUrl(x.path).data.publicUrl;const b=h('button','aspect-square rounded-2xl overflow-hidden bg-m3-surfaceHighest');b.type='button';
+  const i=h('img','w-full h-full object-cover');i.src=u;i.loading='lazy';i.decoding='async';i.alt=x.caption||'Momen kelas';b.appendChild(i);b.onclick=()=>viewer(u);g.appendChild(b)})};
+
+/* ---- upload ---- */
+const toBlob=(el,w,hh)=>new Promise(r=>{const k=Math.min(1,1280/Math.max(w,hh)),cv=document.createElement('canvas');cv.width=Math.round(w*k);cv.height=Math.round(hh*k);cv.getContext('2d').drawImage(el,0,0,cv.width,cv.height);cv.toBlob(r,'image/jpeg',.82)});
+const send=async blob=>{const c=client();if(!c||!blob){msg('Belum bisa mengirim foto sekarang.',1);return false}
+ const path='u/'+dk()+'-'+dev.slice(0,6)+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)+'.jpg';
+ const a=await c.storage.from('moments').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000'});if(a.error){msg('Upload gagal. Coba lagi ya.',1);return false}
+ const b=await c.from('class_moments').insert({path:path,device_id:dev});
+ if(b.error){msg(/Jatah/.test(b.error.message||'')?'Jatah foto hari ini habis (5 per hari).':/penuh/i.test(b.error.message||'')?'Antrean foto lagi penuh, coba lagi nanti.':'Gagal menyimpan foto.',1);if(/Jatah/.test(b.error.message||''))setUsed(MAX);refresh();return false}
+ setUsed(used()+1);refresh();msg('Foto terkirim! Tampil di galeri setelah disetujui admin.');return true};
+
+/* ---- kamera ---- */
+let ov,vid,stream,facing='environment',busy=false,flash,cnt;
+const stop=()=>{if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}};
+const close=()=>{stop();if(ov)ov.style.display='none';document.body.style.overflow=''};
+const start=async()=>{stop();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:facing},width:{ideal:1280},height:{ideal:1280}},audio:false});vid.srcObject=stream;vid.style.transform=facing==='user'?'scaleX(-1)':'';await vid.play()};
+const shoot=async()=>{if(busy||!left())return;busy=true;flash.style.opacity='1';setTimeout(()=>{flash.style.opacity='0'},120);
+ const ok=await send(await toBlob(vid,vid.videoWidth,vid.videoHeight));cnt.textContent=left()+' / '+MAX;busy=false;if(ok&&!left())setTimeout(close,500)};
+const build=()=>{ov=h('div');ov.style.cssText='position:fixed;inset:0;z-index:110;background:#000;display:none;touch-action:manipulation';
+ vid=h('video');vid.playsInline=true;vid.muted=true;vid.autoplay=true;vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+ flash=h('div');flash.style.cssText='position:absolute;inset:0;background:#fff;opacity:0;transition:opacity .25s;pointer-events:none';
+ const bar=(css)=>{const d=h('div');d.style.cssText='position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 18px;'+css;return d};
+ const bt=(t,l)=>{const b=h('button',null,t);b.type='button';b.setAttribute('aria-label',l);b.style.cssText='width:46px;height:46px;border-radius:23px;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:20px;cursor:pointer';return b};
+ const top=bar('top:calc(12px + env(safe-area-inset-top))'),x=bt('✕','Tutup'),fl=bt('⟲','Balik kamera');cnt=h('span');cnt.style.cssText='color:#fff;font-weight:700;font-size:15px;background:rgba(0,0,0,.35);padding:6px 12px;border-radius:99px';
+ x.onclick=close;fl.onclick=async()=>{facing=facing==='user'?'environment':'user';try{await start()}catch(_){}};top.append(x,cnt,fl);
+ const bot=bar('bottom:calc(26px + env(safe-area-inset-bottom));justify-content:center'),sh=h('button');sh.type='button';sh.setAttribute('aria-label','Ambil foto');sh.style.cssText='width:76px;height:76px;border-radius:38px;border:5px solid #fff;background:rgba(255,255,255,.35);cursor:pointer';sh.onclick=shoot;bot.appendChild(sh);
+ ov.append(vid,flash,top,bot);document.body.appendChild(ov)};
+const fileIn=h('input');fileIn.type='file';fileIn.accept='image/*';fileIn.setAttribute('capture','environment');fileIn.style.display='none';
+fileIn.onchange=async()=>{const f=fileIn.files&&fileIn.files[0];fileIn.value='';if(!f||!left())return;const i=new Image();i.onload=async()=>{await send(await toBlob(i,i.naturalWidth,i.naturalHeight));URL.revokeObjectURL(i.src)};i.src=URL.createObjectURL(f)};
+const open=async()=>{if(!left()){msg('Jatah foto hari ini habis. Coba lagi besok!',1);return}
+ if(!client()){msg('Belum bisa dipakai sekarang.',1);return}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fileIn.click();return}
+ try{if(!ov)build();ov.style.display='block';document.body.style.overflow='hidden';cnt.textContent=left()+' / '+MAX;await start()}catch(_){close();fileIn.click()}};
+const init=()=>{const b=$('cam-open');if(b)b.addEventListener('click',open);document.body.appendChild(fileIn);refresh();load();document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ov&&ov.style.display==='block')close()})};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
 </body>
