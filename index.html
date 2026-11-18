@@ -1006,8 +1006,9 @@ html[data-perf="lite"] .dcw-leak{display:none}
         <!-- Labz AI: tombol bulat, terpisah dari dock -->
         <button type="button" id="labz-ai-fab" data-dock-action="chatbot" aria-label="Buka Labz AI"
                 onclick="try{triggerHaptic(12)}catch(e){}openChatbot()"
-                class="ai-fab liquid-dock-shell pointer-events-auto rounded-full shrink-0 flex items-center justify-center text-m3-primary">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg>
+                class="ai-fab liquid-dock-shell pointer-events-auto rounded-full shrink-0 flex flex-col items-center justify-center gap-0.5 text-m3-primary">
+            <svg class="dock-ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h3v-7H5a7 7 0 0 1 14 0h-3v7h3a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9Z"/><path d="M9 18h6"/></svg>
+            <span class="text-[10px] font-bold tracking-tight leading-none">Labz AI</span>
         </button>
         </div>
     </div>
@@ -2759,7 +2760,8 @@ addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.
 </script>
 <style id="ai-fab-style">
 /* Tombol Labz AI: bulat, tinggi mengikuti dock, tidak ikut jadi squircle saat ditekan */
-.ai-fab{align-self:stretch;aspect-ratio:1/1;min-width:56px;padding:0;border-radius:9999px!important;cursor:pointer;transition:transform .35s var(--spring-curve),box-shadow .3s ease}
+.ai-fab{width:66px;height:66px;padding:0;border-radius:9999px!important;cursor:pointer;transition:transform .35s var(--spring-curve),box-shadow .3s ease}
+#liquid-glass-dock{min-height:66px}
 .ai-fab:active{transform:scale(.9)}
 .ai-fab:focus-visible{outline:2px solid var(--md-sys-color-primary);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.ai-fab{transition:none}}

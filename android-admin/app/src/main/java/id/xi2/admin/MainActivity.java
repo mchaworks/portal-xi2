@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -76,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         s.setUserAgentString(s.getUserAgentString() + " XI2AdminApp/1.0");
         CookieManager.getInstance().setAcceptCookie(true);
+
+        // Dock admin bisa ditahan lalu digeser: selama jari ada di dock, pull-to-refresh dimatikan
+        // supaya gestur tidak dibatalkan (pointercancel) oleh SwipeRefreshLayout.
+        web.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void lockRefresh(final boolean lock) {
+                runOnUiThread(() -> swipe.setEnabled(!lock));
+            }
+        }, "XI2Native");
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -180,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        swipe.setEnabled(true);
         web.onPause();
         super.onPause();
     }
