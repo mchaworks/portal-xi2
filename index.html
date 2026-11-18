@@ -910,6 +910,16 @@ html[data-perf="lite"] .dcw-leak{display:none}
 .xia-absen.xia-absen-row{right:14px;bottom:auto;top:50%;font-size:48px;transform:translate3d(0,-50%,0);opacity:.16;-webkit-mask-image:none;mask-image:none}
 .group:hover .xia-absen.xia-absen-row{opacity:.24;transform:translate3d(0,-50%,0) scale(1.05)}
 </style>
+<style id="xia-les-card-css">
+/* tiap mapel = card sendiri, kelihatan terpisah dari card hari */
+.les-item{--les-sh:0 1px 2px rgba(15,23,42,.07),0 10px 22px -14px rgba(15,23,42,.35)}
+.les-item:not(.is-live){background:color-mix(in srgb,var(--md-sys-color-surface) 55%,#fff)!important;border:1px solid color-mix(in srgb,var(--md-sys-color-outline-variant) 70%,transparent);box-shadow:var(--les-sh)}
+.les-item.is-next:not(.is-live){box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--md-sys-color-primary) 45%,transparent),var(--les-sh)}
+.les-item.is-live{border:1px solid transparent}
+.les-item.is-done{opacity:.72}
+html[data-mode="dark"] .les-item{--les-sh:0 8px 20px -14px rgba(0,0,0,.7)}
+html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-surface-container-highest)!important;border-color:rgba(255,255,255,.08)}
+</style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
 
