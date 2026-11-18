@@ -2,6 +2,8 @@
 <html lang="id" class="scroll-smooth" data-theme="sage" data-shape="organic" data-sheen="off">
 <head>
     <meta charset="UTF-8">
+<script>(function(){try{var v=localStorage.getItem("xia-mode");if(v!=="dark"&&v!=="light")v=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-mode",v)}catch(e){}})();</script>
+<style id="xia-mode-boot">html[data-mode="dark"]{background:#0E1410;color-scheme:dark;--md-sys-color-primary:#8AD6B5;--md-sys-color-on-primary:#00382A;--md-sys-color-primary-container:#00513C;--md-sys-color-on-primary-container:#A6F2D1;--md-sys-color-secondary:#B3CCBE;--md-sys-color-on-secondary:#1F352B;--md-sys-color-secondary-container:#354B41;--md-sys-color-on-secondary-container:#CEE9DA;--md-sys-color-tertiary:#A5CCDF;--md-sys-color-tertiary-container:#264B5C;--md-sys-color-on-tertiary-container:#C1E8FB;--md-sys-color-surface:#0E1410;--md-sys-color-surface-container-low:#151B18;--md-sys-color-surface-container:#1A201D;--md-sys-color-surface-container-high:#242A27;--md-sys-color-surface-container-highest:#2F3532;--md-sys-color-on-surface:#DEE4DF;--md-sys-color-on-surface-variant:#BFC9C2;--md-sys-color-outline:#89938D;--md-sys-color-outline-variant:#3F4944;--glass-rgb:20,27,23!important;--glass-border-rgb:255,255,255!important;--dc-body:#1F7A5C;--dc-body-dk:#0B3A2B;}html[data-mode="dark"] body{background-color:#0E1410;color:#DEE4DF}</style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
     <title>XI.2 Creative Lab — Portal Kelas SMA Negeri 10 Palembang</title>
 
@@ -943,10 +945,11 @@ html[data-perf="lite"] .dcw-leak{display:none}
             <div class="relative z-10 flex items-center gap-2 shrink-0">
                 <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn w-10 h-10 rounded-full bg-m3-surfaceHigh text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
                 <!-- Expressive Settings Trigger -->
-                <button onclick="openChatbot()" aria-label="Buka Labz AI"
-                        class="m3-spring-btn inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs sm:text-sm shadow-xs">
-                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h3v-7H5a7 7 0 0 1 14 0h-3v7h3a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9Z"/><path d="M9 18h6"/></svg>
-                    <span>Labz AI</span>
+                <button type="button" class="xia-mode-btn" data-xia-mode aria-label="Ganti mode gelap" aria-pressed="false"><svg class="xm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="xm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+                <button onclick="openChatbot()" aria-label="Buka Labz AI" title="Labz AI"
+                        class="m3-spring-btn inline-flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-9 sm:px-3 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs shadow-xs">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h3v-7H5a7 7 0 0 1 14 0h-3v7h3a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9Z"/><path d="M9 18h6"/></svg>
+                    <span class="hidden sm:inline">Labz AI</span>
                 </button>
             </div>
         </div>
@@ -2211,6 +2214,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
         window.isLiquidDockDragging = false;
         let activeDockIndex = 0;
         let lensCurrentX = 6;
+        const LPAD = 5; /* lensa sedikit lebih lebar dari tombol supaya teks tidak kena lengkungan */
         let lensTargetX = 6;
         let lensCurrentW = 76;
         let lensTargetW = 76;
@@ -2262,8 +2266,8 @@ html[data-perf="lite"] .dcw-leak{display:none}
             activeDockIndex = index;
             const targetBtn = items[index];
             
-            lensTargetX = targetBtn.offsetLeft;
-            lensTargetW = targetBtn.offsetWidth;
+            lensTargetX = targetBtn.offsetLeft - LPAD;
+            lensTargetW = targetBtn.offsetWidth + LPAD * 2;
             if (window.__wakeLens) __wakeLens();
 
             items.forEach((btn, idx) => {
@@ -2339,16 +2343,16 @@ html[data-perf="lite"] .dcw-leak{display:none}
             window.__wakeLens = () => { if (lens._idle) { lens._idle = false; requestAnimationFrame(animateLiquidLens); } };
             setTimeout(() => {
                 if (items[0]) {
-                    lensCurrentX = lensTargetX = items[0].offsetLeft;
-                    lensCurrentW = lensTargetW = items[0].offsetWidth;
+                    lensCurrentX = lensTargetX = items[0].offsetLeft - LPAD;
+                    lensCurrentW = lensTargetW = items[0].offsetWidth + LPAD * 2;
                 }
                 requestAnimationFrame(animateLiquidLens);
             }, 60);
 
             window.addEventListener('resize', () => {
                 if (items[activeDockIndex]) {
-                    lensTargetX = items[activeDockIndex].offsetLeft;
-                    lensTargetW = items[activeDockIndex].offsetWidth;
+                    lensTargetX = items[activeDockIndex].offsetLeft - LPAD;
+                    lensTargetW = items[activeDockIndex].offsetWidth + LPAD * 2;
                     if (window.__wakeLens) __wakeLens();
                 }
             });
@@ -2383,8 +2387,8 @@ html[data-perf="lite"] .dcw-leak{display:none}
 
                 const targetBtn = items[closestIdx];
                 const desiredCenter = relX * 0.65 + (targetBtn.offsetLeft + targetBtn.offsetWidth / 2) * 0.35;
-                lensTargetW = targetBtn.offsetWidth;
-                lensTargetX = Math.max(6, Math.min(rect.width - lensTargetW - 6, desiredCenter - lensTargetW / 2));
+                lensTargetW = targetBtn.offsetWidth + LPAD * 2;
+                lensTargetX = Math.max(1, Math.min(rect.width - lensTargetW - 1, desiredCenter - lensTargetW / 2));
                 if (window.__wakeLens) __wakeLens();
 
                 if (closestIdx !== activeDockIndex) {
@@ -2745,7 +2749,7 @@ html #story-modal-sheet.multi-layer-glass,html #settings-panel.multi-layer-glass
 </style>
 <script>
 (()=>{const dock=document.getElementById('liquid-glass-dock'),lens=document.getElementById('liquid-glass-lens');if(!dock||!lens)return;
-const S=1.14,c=document.createElement('div');c.className='lg-clone';c.setAttribute('aria-hidden','true');
+const S=1.08,c=document.createElement('div');c.className='lg-clone';c.setAttribute('aria-hidden','true');
 const real=[...dock.querySelectorAll('.dock-nav-btn')];
 real.forEach(b=>{const n=b.cloneNode(true);['href','data-dock-idx','data-dock-action'].forEach(a=>n.removeAttribute(a));n.tabIndex=-1;n.className=b.className.replace('dock-nav-btn','lg-btn');c.appendChild(n)});
 lens.appendChild(c);
@@ -3813,5 +3817,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
  document.querySelectorAll('.xc-chip').forEach(function(b){b.addEventListener('click',function(){if(!inp||!form)return;inp.value=b.getAttribute('data-q')||b.textContent;form.requestSubmit()})});
 })();
 </script>
+<link rel="stylesheet" href="./theme.css?v=1">
+<script src="./theme.js?v=1"></script>
 </body>
 </html>

@@ -1,0 +1,192 @@
+/* ==========================================================================
+   XI.2 Creative Lab — Dark mode + tombol toggle + perbaikan dock
+   Dipakai oleh: /index.html, /admin, /kamera, /ngl
+   Mode disimpan di localStorage 'xia-mode' ('dark' | 'light'); kosong = ikut sistem.
+   ========================================================================== */
+
+/* ---------- 1. Token warna gelap (Material You, tonal sage) ---------- */
+html[data-mode="dark"]{
+  color-scheme:dark;
+  --md-sys-color-primary:#8AD6B5;
+  --md-sys-color-on-primary:#00382A;
+  --md-sys-color-primary-container:#00513C;
+  --md-sys-color-on-primary-container:#A6F2D1;
+  --md-sys-color-secondary:#B3CCBE;
+  --md-sys-color-on-secondary:#1F352B;
+  --md-sys-color-secondary-container:#354B41;
+  --md-sys-color-on-secondary-container:#CEE9DA;
+  --md-sys-color-tertiary:#A5CCDF;
+  --md-sys-color-tertiary-container:#264B5C;
+  --md-sys-color-on-tertiary-container:#C1E8FB;
+  --md-sys-color-surface:#0E1410;
+  --md-sys-color-surface-container-low:#151B18;
+  --md-sys-color-surface-container:#1A201D;
+  --md-sys-color-surface-container-high:#242A27;
+  --md-sys-color-surface-container-highest:#2F3532;
+  --md-sys-color-on-surface:#DEE4DF;
+  --md-sys-color-on-surface-variant:#BFC9C2;
+  --md-sys-color-outline:#89938D;
+  --md-sys-color-outline-variant:#3F4944;
+  --glass-rgb:20,27,23!important;
+  --glass-border-rgb:255,255,255!important;
+  --dc-body:#1F7A5C;
+  --dc-body-dk:#0B3A2B;
+}
+html[data-mode="dark"][data-theme]{color-scheme:dark}
+html[data-mode="dark"],html[data-mode="dark"] body{background-color:var(--md-sys-color-surface)}
+html[data-mode="dark"] ::selection{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
+
+/* ---------- 2. Kaca (header, dock, kartu, modal) ---------- */
+html[data-mode="dark"] .multi-layer-glass,
+html[data-mode="dark"] .liquid-dock-shell,
+html[data-mode="dark"] #liquid-glass-dock,
+html[data-mode="dark"] .glass-image-overlay{
+  border-color:rgba(255,255,255,.10)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 14px 34px -14px rgba(0,0,0,.75)!important;
+}
+html[data-mode="dark"] header .multi-layer-glass{box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 12px 32px -12px rgba(0,0,0,.7)!important}
+html[data-mode="dark"] #liquid-glass-dock::after,
+html[data-mode="dark"] .multi-layer-glass::before{background:linear-gradient(120deg,rgba(255,255,255,.06),transparent 65%)}
+html[data-mode="dark"] [data-sheen="off"] .multi-layer-glass::after{background:linear-gradient(to top,rgba(255,255,255,.04),transparent);background-size:100% 45%;background-position:0 100%;background-repeat:no-repeat}
+html[data-mode="dark"] [data-sheen="off"] .liquid-dock-shell::before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent)}
+
+/* lensa dock */
+html[data-mode="dark"] #liquid-glass-lens,
+html[data-mode="dark"] .liquid-glass-lens{
+  background:linear-gradient(165deg,rgba(255,255,255,.17),rgba(255,255,255,.07))!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px -10px rgba(0,0,0,.7)!important;
+}
+html[data-mode="dark"] #liquid-glass-lens::after{background:linear-gradient(145deg,rgba(255,255,255,.10),transparent 58%)}
+html[data-perf="lite"][data-mode="dark"] .multi-layer-glass{background:rgba(20,27,23,.92)!important}
+
+/* foto: caption, slogan hero */
+html[data-mode="dark"] .xia-photo-caption{background:rgba(var(--glass-rgb),.62)!important}
+html[data-mode="dark"][data-perf="lite"] .xia-photo-caption{background:rgba(var(--glass-rgb),.92)!important}
+html[data-mode="dark"] .hero-slogan-glass,
+html[data-mode="dark"] #hero-morph-card .hero-slogan-glass{
+  background:rgba(var(--glass-rgb),.72)!important;
+  color:var(--md-sys-color-on-surface)!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 22px -14px rgba(0,0,0,.7)!important;
+}
+html[data-mode="dark"] #hero-morph-card .hero-slogan-glass .text-m3-primary{color:var(--md-sys-color-primary)!important}
+html[data-mode="dark"][data-perf="lite"] #hero-morph-card .hero-slogan-glass,
+html[data-mode="dark"][data-perf="lite"] .hero-slogan-glass{background:rgba(var(--glass-rgb),.96)!important}
+
+/* chatbot Labz AI */
+html[data-mode="dark"] #xia-chatbot-backdrop{background:rgba(2,8,5,.58)}
+html[data-mode="dark"] #xia-chatbot-window{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(var(--glass-rgb),.96);
+  box-shadow:0 30px 90px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.08);
+}
+html[data-mode="dark"] .xc-aura{background:radial-gradient(65% 38% at 12% 0%,rgba(0,81,60,.55),transparent 72%),radial-gradient(55% 34% at 100% 6%,rgba(38,75,92,.5),transparent 72%),radial-gradient(60% 30% at 50% 100%,rgba(53,75,65,.4),transparent 75%)}
+html[data-mode="dark"] .xc-composer{background:rgba(255,255,255,.06);box-shadow:0 10px 30px -18px rgba(0,0,0,.8)}
+html[data-mode="dark"] .xc-composer:focus-within{box-shadow:0 0 0 3px rgba(138,214,181,.18),0 10px 30px -18px rgba(0,0,0,.8)}
+html[data-mode="dark"] .xc-chip{border-color:rgba(255,255,255,.10)}
+html[data-mode="dark"] .xc-user{box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
+html[data-mode="dark"] .xc-avatar{box-shadow:0 8px 20px -8px rgba(0,0,0,.8)}
+html[data-mode="dark"] .xc-bot::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A6F2D1'%3E%3Cpath d='M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9zM18.5 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z'/%3E%3C/svg%3E")}
+
+/* pesan error di atas gelap */
+html[data-mode="dark"] #cam-msg,
+html[data-mode="dark"] #nl-msg,
+html[data-mode="dark"] .cg-msg,
+html[data-mode="dark"] .nl-err{color:#FFB4AB!important}
+html[data-mode="dark"] .notice.err{background:#5C1612;color:#FFDAD6}
+
+/* ---------- 3. Admin: panel, input, daftar ---------- */
+html[data-mode="dark"] .panel{
+  background:var(--md-sys-color-surface-container-low);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -24px rgba(0,0,0,.8);
+}
+html[data-mode="dark"] :where(#login,#app) input,
+html[data-mode="dark"] :where(#login,#app) textarea,
+html[data-mode="dark"] :where(#login,#app) select{
+  background-color:var(--md-sys-color-surface-container-high);
+  color:var(--md-sys-color-on-surface);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.35);
+}
+html[data-mode="dark"] :where(#login,#app) input::placeholder,
+html[data-mode="dark"] :where(#login,#app) textarea::placeholder{color:rgba(191,201,194,.55)}
+html[data-mode="dark"] :where(#login,#app) select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23BFC9C2' stroke-width='2.4' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>")}
+html[data-mode="dark"] .item{
+  background:var(--md-sys-color-surface-container);
+  border-color:rgba(255,255,255,.07);
+}
+html[data-mode="dark"] .stat{box-shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -18px rgba(0,0,0,.8)}
+html[data-mode="dark"] .btn{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 24px -10px rgba(0,0,0,.6)}
+html[data-mode="dark"] .btn.secondary{box-shadow:none}
+html[data-mode="dark"] .btn.danger{background-color:#C4372D}
+html[data-mode="dark"] .nbadge{box-shadow:0 0 0 2px var(--md-sys-color-surface-container)}
+
+/* ---------- 4. Halaman kamera & ngl (palet pink/oranye) ---------- */
+html[data-mode="dark"] body{color:var(--md-sys-color-on-surface)}
+html[data-mode="dark"] body > .bg ~ main,
+html[data-mode="dark"] .wrap{color:var(--md-sys-color-on-surface)}
+html[data-mode="dark"] body:has(> .bg){background:linear-gradient(180deg,#1b1015 0%,#171114 55%,#0d1612 100%);background-attachment:fixed}
+html[data-mode="dark"] .bg i{opacity:.26}
+html[data-mode="dark"] .brand{color:var(--md-sys-color-on-surface);background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+html[data-mode="dark"] .more{color:var(--md-sys-color-on-surface);background:rgba(255,255,255,.10);box-shadow:0 8px 20px -10px rgba(0,0,0,.7)}
+html[data-mode="dark"] .pol{background:#f3eedd;color:#2B2615}
+html[data-mode="dark"] .nl-sheet{box-shadow:0 -12px 40px rgba(0,0,0,.6)}
+html[data-mode="dark"] .toast{background:rgba(238,240,239,.92);color:#101412}
+html[data-mode="dark"] .nl-cta{background:#000}
+
+/* ---------- 5. Tombol toggle mode (frosted glass) ---------- */
+.xia-mode-btn{
+  position:relative;flex:none;width:40px;height:40px;padding:0;border-radius:9999px;
+  display:inline-grid;place-items:center;overflow:hidden;cursor:pointer;
+  color:var(--md-sys-color-on-surface);
+  background:linear-gradient(150deg,rgba(255,255,255,.62),rgba(255,255,255,.22));
+  border:1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(0,0,0,.04),0 6px 16px -8px rgba(15,23,42,.38);
+  transition:transform .4s cubic-bezier(.22,1.38,.36,1),background .3s ease,box-shadow .3s ease;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.xia-mode-btn:active{transform:scale(.86)}
+.xia-mode-btn:focus-visible{outline:2px solid var(--md-sys-color-primary);outline-offset:3px}
+.xia-mode-btn svg{grid-area:1/1;width:20px;height:20px;transition:transform .55s cubic-bezier(.22,1.2,.36,1),opacity .3s ease}
+.xia-mode-btn .xm-sun{opacity:0;transform:rotate(-100deg) scale(.3)}
+.xia-mode-btn .xm-moon{opacity:1;transform:none}
+html[data-mode="dark"] .xia-mode-btn .xm-sun{opacity:1;transform:none}
+html[data-mode="dark"] .xia-mode-btn .xm-moon{opacity:0;transform:rotate(100deg) scale(.3)}
+html[data-mode="dark"] .xia-mode-btn{
+  background:linear-gradient(150deg,rgba(255,255,255,.18),rgba(255,255,255,.05));
+  border-color:rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 6px 16px -8px rgba(0,0,0,.8);
+}
+/* di halaman kamera & ngl tombolnya mengambang di pojok kanan atas header */
+.top .xia-mode-btn{background:linear-gradient(150deg,rgba(255,255,255,.7),rgba(255,255,255,.3))}
+html[data-mode="dark"] .top .xia-mode-btn{background:linear-gradient(150deg,rgba(255,255,255,.18),rgba(255,255,255,.05))}
+@media(prefers-reduced-transparency:reduce){.xia-mode-btn{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgb(var(--glass-rgb,245,251,246))}}
+html[data-perf="lite"] .xia-mode-btn{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+/* ---------- 6. Transisi bubble (View Transition, ala Telegram) ---------- */
+html.xia-theme-switching *,
+html.xia-theme-switching *::before,
+html.xia-theme-switching *::after{transition:none!important}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal;display:block}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+.xia-mode-bubble{position:fixed;inset:0;z-index:2147483000;pointer-events:none;will-change:clip-path,opacity}
+
+/* ---------- 7. Perbaikan dock: teks tidak kepotong ---------- */
+/* Lensa dulu hampir bundar (lebar ~51px, tinggi 54px) sehingga sudut bawahnya
+   memotong label. Sekarang: persegi membulat, lebih lebar, zoom isi lebih kecil. */
+.liquid-glass-lens,#liquid-glass-lens{border-radius:24px!important}
+html:has(#labz-ai-fab) #liquid-glass-dock{min-height:68px}
+.ai-fab{width:68px;height:68px}
+#liquid-glass-dock .dock-nav-btn>span:not(.dock-ico):not(.material-symbols-rounded),
+.lg-clone .lg-btn>span:not(.dock-ico):not(.material-symbols-rounded){line-height:1.25;padding-bottom:1px;white-space:nowrap}
+/* badge admin: selalu di atas lensa, tidak terpotong, punya cincin */
+#liquid-glass-dock .dock-nav-btn{z-index:auto}
+#liquid-glass-dock .dock-nav-btn .nbadge{
+  z-index:5;top:6px;left:calc(50% + 4px);
+  box-shadow:0 0 0 2px rgba(var(--glass-rgb),.95);
+}
+.lg-clone .lg-btn .nbadge{visibility:hidden}

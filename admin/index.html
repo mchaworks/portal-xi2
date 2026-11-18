@@ -2,6 +2,8 @@
 <html lang="id" class="scroll-smooth" data-theme="sage" data-shape="organic" data-sheen="off">
 <head>
 <meta charset="utf-8">
+<script>(function(){try{var v=localStorage.getItem("xia-mode");if(v!=="dark"&&v!=="light")v=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-mode",v)}catch(e){}})();</script>
+<style id="xia-mode-boot">html[data-mode="dark"]{background:#0E1410;color-scheme:dark;--md-sys-color-primary:#8AD6B5;--md-sys-color-on-primary:#00382A;--md-sys-color-primary-container:#00513C;--md-sys-color-on-primary-container:#A6F2D1;--md-sys-color-secondary:#B3CCBE;--md-sys-color-on-secondary:#1F352B;--md-sys-color-secondary-container:#354B41;--md-sys-color-on-secondary-container:#CEE9DA;--md-sys-color-tertiary:#A5CCDF;--md-sys-color-tertiary-container:#264B5C;--md-sys-color-on-tertiary-container:#C1E8FB;--md-sys-color-surface:#0E1410;--md-sys-color-surface-container-low:#151B18;--md-sys-color-surface-container:#1A201D;--md-sys-color-surface-container-high:#242A27;--md-sys-color-surface-container-highest:#2F3532;--md-sys-color-on-surface:#DEE4DF;--md-sys-color-on-surface-variant:#BFC9C2;--md-sys-color-outline:#89938D;--md-sys-color-outline-variant:#3F4944;--glass-rgb:20,27,23!important;--glass-border-rgb:255,255,255!important;--dc-body:#1F7A5C;--dc-body-dk:#0B3A2B;}html[data-mode="dark"] body{background-color:#0E1410;color:#DEE4DF}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F5FBF6">
 <meta name="robots" content="noindex">
@@ -757,8 +759,9 @@ html input:focus,html textarea:focus,html select:focus{border-color:var(--md-sys
       </a>
       <nav class="relative z-10 hidden xl:flex items-center gap-1 bg-m3-surfaceLow/80 p-1 rounded-full border border-m3-outlineVariant/40" aria-label="Menu admin"><button type="button" data-tab="dashboard" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Dashboard</button><button type="button" data-tab="news" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Berita</button><button type="button" data-tab="tasks" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Tugas<i class="nbadge hidden" data-badge="suggest"></i></button><button type="button" data-tab="schedule" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Jadwal</button><button type="button" data-tab="members" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Anggota</button><button type="button" data-tab="media" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Media</button><button type="button" data-tab="moments" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Momen<i class="nbadge hidden" data-badge="moments"></i></button><button type="button" data-tab="settings" class="nav-link px-4 py-1.5 rounded-full text-sm font-semibold transition-all">Setelan</button></nav>
       <div class="relative z-10 flex items-center gap-2 shrink-0">
-        <a href="../index.html" target="_blank" rel="noopener" class="m3-spring-btn inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs sm:text-sm">
-          <span>Lihat Website</span><span class="material-symbols-rounded text-[16px]">north_east</span>
+        <button type="button" class="xia-mode-btn" data-xia-mode aria-label="Ganti mode gelap" aria-pressed="false"><svg class="xm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="xm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <a href="../index.html" target="_blank" rel="noopener" aria-label="Lihat Website" title="Lihat Website" class="m3-spring-btn inline-flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs sm:text-sm">
+          <span class="hidden sm:inline">Lihat Website</span><span class="material-symbols-rounded text-[18px] sm:text-[16px]">north_east</span>
         </a>
         <button id="logout" type="button" aria-label="Keluar" class="m3-spring-btn w-10 h-10 rounded-full bg-m3-surfaceHigh text-m3-onSurface inline-flex items-center justify-center">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -1310,7 +1313,7 @@ $('settings-form').onsubmit=async e=>{
 /* ---------- Dock liquid glass: tidak bisa di-scroll, lensa bisa digeser (tekan-tahan / geser) seperti web utama ---------- */
 (()=>{const dock=$('liquid-glass-dock'),lens=$('liquid-glass-lens'),hint=$('dock-hint');if(!dock||!lens)return;
 const items=[...dock.querySelectorAll('.dock-nav-btn')];items.forEach(b=>b.setAttribute('aria-label',b.dataset.dockLabel||''));
-let cur=0,x=0,w=0,tx=0,tw=0,v=0,vw=0,sc=1,drag=false,down=false,run=false,last=0,sx=0,hov=0,hold=0,pid=0,rc=null,cen=[],pm=0,mx=0;
+const LP=5;let cur=0,x=0,w=0,tx=0,tw=0,v=0,vw=0,sc=1,drag=false,down=false,run=false,last=0,sx=0,hov=0,hold=0,pid=0,rc=null,cen=[],pm=0,mx=0;
 const hap=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(_){}};
 const frame=t=>{const dt=Math.min(.032,(t-last)/1000||.016);last=t;const K=drag?420:230,C=2*Math.sqrt(K)*(drag?.82:1);
  v+=(K*(tx-x)-C*v)*dt;x+=v*dt;vw+=(K*(tw-w)-C*vw)*dt;w+=vw*dt;sc+=((drag?1.1:1)-sc)*Math.min(1,dt*16);
@@ -1321,10 +1324,10 @@ const frame=t=>{const dt=Math.min(.032,(t-last)/1000||.016);last=t;const K=drag?
  window.__lgClone&&__lgClone(x,w);
  if(rest){run=false;return}requestAnimationFrame(frame)};
 const wake=()=>{if(!run){run=true;last=performance.now();requestAnimationFrame(frame)}};
-const setT=(i,snap)=>{const b=items[i];if(!b)return;tx=b.offsetLeft;tw=b.offsetWidth;if(snap){x=tx;w=tw;v=vw=0}wake()};
+const setT=(i,snap)=>{const b=items[i];if(!b)return;tx=b.offsetLeft-LP;tw=b.offsetWidth+LP*2;if(snap){x=tx;w=tw;v=vw=0}wake()};
 const lensTo=px=>{const rx=Math.max(6,Math.min(rc.width-6,px-rc.left));let k=0,m=1e9;
  cen.forEach((c,i)=>{const d=Math.abs(rx-c);if(d<m){m=d;k=i}});
- const b=items[k];tw=b.offsetWidth;tx=Math.max(6,Math.min(rc.width-tw-6,rx*.65+cen[k]*.35-tw/2));
+ const b=items[k];tw=b.offsetWidth+LP*2;tx=Math.max(1,Math.min(rc.width-tw-1,rx*.65+cen[k]*.35-tw/2));
  if(k!==hov){hov=k;hap(8);if(hint)hint.textContent=b.dataset.dockLabel||''}wake()};
 const begin=px=>{if(drag)return;drag=true;hov=cur;rc=dock.getBoundingClientRect();cen=items.map(b=>b.offsetLeft+b.offsetWidth/2);try{dock.setPointerCapture(pid)}catch(_){}hap(14);if(hint){hint.textContent=items[cur]?items[cur].dataset.dockLabel:'';hint.classList.add('show')}lensTo(px)};
 const end=()=>{clearTimeout(hold);lock(false);if(!down)return;down=false;if(!drag)return;drag=false;if(hint)hint.classList.remove('show');
@@ -1340,7 +1343,7 @@ document.fonts&&document.fonts.ready.then(()=>setT(cur,true));
 })();
 /* ---------- Zoom di dalam lensa (nyontek web utama: klon dock di-scale 1.14x, diposisikan agar pas di bawah lensa) ---------- */
 (()=>{const dock=$('liquid-glass-dock'),lens=$('liquid-glass-lens');if(!dock||!lens)return;
-const S=1.14,c=document.createElement('div');c.className='lg-clone';c.setAttribute('aria-hidden','true');
+const S=1.08,c=document.createElement('div');c.className='lg-clone';c.setAttribute('aria-hidden','true');
 const real=[...dock.querySelectorAll('.dock-nav-btn')],cls=b=>b.className.replace('dock-nav-btn','lg-btn');
 real.forEach(b=>{const n=b.cloneNode(true);n.removeAttribute('data-tab');n.removeAttribute('data-dock-label');n.removeAttribute('aria-label');n.tabIndex=-1;n.className=cls(b);c.appendChild(n)});
 lens.appendChild(c);
@@ -1358,5 +1361,7 @@ addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.
 
 setup();
 </script>
+<link rel="stylesheet" href="../theme.css?v=1">
+<script src="../theme.js?v=1"></script>
 </body>
 </html>
