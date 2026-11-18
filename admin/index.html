@@ -671,12 +671,16 @@ label.row{font-size:.85rem;color:var(--md-sys-color-on-surface);margin-top:.9rem
 .nav-link:hover{color:var(--md-sys-color-on-surface)}
 .nav-link.is-active{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
 .nbadge{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 5px;margin-left:.35rem;border-radius:99px;background:#B3261E;color:#fff;font:700 10px/1 Inter,sans-serif}
-.dock-nav-btn{border:0;background:none;cursor:pointer;color:var(--md-sys-color-on-surface-variant);flex:1 0 64px;min-width:64px}
+.dock-nav-btn{border:0;background:none;cursor:pointer;color:var(--md-sys-color-on-surface-variant);flex:1 1 0;min-width:0}
 .dock-nav-btn.is-active{color:var(--md-sys-color-primary)}
 .dock-nav-btn .nbadge{position:absolute;top:3px;left:calc(50% + 6px);margin:0}
-#liquid-glass-dock{touch-action:pan-x;overflow-x:auto;scrollbar-width:none;max-width:min(100%,780px);justify-content:flex-start}
-#liquid-glass-dock::-webkit-scrollbar{display:none}
-#liquid-glass-lens{transition:transform .55s var(--spring-curve),width .55s var(--spring-curve);width:0}
+#liquid-glass-dock{touch-action:none;overflow:visible;max-width:min(100%,780px);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#liquid-glass-dock .dock-nav-btn{padding-left:2px!important;padding-right:2px!important}
+#liquid-glass-lens{width:0;left:0;will-change:transform,width}
+@media(max-width:899px){#liquid-glass-dock .dock-nav-btn{flex-direction:column!important;gap:2px!important}}
+@media(max-width:419px){#liquid-glass-dock .dock-nav-btn>span:not(.dock-ico){display:none}}
+#dock-hint{margin-bottom:8px;padding:6px 14px;border-radius:999px;font:700 11px/1 Inter,sans-serif;background:rgba(var(--glass-rgb),.94);color:var(--md-sys-color-on-surface);box-shadow:0 6px 18px -8px rgba(15,23,42,.4);opacity:0;transform:translateY(6px) scale(.96);transition:opacity .2s,transform .35s var(--spring-curve);pointer-events:none}
+#dock-hint.show{opacity:1;transform:none}
 .dock-ico{font-size:22px;line-height:1}
 .tab-in{animation:tabIn .5s var(--spring-curve)}
 @keyframes tabIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -724,6 +728,7 @@ main#app-main{padding-bottom:9rem}
   </header>
 
   <div class="fixed bottom-4 sm:bottom-5 inset-x-3 sm:inset-x-4 z-40 flex flex-col items-center pointer-events-none">
+    <div id="dock-hint" aria-hidden="true"></div>
     <nav id="liquid-glass-dock" aria-label="Navigasi admin" class="liquid-dock-shell pointer-events-auto relative rounded-full p-1.5 flex items-center w-full">
       <div id="liquid-glass-lens" class="liquid-glass-lens"></div>
       <button type="button" data-tab="dashboard" data-dock-label="Dashboard" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">home</span><span class="text-[10px] sm:text-xs tracking-tight">Ringkasan</span></button><button type="button" data-tab="news" data-dock-label="Berita" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">campaign</span><span class="text-[10px] sm:text-xs tracking-tight">Berita</span></button><button type="button" data-tab="tasks" data-dock-label="Tugas" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">task_alt</span><span class="text-[10px] sm:text-xs tracking-tight">Tugas</span><i class="nbadge hidden" data-badge="suggest"></i></button><button type="button" data-tab="schedule" data-dock-label="Jadwal" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">calendar_month</span><span class="text-[10px] sm:text-xs tracking-tight">Jadwal</span></button><button type="button" data-tab="members" data-dock-label="Anggota" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">groups</span><span class="text-[10px] sm:text-xs tracking-tight">Anggota</span></button><button type="button" data-tab="media" data-dock-label="Media" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">photo_library</span><span class="text-[10px] sm:text-xs tracking-tight">Media</span></button><button type="button" data-tab="moments" data-dock-label="Momen" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">photo_camera</span><span class="text-[10px] sm:text-xs tracking-tight">Momen</span><i class="nbadge hidden" data-badge="moments"></i></button><button type="button" data-tab="settings" data-dock-label="Setelan" class="dock-nav-btn flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full font-semibold"><span class="material-symbols-rounded dock-ico" aria-hidden="true">tune</span><span class="text-[10px] sm:text-xs tracking-tight">Setelan</span></button>
@@ -1180,15 +1185,34 @@ $('settings-form').onsubmit=async e=>{
 
 
 
-/* ---------- Dock liquid glass (tab navigasi) ---------- */
-(()=>{const dock=$('liquid-glass-dock'),lens=$('liquid-glass-lens');if(!dock||!lens)return;
-const items=[...dock.querySelectorAll('.dock-nav-btn')];
-const place=(i,smooth)=>{const b=items[i];if(!b)return;if(!smooth)lens.style.transition='none';lens.style.width=b.offsetWidth+'px';lens.style.transform='translate3d('+b.offsetLeft+'px,0,0)';if(!smooth){void lens.offsetWidth;lens.style.transition=''}};
-let cur=0;
-window.__dockTo=tab=>{const i=items.findIndex(b=>b.dataset.tab===tab);if(i<0)return;const first=lens.dataset.ready!=='1';cur=i;lens.dataset.ready='1';place(i,!first);
- const b=items[i],l=b.offsetLeft-(dock.clientWidth-b.offsetWidth)/2;if(dock.scrollWidth>dock.clientWidth+2)dock.scrollTo({left:Math.max(0,l),behavior:first?'auto':'smooth'})};
-addEventListener('resize',()=>place(cur,false));
-document.fonts&&document.fonts.ready.then(()=>place(cur,false));
+/* ---------- Dock liquid glass: tidak bisa di-scroll, lensa bisa digeser (tekan-tahan / geser) seperti web utama ---------- */
+(()=>{const dock=$('liquid-glass-dock'),lens=$('liquid-glass-lens'),hint=$('dock-hint');if(!dock||!lens)return;
+const items=[...dock.querySelectorAll('.dock-nav-btn')];items.forEach(b=>b.setAttribute('aria-label',b.dataset.dockLabel||''));
+let cur=0,x=0,w=0,tx=0,tw=0,v=0,vw=0,sc=1,drag=false,down=false,run=false,last=0,sx=0,hov=0,hold=0,pid=0;
+const hap=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(_){}};
+const frame=t=>{const dt=Math.min(.032,(t-last)/1000||.016);last=t;const K=drag?420:230,C=2*Math.sqrt(K)*(drag?.82:1);
+ v+=(K*(tx-x)-C*v)*dt;x+=v*dt;vw+=(K*(tw-w)-C*vw)*dt;w+=vw*dt;sc+=((drag?1.1:1)-sc)*Math.min(1,dt*16);
+ const vf=v/60,st=1+Math.min(.14,Math.abs(vf)*.012),sq=1/Math.sqrt(st),sk=Math.max(-4,Math.min(4,vf*.08));
+ const rest=Math.abs(tx-x)<.1&&Math.abs(v)<2&&Math.abs(tw-w)<.1&&!drag&&Math.abs(sc-1)<.002;
+ if(rest){x=tx;w=tw;v=vw=0;sc=1}
+ lens.style.width=w+'px';lens.style.transform='translate3d('+x+'px,0,0)'+(rest?'':' skewX('+sk.toFixed(2)+'deg) scale('+(st*sc).toFixed(3)+','+(sq*sc).toFixed(3)+')');
+ if(rest){run=false;return}requestAnimationFrame(frame)};
+const wake=()=>{if(!run){run=true;last=performance.now();requestAnimationFrame(frame)}};
+const setT=(i,snap)=>{const b=items[i];if(!b)return;tx=b.offsetLeft;tw=b.offsetWidth;if(snap){x=tx;w=tw;v=vw=0}wake()};
+const lensTo=px=>{const r=dock.getBoundingClientRect(),rx=Math.max(6,Math.min(r.width-6,px-r.left));let k=0,m=1e9;
+ items.forEach((b,i)=>{const d=Math.abs(rx-(b.offsetLeft+b.offsetWidth/2));if(d<m){m=d;k=i}});
+ const b=items[k];tw=b.offsetWidth;tx=Math.max(6,Math.min(r.width-tw-6,rx*.65+(b.offsetLeft+tw/2)*.35-tw/2));
+ if(k!==hov){hov=k;hap(8);if(hint)hint.textContent=b.dataset.dockLabel||''}wake()};
+const begin=px=>{if(drag)return;drag=true;hov=cur;try{dock.setPointerCapture(pid)}catch(_){}hap(14);if(hint){hint.textContent=items[cur]?items[cur].dataset.dockLabel:'';hint.classList.add('show')}lensTo(px)};
+const end=()=>{clearTimeout(hold);if(!down)return;down=false;if(!drag)return;drag=false;if(hint)hint.classList.remove('show');
+ const b=items[hov];if(b&&hov!==cur)b.click();else setT(cur,false);wake()};
+dock.addEventListener('contextmenu',e=>e.preventDefault());
+dock.addEventListener('pointerdown',e=>{down=true;sx=e.clientX;pid=e.pointerId;hold=setTimeout(()=>{if(down)begin(e.clientX)},160)});
+dock.addEventListener('pointermove',e=>{if(!down)return;if(!drag&&Math.abs(e.clientX-sx)>10){clearTimeout(hold);begin(e.clientX)}if(drag)lensTo(e.clientX)});
+dock.addEventListener('pointerup',end);dock.addEventListener('pointercancel',end);
+window.__dockTo=tab=>{const i=items.findIndex(b=>b.dataset.tab===tab);if(i<0)return;const first=lens.dataset.ready!=='1';cur=i;lens.dataset.ready='1';if(!drag)setT(i,first)};
+addEventListener('resize',()=>setT(cur,true));
+document.fonts&&document.fonts.ready.then(()=>setT(cur,true));
 })();
 /* progress scroll seperti web utama */
 (()=>{const bar=$('scroll-progress');let sp=0;addEventListener('scroll',()=>{if(sp)return;sp=requestAnimationFrame(()=>{sp=0;const m=document.documentElement.scrollHeight-innerHeight;bar.style.transform='scaleX('+(m>0?scrollY/m:0)+')'})},{passive:true})})();
