@@ -2214,7 +2214,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
         window.isLiquidDockDragging = false;
         let activeDockIndex = 0;
         let lensCurrentX = 6;
-        const LPAD = 5; /* lensa sedikit lebih lebar dari tombol supaya teks tidak kena lengkungan */
+        const LPAD = 0; /* lensa = lebar slot tombol; kalau lebih lebar dia nabrak label tetangga & mepet ujung dock */
         let lensTargetX = 6;
         let lensCurrentW = 76;
         let lensTargetW = 76;
@@ -3817,7 +3817,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
  document.querySelectorAll('.xc-chip').forEach(function(b){b.addEventListener('click',function(){if(!inp||!form)return;inp.value=b.getAttribute('data-q')||b.textContent;form.requestSubmit()})});
 })();
 </script>
-<link rel="stylesheet" href="./theme.css?v=3">
+<link rel="stylesheet" href="./theme.css?v=4">
 <script src="./theme.js?v=2"></script>
 </body>
 </html>

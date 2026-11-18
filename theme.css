@@ -202,8 +202,8 @@ html.xia-theme-switching *::after{transition:none!important}
 /* Lensa dulu hampir bundar (lebar ~51px, tinggi 54px) sehingga sudut bawahnya
    memotong label. Sekarang: persegi membulat, lebih lebar, zoom isi lebih kecil. */
 .liquid-glass-lens,#liquid-glass-lens{border-radius:24px!important}
-html:has(#labz-ai-fab) #liquid-glass-dock{min-height:68px}
-.ai-fab{width:68px;height:68px}
+html:has(#labz-ai-fab) #liquid-glass-dock{min-height:64px}
+.ai-fab{width:64px;height:64px}
 #liquid-glass-dock .dock-nav-btn>span:not(.dock-ico):not(.material-symbols-rounded),
 .lg-clone .lg-btn>span:not(.dock-ico):not(.material-symbols-rounded){line-height:1.25;padding-bottom:1px;white-space:nowrap}
 /* badge admin: selalu di atas lensa, tidak terpotong, punya cincin */
@@ -219,8 +219,8 @@ html:has(#labz-ai-fab) #liquid-glass-dock{min-height:68px}
    supaya menang atas aturan lama (padding .75rem) di index.html. */
 html:root body .fixed.bottom-4.inset-x-3:has(#liquid-glass-dock){
   left:0!important;right:0!important;
-  padding-left:max(18px,env(safe-area-inset-left))!important;
-  padding-right:max(18px,env(safe-area-inset-right))!important;
+  padding-left:max(14px,env(safe-area-inset-left))!important;
+  padding-right:max(14px,env(safe-area-inset-right))!important;
   bottom:calc(22px + env(safe-area-inset-bottom,0px))!important;
 }
 @media(min-width:640px){
@@ -231,7 +231,7 @@ html:root body .fixed.bottom-4.inset-x-3:has(#liquid-glass-dock){
   }
 }
 /* jarak dock ke tombol Labz AI sedikit lebih lega */
-html body .fixed:has(#liquid-glass-dock) .flex.items-center.gap-2\.5{gap:12px}
+html body .fixed:has(#liquid-glass-dock) .flex.items-center.gap-2\.5{gap:8px}
 
 /* ---------- 9. Tombol Labz AI: buang garis highlight ---------- */
 /* Tombol ini ikut class .liquid-dock-shell, jadi ikut kebagian garis kilap 1px di atas dan overlay
@@ -244,3 +244,10 @@ html body .fixed:has(#liquid-glass-dock) .flex.items-center.gap-2\.5{gap:12px}
 html[data-mode="dark"] #liquid-glass-dock,
 html[data-mode="dark"] #labz-ai-fab{background:rgba(var(--glass-rgb),.96)!important}
 html[data-mode="dark"] .lg-dock-bg{background:rgb(var(--glass-rgb))}
+
+/* ---------- 10. Dock: lensa aktif tidak boleh menimpa label tetangga ---------- */
+/* slot tombol dibikin sama persis dengan lensa (LPAD=0), isi tombol dirapatkan supaya label panjang ("Anggota") muat */
+#liquid-glass-dock{padding:6px!important}
+#liquid-glass-dock .dock-nav-btn{padding-left:0!important;padding-right:0!important;min-width:0}
+#liquid-glass-dock .dock-nav-btn>span:not(.dock-ico):not(.material-symbols-rounded){font-size:10px;letter-spacing:-.01em}
+.liquid-glass-lens,#liquid-glass-lens{top:6px!important;bottom:6px!important}

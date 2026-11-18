@@ -1313,7 +1313,7 @@ $('settings-form').onsubmit=async e=>{
 /* ---------- Dock liquid glass: tidak bisa di-scroll, lensa bisa digeser (tekan-tahan / geser) seperti web utama ---------- */
 (()=>{const dock=$('liquid-glass-dock'),lens=$('liquid-glass-lens'),hint=$('dock-hint');if(!dock||!lens)return;
 const items=[...dock.querySelectorAll('.dock-nav-btn')];items.forEach(b=>b.setAttribute('aria-label',b.dataset.dockLabel||''));
-const LP=5;let cur=0,x=0,w=0,tx=0,tw=0,v=0,vw=0,sc=1,drag=false,down=false,run=false,last=0,sx=0,hov=0,hold=0,pid=0,rc=null,cen=[],pm=0,mx=0;
+const LP=0;let cur=0,x=0,w=0,tx=0,tw=0,v=0,vw=0,sc=1,drag=false,down=false,run=false,last=0,sx=0,hov=0,hold=0,pid=0,rc=null,cen=[],pm=0,mx=0;
 const hap=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(_){}};
 const frame=t=>{const dt=Math.min(.032,(t-last)/1000||.016);last=t;const K=drag?420:230,C=2*Math.sqrt(K)*(drag?.82:1);
  v+=(K*(tx-x)-C*v)*dt;x+=v*dt;vw+=(K*(tw-w)-C*vw)*dt;w+=vw*dt;sc+=((drag?1.1:1)-sc)*Math.min(1,dt*16);
@@ -1361,7 +1361,7 @@ addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.
 
 setup();
 </script>
-<link rel="stylesheet" href="../theme.css?v=3">
+<link rel="stylesheet" href="../theme.css?v=4">
 <script src="../theme.js?v=2"></script>
 </body>
 </html>
