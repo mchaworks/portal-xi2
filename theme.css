@@ -62,13 +62,15 @@ html[data-mode="dark"] [data-sheen="off"] .liquid-dock-shell::before{
   background:none!important;content:none!important;display:none!important;
 }
 
-/* lensa dock: tint hijau lembut, rata */
+/* lensa dock: tint hijau tua, rata. HARUS hampir opaque + blur: lensa menutupi teks asli di bawahnya,
+   dan yang terlihat di dalamnya adalah klon yang di-zoom (scale 1.08). Kalau lensa terlalu transparan,
+   teks asli dan teks zoom tampil dobel/blur. */
 html[data-mode="dark"] #liquid-glass-lens,
 html[data-mode="dark"] .liquid-glass-lens{
-  background:rgba(138,214,181,.15)!important;
-  border:1px solid rgba(138,214,181,.20)!important;
+  background:rgba(35,61,50,.97)!important;
+  border:1px solid rgba(138,214,181,.24)!important;
   box-shadow:none!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  -webkit-backdrop-filter:blur(16px)!important;backdrop-filter:blur(16px)!important;
 }
 html[data-mode="dark"] #liquid-glass-lens::before,
 html[data-mode="dark"] #liquid-glass-lens::after,
@@ -237,3 +239,8 @@ html body .fixed:has(#liquid-glass-dock) .flex.items-center.gap-2\.5{gap:12px}
 #labz-ai-fab::before,#labz-ai-fab::after,
 .ai-fab::before,.ai-fab::after{content:none!important;display:none!important;background:none!important}
 #labz-ai-fab{overflow:hidden}
+
+/* dock gelap: hampir solid, teks halaman di belakangnya tidak boleh tembus */
+html[data-mode="dark"] #liquid-glass-dock,
+html[data-mode="dark"] #labz-ai-fab{background:rgba(var(--glass-rgb),.96)!important}
+html[data-mode="dark"] .lg-dock-bg{background:rgb(var(--glass-rgb))}
