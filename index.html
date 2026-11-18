@@ -1125,24 +1125,24 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
 
             </div>
 
-            <!-- Kartu Instagram Kelas (diedit lewat admin: ig_username, ig_name, ig_bio, ig_avatar_url) -->
+            <!-- Kartu Instagram Kelas (diedit lewat admin: ig_username, ig_name, ig_bio; PP otomatis dari username) -->
             <div id="ig-card" style="display:none" class="mt-10 sm:mt-14 max-w-2xl mx-auto lg:mx-0">
                 <div class="multi-layer-glass m3-card-surface p-5 sm:p-6">
                     <div class="flex items-center gap-4">
                         <div class="ig-ring shrink-0">
                             <div class="ig-ring-inner">
                                 <img id="ig-avatar" alt="" class="hidden w-full h-full object-cover rounded-full" decoding="async" loading="lazy">
-                                <span id="ig-avatar-fallback" class="font-display font-extrabold text-lg text-m3-primary">XI.2</span>
+                                <span id="ig-avatar-fallback" class="font-display font-extrabold text-base text-m3-primary">XI.2</span>
                             </div>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="text-xs font-bold uppercase tracking-wider text-m3-primary">Instagram Kelas</p>
+                            <p class="text-xs font-bold uppercase tracking-wider text-m3-primary truncate">Instagram</p>
                             <h3 id="ig-name" class="font-display font-bold text-lg sm:text-xl truncate"></h3>
                             <p id="ig-handle" class="text-sm text-m3-onSurfaceVariant truncate"></p>
                         </div>
                         <a id="ig-link" href="#" target="_blank" rel="noopener noreferrer" class="m3-spring-btn shrink-0 inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-full bg-m3-primary text-m3-onPrimary font-bold text-xs sm:text-sm shadow-md hover:shadow-lg">
                             <span>Ikuti</span>
-                            <span class="material-symbols-rounded text-[18px]">arrow_outward</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
                         </a>
                     </div>
                     <p id="ig-bio" class="mt-4 text-sm sm:text-base text-m3-onSurfaceVariant whitespace-pre-line"></p>
@@ -1400,7 +1400,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
     <!-- Footer -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 pt-8 border-t border-m3-outlineVariant/40 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-m3-onSurfaceVariant">
         <p id="footer-copyright">© 2026 XI.2 Creative Lab — SMA Negeri 10 Palembang.</p>
-        <p id="footer-devs" class="font-medium text-m3-primary flex items-center gap-1.5 flex-wrap justify-center sm:justify-end"><span class="text-m3-onSurfaceVariant font-normal">Dev:</span><span id="footer-dev-1">Dev Placeholder 1</span><span class="text-m3-onSurfaceVariant font-normal">&amp;</span><span id="footer-dev-2">Dev Placeholder 2</span></p>
+        <div id="footer-devs" class="flex items-center gap-3 justify-center sm:justify-end flex-wrap"><div class="dev-card hero-slogan-glass multi-layer-glass rounded-2xl pl-2.5 pr-4 py-2 flex items-center gap-2.5 text-left"><span id="footer-dev-1-ini" class="w-9 h-9 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer font-display font-extrabold text-sm flex items-center justify-center shrink-0">1</span><span class="min-w-0"><span class="block text-[10px] font-bold uppercase tracking-wider text-m3-primary">Developer</span><span id="footer-dev-1" class="block text-sm font-semibold text-m3-onSurface truncate max-w-[9.5rem]">Dev Placeholder 1</span></span></div><div class="dev-card hero-slogan-glass multi-layer-glass rounded-2xl pl-2.5 pr-4 py-2 flex items-center gap-2.5 text-left"><span id="footer-dev-2-ini" class="w-9 h-9 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer font-display font-extrabold text-sm flex items-center justify-center shrink-0">2</span><span class="min-w-0"><span class="block text-[10px] font-bold uppercase tracking-wider text-m3-primary">Developer</span><span id="footer-dev-2" class="block text-sm font-semibold text-m3-onSurface truncate max-w-[9.5rem]">Dev Placeholder 2</span></span></div></div>
     </footer>
 
     <!-- ======================================================================
@@ -2609,8 +2609,10 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
    if(sl&&slt){const v=String(S.slogan||'').trim();slt.textContent='“'+v.replace(/^[“"]|[”"]$/g,'')+'”';sl.style.display=v?'':'none';}
    {const t=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
     const d1=String(S.dev_1||'').trim(),d2=String(S.dev_2||'').trim();
-    if('dev_1' in S||'dev_2' in S){const f1=document.getElementById('footer-dev-1'),f2=document.getElementById('footer-dev-2'),w=document.getElementById('footer-devs');
-      if(f1&&f2&&w){const a=[d1,d2].filter(Boolean);if(!a.length){w.style.display='none'}else{w.style.display='';f1.textContent=a[0];f2.textContent=a[1]||'';f2.previousElementSibling.style.display=f2.style.display=a[1]?'':'none'}}}
+    if('dev_1' in S||'dev_2' in S){const w=document.getElementById('footer-devs');
+      if(w){[[1,d1],[2,d2]].forEach(([n,v])=>{const nm=document.getElementById('footer-dev-'+n),ini=document.getElementById('footer-dev-'+n+'-ini');
+        if(!nm||!ini)return;const c=nm.closest('.dev-card');if(c)c.style.display=v?'':'none';nm.textContent=v;ini.textContent=(v.trim()[0]||'').toUpperCase()});
+        w.style.display=(d1||d2)?'':'none'}}
     const card=document.getElementById('ig-card');
     if(card){const un=String(S.ig_username||'').trim().replace(/^@+/,'').replace(/[^A-Za-z0-9._]/g,'');
       if(!un){card.style.display='none'}else{card.style.display='';
@@ -2618,8 +2620,10 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
         t('ig-name',nm);t('ig-handle','@'+un);
         const bio=String(S.ig_bio||'').trim();const b=document.getElementById('ig-bio');if(b){b.textContent=bio;b.style.display=bio?'':'none'}
         const lk=document.getElementById('ig-link');if(lk)lk.href='https://www.instagram.com/'+encodeURIComponent(un)+'/';
-        const av=document.getElementById('ig-avatar'),fb=document.getElementById('ig-avatar-fallback'),au=safeUrl(S.ig_avatar_url);
-        if(av&&fb){if(au){av.src=au;av.classList.remove('hidden');fb.style.display='none'}else{av.classList.add('hidden');fb.style.display=''}}}}}
+        const av=document.getElementById('ig-avatar'),fb=document.getElementById('ig-avatar-fallback');
+        if(av&&fb){const src='https://unavatar.io/instagram/'+encodeURIComponent(un);
+          if(av.dataset.u!==un){av.dataset.u=un;av.onload=()=>{av.classList.remove('hidden');fb.style.display='none'};av.onerror=()=>{av.classList.add('hidden');fb.style.display=''};av.classList.add('hidden');fb.style.display='';av.referrerPolicy='no-referrer';av.src=src}}}}
+   }
    const img=document.getElementById('hero-photo'),u=safeUrl(S.hero_image_url);
    if(img&&heroOrig===null)heroOrig=img.getAttribute('src');
    if(img&&u&&img.getAttribute('src')!==u)img.src=u;
