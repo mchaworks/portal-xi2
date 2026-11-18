@@ -6,13 +6,14 @@
   var root = document.documentElement;
   var KEY = 'xia-mode';
   var COLORS = { dark: '#0E1410', light: '#F5FBF6' };
-  var mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
   var rm = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   var busy = false;
 
   function stored() { try { var v = localStorage.getItem(KEY); return v === 'dark' || v === 'light' ? v : null; } catch (e) { return null; } }
   function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
   function current() { return root.getAttribute('data-mode') === 'dark' ? 'dark' : 'light'; }
+  /* pastikan data-mode selalu terisi (default terang) sebelum tombol dipakai */
+  if (!root.getAttribute('data-mode')) root.setAttribute('data-mode', stored() || 'light');
 
   function paint(mode) {
     root.setAttribute('data-mode', mode);
@@ -39,7 +40,7 @@
     busy = true;
     var done = function () { busy = false; root.classList.remove('xia-theme-switching'); };
     var r = radius(x, y);
-    var EASE = 'cubic-bezier(.3,.7,.1,1)', DUR = 720;
+    var EASE = 'cubic-bezier(.3,.7,.1,1)', DUR = 760;
 
     /* tanpa animasi: reduced motion */
     if (rm.matches) { paint(next); done(); return; }
@@ -98,10 +99,7 @@
     paint(current());
   }
 
-  /* ikut sistem selama pengguna belum memilih manual */
-  if (mq && mq.addEventListener) {
-    mq.addEventListener('change', function (e) { if (!stored()) paint(e.matches ? 'dark' : 'light'); });
-  }
+  /* mode utama = terang. Gelap hanya kalau pengguna memilihnya sendiri lewat tombol. */
   /* sinkron antar tab/halaman */
   window.addEventListener('storage', function (e) {
     if (e.key === KEY && (e.newValue === 'dark' || e.newValue === 'light') && e.newValue !== current()) paint(e.newValue);
