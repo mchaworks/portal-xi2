@@ -2,7 +2,7 @@
 <html lang="id" class="scroll-smooth" data-theme="sage" data-shape="organic" data-sheen="off">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
     <title>XI.2 Creative Lab — Portal Kelas SMA Negeri 10 Palembang</title>
 
     <!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, Inter & Material Symbols Rounded -->
@@ -887,6 +887,12 @@ html[data-perf="lite"] .dcw-grain,html[data-perf="lite"] .dcw-leak,html[data-per
 html[data-perf="lite"] .dcw-leak{display:none}
 @media(prefers-reduced-motion:reduce){.xs-row,.xs-box,.xs-empty,.dc-print,.dc-print-img,.dcw-grain,.dcw-leak,.dcw-br,.dc-fl,.dc-lens::after,.dc-dome::after,.dcw-eject,.dcw-ov.is-open .dcw-vf{animation-duration:.01s!important;animation-iteration-count:1!important}.xs-box{transition:none;opacity:1;transform:none}}
 </style>
+<style>
+/* modal Sorotan: bisa di-scroll kalau teks panjang, tidak tertutup dock, paragraf tetap terpisah */
+#story-modal{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start!important;z-index:70!important;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+#story-modal-sheet{margin-top:auto;margin-bottom:auto}
+#modal-desc{white-space:pre-line;overflow-wrap:anywhere}
+</style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
 
@@ -923,10 +929,10 @@ html[data-perf="lite"] .dcw-leak{display:none}
             <div class="relative z-10 flex items-center gap-2 shrink-0">
                 <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn w-10 h-10 rounded-full bg-m3-surfaceHigh text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
                 <!-- Expressive Settings Trigger -->
-                <button onclick="openChatbot()" aria-label="Buka AI Chatbot"
+                <button onclick="openChatbot()" aria-label="Buka Labz AI"
                         class="m3-spring-btn inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs sm:text-sm shadow-xs">
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h3v-7H5a7 7 0 0 1 14 0h-3v7h3a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9Z"/><path d="M9 18h6"/></svg>
-                    <span>AI Chatbot</span>
+                    <span>Labz AI</span>
                 </button>
             </div>
         </div>
@@ -980,10 +986,10 @@ html[data-perf="lite"] .dcw-leak{display:none}
                 <span class="text-[10px] sm:text-xs tracking-tight">Tugas</span>
             </a>
 
-            <button type="button" data-dock-idx="5" data-dock-label="AI Chatbot" data-dock-action="chatbot"
+            <button type="button" data-dock-idx="5" data-dock-label="Labz AI" data-dock-action="chatbot"
                class="dock-nav-btn flex-1 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 px-1.5 rounded-full text-m3-onSurfaceVariant font-semibold">
                 <svg class="dock-ico" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg>
-                <span class="text-[10px] sm:text-xs tracking-tight">AI Chatbot</span>
+                <span class="text-[10px] sm:text-xs tracking-tight">Labz AI</span>
             </button>
         </nav>
     </div>
@@ -1021,7 +1027,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
                         </a>
                         <button onclick="openChatbot()" class="m3-spring-btn inline-flex items-center gap-2 px-6 py-4 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer font-bold text-sm sm:text-base hover:brightness-95">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg>
-                            <span>Tanya AI Chatbot</span>
+                            <span>Tanya Labz AI</span>
                         </button>
                     </div>
 
@@ -2913,325 +2919,67 @@ html[data-perf="mid"] .morph-blob{animation:none!important}
   #story-modal-backdrop.xia-morph-backdrop{transition:none!important}
   @media(prefers-reduced-motion:reduce){#story-modal-sheet.xia-morph-sheet,.xia-morph-flight{will-change:auto!important}}
 </style>
-<script id="xia-single-owner-morph-js">
-(()=>{
- 'use strict';
- const $=id=>document.getElementById(id);
- const modal=$('story-modal'),sheet=$('story-modal-sheet'),back=$('story-modal-backdrop'),target=$('modal-img');
- if(!modal||!sheet||!back||!target||typeof carouselStories==='undefined')return;
- const root=document.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)');
- const cards=()=>[...document.querySelectorAll('#fluid-carousel-track .fluid-card')];
- let source=null,activeIndex=0,flight=null,opened=false,busy=false,phase='idle',closeQueued=false,token=0,animations=[],layerFlights=[],layerHidden=[];
- const ease='cubic-bezier(.4,0,.2,1)';
- const box=el=>{const r=el.getBoundingClientRect();return{x:r.left,y:r.top,w:r.width,h:r.height}};
- const radius=el=>{
-   let node=el;
-   while(node&&node!==document.body){
-     const cs=getComputedStyle(node),v=cs.borderRadius;
-     if(v&&v!=='0px'&&v!=='0px 0px 0px 0px')return v;
-     node=node.parentElement;
-   }
-   return '24px';
+<style id="xia-story-sheet-css">
+/* Modal Sorotan: animasi sederhana ala iOS (fade + naik + sedikit membesar, kurva pegas) */
+html body #story-modal-backdrop{opacity:0!important;transition:opacity .42s cubic-bezier(.32,.72,0,1)!important}
+html body #story-modal.is-on #story-modal-backdrop{opacity:var(--bo,1)!important}
+html body #story-modal-sheet{opacity:0!important;transform:translate3d(0,56px,0) scale(.94)!important;transform-origin:50% 100%;transition:transform .52s cubic-bezier(.32,.72,0,1),opacity .32s ease!important;will-change:transform,opacity}
+html body #story-modal.is-on #story-modal-sheet{opacity:1!important;transform:translate3d(0,var(--dy,0px),0) scale(calc(1 - var(--dy,0px) / 2600))!important}
+html body #story-modal.is-closing #story-modal-sheet{transition:transform .3s cubic-bezier(.4,0,1,1),opacity .24s ease!important}
+html body #story-modal.is-closing #story-modal-backdrop{transition:opacity .3s ease!important}
+html body #story-modal.is-drag #story-modal-sheet,html body #story-modal.is-drag #story-modal-backdrop{transition:none!important}
+@media (prefers-reduced-motion:reduce){html body #story-modal-sheet,html body #story-modal-backdrop{transition-duration:.01ms!important}}
+</style>
+<script id="xia-story-sheet-js">
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ var modal=$('story-modal'),sheet=$('story-modal-sheet'),back=$('story-modal-backdrop');
+ if(!modal||!sheet||!back)return;
+ var isOpen=false,timer=0,prevOv='';
+ function fill(s){
+  $('modal-img').src=s.image;$('modal-tag').textContent=s.tag;$('modal-date').textContent=s.date;
+  $('modal-location').textContent=s.location;$('modal-title').textContent=s.title;$('modal-desc').textContent=s.fullText;
+  var a=$('modal-attachment');
+  if(a){if(s.attachment){a.href=s.attachment;a.style.display='inline-flex'}else{a.removeAttribute('href');a.style.display='none'}}
+ }
+ window.openStoryModal=function(index){
+  if(isOpen)return;
+  var s=(typeof carouselStories!=='undefined')?carouselStories[index]:null;if(!s)return;
+  fill(s);clearTimeout(timer);isOpen=true;
+  sheet.style.removeProperty('--dy');modal.style.removeProperty('--bo');
+  modal.classList.remove('hidden','is-closing','is-drag','is-on');modal.classList.add('flex');
+  back.style.visibility='visible';sheet.style.visibility='visible';modal.scrollTop=0;
+  prevOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  void sheet.offsetWidth;
+  requestAnimationFrame(function(){requestAnimationFrame(function(){modal.classList.add('is-on')})});
  };
- const restoreLayers=()=>{
-   layerHidden.forEach(el=>{if(el?.isConnected)el.style.visibility=''});layerHidden=[];
-   layerFlights.forEach(n=>n.remove());layerFlights=[];
+ window.closeStoryModal=function(){
+  if(!isOpen)return;isOpen=false;
+  sheet.style.removeProperty('--dy');modal.style.removeProperty('--bo');
+  modal.classList.remove('is-drag','is-on');modal.classList.add('is-closing');
+  timer=setTimeout(function(){
+   modal.classList.add('hidden');modal.classList.remove('flex','is-closing');
+   back.style.visibility='hidden';sheet.style.visibility='hidden';
+   document.body.style.overflow=prevOv;
+  },320);
  };
- const stopAnimations=()=>{
-   animations.forEach(a=>{try{a.cancel()}catch(_){}});animations=[];
-   if(flight){flight.remove();flight=null}
-   restoreLayers();
- };
- // Lightweight snapshots: copy only visual essentials, not hundreds of computed properties.
- // This keeps the original content/features while reducing style recalculation and DOM work.
- const SNAP_PROPS=['display','box-sizing','font-family','font-size','font-weight','font-style','line-height','letter-spacing','text-align','text-transform','white-space','color','background-color','background-image','border','border-radius','padding','overflow','object-fit','object-position','text-shadow','box-shadow','backdrop-filter','-webkit-backdrop-filter','clip-path','-webkit-clip-path','mask-image','-webkit-mask-image'];
- const copySnapshotTree=(sourceNode,cloneNode)=>{
-   const aa=[sourceNode,...sourceNode.querySelectorAll('*')],bb=[cloneNode,...cloneNode.querySelectorAll('*')];
-   for(let i=0;i<Math.min(aa.length,bb.length);i++){
-     const cs=getComputedStyle(aa[i]),b=bb[i];
-     for(const prop of SNAP_PROPS){const value=cs.getPropertyValue(prop);if(value)b.style.setProperty(prop,value,'important')}
-     b.style.setProperty('animation','none','important');b.style.setProperty('transition','none','important');
-     b.style.setProperty('caret-color','transparent','important');
-   }
- };
- const layerFlight=(from,to)=>{
-   if(!from?.isConnected||!to?.isConnected)return null;
-   const a=box(from),b=box(to);if(a.w<2||a.h<2||b.w<2||b.h<2)return null;
-   const dx=b.x-a.x,dy=b.y-a.y,sx=b.w/a.w,sy=b.h/a.h;
-   const fromStyle=getComputedStyle(from),toStyle=getComputedStyle(to);
-   const fromRadius=fromStyle.borderRadius||'0px';
-   const toRadius=toStyle.borderRadius||'0px';
-   const clone=from.cloneNode(true);
-   clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
-   clone.querySelectorAll('*').forEach(n=>{for(const attr of [...n.attributes])if(/^on/i.test(attr.name))n.removeAttribute(attr.name)});
-   copySnapshotTree(from,clone);
-   Object.assign(clone.style,{left:a.x+'px',top:a.y+'px',width:a.w+'px',height:a.h+'px',margin:'0',maxWidth:'none',maxHeight:'none',boxSizing:'border-box',transformOrigin:'top left',pointerEvents:'none',zIndex:'10061',position:'fixed',opacity:'1',visibility:'hidden',overflow:'hidden',borderRadius:fromRadius});
-   clone.style.setProperty('display',fromStyle.display,'important');
-   clone.style.setProperty('animation','none','important');clone.style.setProperty('transition','none','important');
-   clone.style.setProperty('backface-visibility','hidden','important');
-   clone.classList.add('xia-morph-layer-flight');clone.setAttribute('aria-hidden','true');clone.inert=true;
-   document.body.appendChild(clone);layerFlights.push(clone);
-   const frames=[
-     {transform:'translate3d(0,0,0) scale(1,1)',borderRadius:fromRadius,opacity:1,offset:0},
-     {transform:`translate3d(${dx*.52}px,${dy*.52}px,0) scale(${1+(sx-1)*.52},${1+(sy-1)*.52})`,borderRadius:fromRadius,opacity:1,offset:.52},
-     {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,borderRadius:toRadius,opacity:1,offset:1}
-   ];
-   const layers=[{node:clone,frames,properties:'transform,border-radius'}];
-   // Animate the visual paint of each corresponding descendant as well as its
-   // position. This prevents the caption/text backing and font colors from
-   // snapping to the destination style at the final hand-off.
-   const srcNodes=[from,...from.children];
-   const dstNodes=[to,...to.children];
-   const cloneNodes=[clone,...clone.children];
-   const signature=el=>el.tagName.toLowerCase()+'|'+[...el.classList].sort().join('.');
-   const destinationBySignature=new Map();
-   dstNodes.forEach(el=>{const k=signature(el);if(!destinationBySignature.has(k))destinationBySignature.set(k,[]);destinationBySignature.get(k).push(el)});
-   const occurrence=new Map();
-   const paintProps=[['backgroundColor','background-color'],['color','color'],['borderColor','border-color'],['borderRadius','border-radius'],['opacity','opacity'],['textShadow','text-shadow']];
-   for(let i=0;i<srcNodes.length;i++){
-     const srcNode=srcNodes[i],key=signature(srcNode),n=occurrence.get(key)||0;occurrence.set(key,n+1);
-     const candidates=destinationBySignature.get(key),dstNode=candidates?.[n];
-     if(!dstNode)continue;
-     const fs=getComputedStyle(srcNode),ts=getComputedStyle(dstNode);
-     const first={},last={};let changed=false;
-     for(const [js,css] of paintProps){
-       if(i===0&&js==='borderRadius')continue;
-       const av=fs.getPropertyValue(css),bv=ts.getPropertyValue(css);
-       if(av&&bv&&av!==bv){first[js]=av;last[js]=bv;changed=true;}
-     }
-     if(changed){
-       const node=cloneNodes[i];
-       layers.push({node,frames:[{...first,offset:0},{...last,offset:1}],properties:Object.keys(first).map(k=>k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())).join(',')});
-     }
-   }
-   return {from,to,layers};
- };
- const hideLayer=el=>{if(el?.isConnected){layerHidden.push(el);el.style.visibility='hidden'}};
- const getSource=index=>{
-   if(source?.isConnected&&Number(source.closest('.fluid-card')?.dataset.index)===Number(index))return source;
-   const card=cards().find(c=>Number(c.dataset.index)===Number(index));
-   return card?.querySelector('img')||null;
- };
- const showContent=index=>{
-   const story=carouselStories[index];if(!story)return false;
-   target.src=story.image;
-   $('modal-tag').textContent=story.tag;$('modal-date').textContent=story.date;
-   $('modal-location').textContent=story.location;$('modal-title').textContent=story.title;
-   $('modal-desc').textContent=story.fullText;
-   return true;
- };
- const makeFlight=async(from)=>{
-   if(!from?.isConnected)return null;
-   const r=box(from);if(r.w<2||r.h<2)return null;
-   const clone=from.cloneNode(false);clone.removeAttribute('id');clone.removeAttribute('srcset');clone.removeAttribute('sizes');
-   clone.src=from.currentSrc||from.src;clone.className='xia-morph-flight';
-   const startRadius=radius(from);
-   Object.assign(clone.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',borderRadius:startRadius,opacity:'0',visibility:'hidden'});
-   clone.setAttribute('aria-hidden','true');document.body.appendChild(clone);
-   try{if(clone.decode)await Promise.race([clone.decode(),new Promise(resolve=>setTimeout(resolve,320))]);else if(!clone.complete)await Promise.race([new Promise(resolve=>{clone.onload=resolve;clone.onerror=resolve}),new Promise(resolve=>setTimeout(resolve,320))])}catch(_){}
-   if(!clone.isConnected){clone.remove();return null}return clone;
- };
- const run=(el,frames,opts)=>{const a=el.animate(frames,opts);a.pause();animations.push(a);return a};
- const makeTextFlight=el=>{
-   if(!el?.isConnected)return null;
-   const r=el.getBoundingClientRect();
-   if(r.width<2||r.height<2)return null;
-   const cs=getComputedStyle(el),clone=el.cloneNode(true);
-   clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
-   copySnapshotTree(el,clone);
-   Object.assign(clone.style,{position:'fixed',left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px',margin:'0',zIndex:'10080',pointerEvents:'none',opacity:'1',visibility:'visible',transform:'none',transformOrigin:'top left',overflow:'visible',contain:'paint'});
-   clone.style.setProperty('display',cs.display,'important');
-   clone.setAttribute('aria-hidden','true');clone.inert=true;
-   document.body.appendChild(clone);layerFlights.push(clone);
-   return clone;
- };
- const fadeSwap=(from,to,duration,opening=true)=>{
-   if(!from?.isConnected||!to?.isConnected)return;
-   // Keep the outgoing text above the morphing sheet so the fade remains visible.
-   const covered=opening?from:to;
-   const ghost=makeTextFlight(covered);
-   const fadeOut=Math.max(300,Math.round(duration*.92));
-   const fadeIn=Math.max(340,Math.round(duration*.96));
-   const delay=Math.round(fadeIn*.16);
-   if(opening){
-     to.style.opacity='0';
-     if(ghost){ghost.style.opacity='1';run(ghost,[{opacity:1},{opacity:0}],{duration:fadeOut,easing:'cubic-bezier(.22,.7,.25,1)',fill:'both'});}
-     run(to,[{opacity:0},{opacity:1}],{duration:fadeIn,delay,easing:'cubic-bezier(.2,.65,.25,1)',fill:'both'});
-   }else{
-     from.style.opacity='1';to.style.opacity='0';
-     run(from,[{opacity:1},{opacity:0}],{duration:fadeOut,easing:'cubic-bezier(.4,0,1,1)',fill:'both'});
-     if(ghost){ghost.style.opacity='0';run(ghost,[{opacity:0},{opacity:1}],{duration:fadeIn,delay,easing:'cubic-bezier(.2,.65,.25,1)',fill:'both'});}
-   }
- };
- const fadeGlassSwap=(from,to,duration,opening=true)=>{
-   if(!from?.isConnected||!to?.isConnected)return;
-   // Fade only the glass surface here. Its caption spans are handled by fadeSwap
-   // above, avoiding two competing opacity animations on the same text.
-   const covered=opening?from:to,visible=opening?to:from;
-   const ghost=covered.cloneNode(false);
-   const r=covered.getBoundingClientRect(),cs=getComputedStyle(covered);
-   Object.assign(ghost.style,{position:'fixed',left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px',margin:'0',zIndex:'10063',pointerEvents:'none',opacity:opening?'1':'0',visibility:'visible',boxSizing:'border-box',borderRadius:cs.borderRadius,background:cs.background,backgroundColor:cs.backgroundColor,border:cs.border,boxShadow:cs.boxShadow,backdropFilter:'none',webkitBackdropFilter:'none',transform:'none'});
-   ghost.setAttribute('aria-hidden','true');ghost.inert=true;document.body.appendChild(ghost);layerFlights.push(ghost);
-   const outTime=Math.max(280,Math.round(duration*.82)),inTime=Math.max(320,Math.round(duration*.9));
-   if(opening){
-     visible.style.opacity='0';
-     run(ghost,[{opacity:1},{opacity:0}],{duration:outTime,easing:'ease-out',fill:'both'});
-     run(visible,[{opacity:0},{opacity:1}],{duration:inTime,delay:Math.round(inTime*.12),easing:'ease-out',fill:'both'});
-   }else{
-     visible.style.opacity='0';
-     run(visible,[{opacity:1},{opacity:0}],{duration:outTime,easing:'ease-in',fill:'both'});
-     run(ghost,[{opacity:0},{opacity:1}],{duration:inTime,delay:Math.round(inTime*.1),easing:'ease-out',fill:'both'});
-   }
- };
- const fadeCloseControl=(duration,opening)=>{
-   const btn=$('story-modal-close');if(!btn)return;
-   btn.style.opacity=opening?'0':'1';
-   const frames=opening
-     ?[{opacity:0,transform:'translate3d(0,-5px,0) scale(.92)'},{opacity:1,transform:'translate3d(0,0,0) scale(1)'}]
-     :[{opacity:1,transform:'translate3d(0,0,0) scale(1)'},{opacity:0,transform:'translate3d(0,-3px,0) scale(.96)'}];
-   run(btn,frames,{duration:Math.round(duration*.72),delay:opening?Math.round(duration*.16):0,easing:'ease-out',fill:'both'});
- };
- const runLayers=(morph,duration)=>{if(morph)morph.layers.forEach(layer=>{layer.node.style.willChange=layer.properties||'transform,opacity';const a=run(layer.node,layer.frames,{duration,easing:ease,fill:'both'});layer.node.style.visibility='visible';a.finished.catch(()=>{}).finally(()=>{if(layer.node?.isConnected)layer.node.style.willChange='auto'});});};
- // Keep the destination badge hidden behind the travelling snapshot until the
- // final 130ms, then cross-fade into the real destination. This avoids a color
- // jump when the source and destination use different CSS paint systems
- // (glass gradient vs solid Material color).
- const handoffBadge=(morph,duration)=>{
-   if(!morph?.to?.isConnected||!morph.layers?.length)return;
-   const moving=morph.layers[0].node,dest=morph.to,fade=Math.min(150,Math.max(90,Math.round(duration*.34)));
-   dest.style.visibility='visible';
-   run(dest,[{opacity:0},{opacity:1}],{duration:fade,delay:Math.max(0,duration-fade),easing:'ease-out',fill:'both'});
-   if(moving?.isConnected)run(moving,[{opacity:1},{opacity:0}],{duration:fade,delay:Math.max(0,duration-fade),easing:'ease-in',fill:'both'});
- };
- const modalBlur=tier=>tier==='lite'?4:(tier==='high'?7:5);
- const finishCleanup=(restoreSource=true)=>{
-   stopAnimations();
-   if(source&&source.isConnected&&restoreSource)source.style.visibility='';
-   document.querySelectorAll('#fluid-carousel-track .fluid-card h3,#fluid-carousel-track .fluid-card p,#fluid-carousel-track .fluid-card .xia-photo-frame > span,#fluid-carousel-track .fluid-card .xia-photo-caption > span,#modal-tag,#modal-location,#modal-date,#modal-title,#modal-desc').forEach(el=>el.style.opacity='');
-   target.style.opacity='1';const closeBtn=$('story-modal-close');if(closeBtn){closeBtn.style.opacity='';closeBtn.style.transform=''}sheet.style.transform='';sheet.style.borderRadius='';sheet.style.backgroundColor='';sheet.style.borderColor='';sheet.style.visibility='';
-   back.style.opacity='';back.style.visibility='hidden';back.style.backdropFilter='';back.style.webkitBackdropFilter='';back.classList.remove('xia-morph-backdrop');
-   sheet.classList.remove('xia-morph-sheet');modal.classList.add('hidden');modal.classList.remove('flex');
-   busy=false;opened=false;phase='idle';closeQueued=false;source=null;
- };
- document.addEventListener('click',e=>{const card=e.target.closest?.('#fluid-carousel-track .fluid-card');if(card){source=card.querySelector('img');activeIndex=Number(card.dataset.index)||0}},true);
- window.openStoryModal=async(index)=>{
-   if(busy||opened||!showContent(index))return;
-   activeIndex=Number(index)||0;source=getSource(activeIndex);const src=source;
-   const my=++token;busy=true;phase='opening';closeQueued=false;stopAnimations();
-   modal.classList.remove('hidden');modal.classList.add('flex');
-   back.style.visibility='visible';back.style.opacity='0';back.classList.add('xia-morph-backdrop');
-   sheet.style.visibility='hidden';sheet.style.transform='';sheet.style.borderRadius='';sheet.classList.add('xia-morph-sheet');target.style.opacity='0';
-   requestAnimationFrame(()=>requestAnimationFrame(async()=>{
-     if(my!==token)return;
-     const end=box(sheet),dest=box(target),tier=root.dataset.perf||'mid';
-     const start=src&&src.isConnected?box(src):null;
-     const canMorph=!reduce.matches&&start&&start.w>1&&start.h>1&&end.w>1&&end.h>1&&dest.w>1&&dest.h>1;
-     if(!canMorph){sheet.style.visibility='visible';sheet.style.transform='none';target.style.opacity='1';back.style.opacity='1';busy=false;opened=true;phase='idle';if(closeQueued)window.closeStoryModal();return}
-     flight=await makeFlight(src);if(my!==token){if(flight){flight.remove();flight=null}return}
-     if(!flight){sheet.style.visibility='visible';sheet.style.transform='none';target.style.opacity='1';back.style.opacity='1';busy=false;opened=true;phase='idle';if(closeQueued)window.closeStoryModal();return}
-     const card=src.closest('.fluid-card');
-     // Only morph the image caption. Text is cross-faded instead of scaled:
-     // scaling text snapshots stretches glyphs and exposes different text mid-flight.
-     const morphs=[
-       // Category badge keeps its spatial/color morph.
-       layerFlight(card?.querySelector('.xia-photo-frame > span'),$('modal-tag'))
-     ].filter(Boolean);
-     // Card location/date fade away; the expanded layout's metadata fades in
-     // at its own final positions instead of being stretched/morphed.
-     const captionNodes=card?.querySelectorAll('.xia-photo-caption > span');
-     const textPairs=[
-       [captionNodes?.[0],$('modal-location')],
-       [captionNodes?.[1],$('modal-date')],
-       [card?.querySelector('h3'),$('modal-title')],
-       [card?.querySelector('p'),$('modal-desc')]
-     ].filter(([a,b])=>a&&b);
-     const lite=tier==='lite',duration=lite?230:(tier==='high'?350:290);
-     const panelStart={transform:`translate3d(${start.x-end.x}px,${start.y-end.y}px,0) scale(${start.w/end.w},${start.h/end.h})`,borderRadius:radius(src)};
-     const sheetPaint=getComputedStyle(sheet);
-     const panelFrames=lite?[{...panelStart,offset:0},{transform:`translate3d(${(start.x-end.x)*.18}px,${(start.y-end.y)*.18}px,0) scale(${1+(start.w/end.w-1)*.18},${1+(start.h/end.h-1)*.18})`,borderRadius:radius(sheet),offset:.22},{transform:'none',borderRadius:radius(sheet),offset:1}]:[{...panelStart,offset:0},{transform:`translate3d(${(start.x-end.x)*.68}px,${(start.y-end.y)*.68}px,0) scale(${1+(start.w/end.w-1)*.68},${1+(start.h/end.h-1)*.68})`,borderRadius:radius(sheet),offset:.42},{transform:`translate3d(${(start.x-end.x)*.16}px,${(start.y-end.y)*.16}px,0) scale(${1+(start.w/end.w-1)*.16},${1+(start.h/end.h-1)*.16})`,borderRadius:radius(sheet),offset:.78},{transform:'none',borderRadius:radius(sheet),offset:1}];
-     const imageEnd={x:dest.x-start.x,y:dest.y-start.y,sx:dest.w/start.w,sy:dest.h/start.h};
-     const imageFrames=[{transform:'translate3d(0,0,0) scale(1,1)',borderRadius:radius(src),offset:0},{transform:`translate3d(${imageEnd.x*.72}px,${imageEnd.y*.72}px,0) scale(${1+(imageEnd.sx-1)*.72},${1+(imageEnd.sy-1)*.72})`,borderRadius:radius(target),offset:.72},{transform:`translate3d(${imageEnd.x}px,${imageEnd.y}px,0) scale(${imageEnd.sx},${imageEnd.sy})`,borderRadius:radius(target),offset:1}];
-     sheet.style.visibility='visible';
-     run(sheet,panelFrames,{duration,easing:ease,fill:'both'});run(flight,imageFrames,{duration,easing:ease,fill:'both'});flight.style.opacity='1';flight.style.visibility='visible';
-   sheet.style.backgroundColor=sheetPaint.backgroundColor;sheet.style.borderColor=sheetPaint.borderColor;
-     morphs.forEach(m=>runLayers(m,duration));
-     // Cross-fade text without changing its geometry or replacing the card's text content.
-     // Explicit starting opacity prevents the modal's destination metadata
-     // from flashing at full opacity before its fade-in begins.
-     textPairs.forEach(([from,to])=>fadeSwap(from,to,duration,true));
-     const cardGlass=card?.querySelector('.xia-photo-caption');
-     const modalGlass=sheet.querySelector('.xia-modal-photo-frame .glass-image-overlay');
-     if(cardGlass&&modalGlass)fadeGlassSwap(cardGlass,modalGlass,duration,true);
-     fadeCloseControl(duration,true);
-     const blur=modalBlur(tier);
-     back.style.backdropFilter='blur(0px)';back.style.webkitBackdropFilter='blur(0px)';
-     run(back,[{opacity:0,backdropFilter:'blur(0px)'},{opacity:1,backdropFilter:`blur(${blur}px)`}],{duration,easing:'ease-out',fill:'both'});
-     // Atomic hand-off: only the image-caption snapshots are swapped; text cross-fades in place.
-     morphs.forEach(m=>{if(m.from?.isConnected)hideLayer(m.from);if(m.to?.isConnected)hideLayer(m.to)});
-     const badgeMorph=morphs.find(m=>m.to===$('modal-tag'));
-     handoffBadge(badgeMorph,duration);
-     src.style.visibility='hidden';
-     animations.forEach(a=>{try{a.play()}catch(_){}});
-     Promise.all(animations.map(a=>a.finished.catch(()=>null))).then(()=>{
-       if(my!==token)return;if(flight){flight.remove();flight=null}
-       layerFlights.forEach(n=>n.remove());layerFlights=[];layerHidden.forEach(el=>{if(el?.isConnected)el.style.visibility=''});layerHidden=[];
-       textPairs.forEach(([from,to])=>{if(from?.isConnected)from.style.opacity='0';if(to?.isConnected)to.style.opacity='1'});
-       const modalGlass=sheet.querySelector('.xia-modal-photo-frame .glass-image-overlay');if(modalGlass)modalGlass.style.opacity='1';
-       const closeBtn=$('story-modal-close');if(closeBtn){closeBtn.style.opacity='1';closeBtn.style.transform='none'}
-       src.style.visibility='';target.style.opacity='1';sheet.style.transform='none';sheet.style.borderRadius='';back.style.opacity='';
-       animations.forEach(a=>{try{a.cancel()}catch(_){}});animations=[];busy=false;opened=true;phase='idle';if(closeQueued)window.closeStoryModal();
-     });
-   }));
- };
- window.closeStoryModal=async()=>{
-   if(busy){if(phase==='opening')closeQueued=true;return}if(!opened)return;
-   const src=getSource(activeIndex);if(!src){finishCleanup(false);return}
-   const my=++token;busy=true;phase='closing';closeQueued=false;stopAnimations();
-   const end=box(sheet),start=box(src),dest=box(target),tier=root.dataset.perf||'mid';
-   if(reduce.matches||start.w<1||dest.w<1){finishCleanup();return}
-   flight=await makeFlight(target);if(my!==token){if(flight){flight.remove();flight=null}return}if(!flight){finishCleanup();return}
-   const card=src.closest('.fluid-card');
-   // Reverse the same image-caption morph; text returns with an opacity cross-fade.
-   const morphs=[
-     // Reverse the badge's position and color morph on close.
-     layerFlight($('modal-tag'),card?.querySelector('.xia-photo-frame > span'))
-   ].filter(Boolean);
-   const captionNodes=card?.querySelectorAll('.xia-photo-caption > span');
-   const textPairs=[
-     [$('modal-location'),captionNodes?.[0]],
-     [$('modal-date'),captionNodes?.[1]],
-     [$('modal-title'),card?.querySelector('h3')],
-     [$('modal-desc'),card?.querySelector('p')]
-   ].filter(([a,b])=>a&&b);
-   const lite=tier==='lite',duration=lite?220:(tier==='high'?330:275);
-   const dx=start.x-dest.x,dy=start.y-dest.y,sx=start.w/dest.w,sy=start.h/dest.h;
-   const panelEnd={transform:`translate3d(${start.x-end.x}px,${start.y-end.y}px,0) scale(${start.w/end.w},${start.h/end.h})`,borderRadius:radius(src)};
-   const panelFrames=lite?[{transform:'none',borderRadius:radius(sheet),offset:0},{transform:`translate3d(${(start.x-end.x)*.18}px,${(start.y-end.y)*.18}px,0) scale(${1+(start.w/end.w-1)*.18},${1+(start.h/end.h-1)*.18})`,borderRadius:radius(sheet),offset:.78},{...panelEnd,offset:1}]:[{transform:'none',borderRadius:radius(sheet),offset:0},{transform:`translate3d(${(start.x-end.x)*.16}px,${(start.y-end.y)*.16}px,0) scale(${1+(start.w/end.w-1)*.16},${1+(start.h/end.h-1)*.16})`,borderRadius:radius(sheet),offset:.22},{transform:`translate3d(${(start.x-end.x)*.68}px,${(start.y-end.y)*.68}px,0) scale(${1+(start.w/end.w-1)*.68},${1+(start.h/end.h-1)*.68})`,borderRadius:radius(sheet),offset:.58},{...panelEnd,offset:1}];
-   const sheetPaint=getComputedStyle(sheet);
-   const imageFrames=[{transform:'none',borderRadius:radius(target),offset:0},{transform:`translate3d(${dx*.72}px,${dy*.72}px,0) scale(${1+(sx-1)*.72},${1+(sy-1)*.72})`,borderRadius:radius(target),offset:.28},{transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,borderRadius:radius(src),offset:1}];
-   run(sheet,panelFrames,{duration,easing:ease,fill:'both'});run(flight,imageFrames,{duration,easing:ease,fill:'both'});flight.style.opacity='1';flight.style.visibility='visible';
-   sheet.style.backgroundColor=sheetPaint.backgroundColor;sheet.style.borderColor=sheetPaint.borderColor;
-   morphs.forEach(m=>runLayers(m,duration));
-   const badgeMorph=morphs.find(m=>m.from===$('modal-tag'));
-   // Reverse the metadata hand-off: modal text fades out first, then the
-   // original card metadata fades back into its own position.
-   textPairs.forEach(([from,to])=>fadeSwap(from,to,duration,false));
-   const cardGlass=card?.querySelector('.xia-photo-caption');
-   const modalGlass=sheet.querySelector('.xia-modal-photo-frame .glass-image-overlay');
-   if(cardGlass&&modalGlass)fadeGlassSwap(modalGlass,cardGlass,duration,false);
-   fadeCloseControl(duration,false);
-   const blur=modalBlur(tier);
-   back.style.backdropFilter=`blur(${blur}px)`;back.style.webkitBackdropFilter=`blur(${blur}px)`;
-   run(back,[{opacity:1,backdropFilter:`blur(${blur}px)`},{opacity:0,backdropFilter:'blur(0px)'}],{duration,easing:'ease-in',fill:'both'});
-   // Match opening: text is cross-faded without stretching or swapping its content.
-   morphs.forEach(m=>{if(m.from?.isConnected)hideLayer(m.from);if(m.to?.isConnected)hideLayer(m.to)});
-   handoffBadge(badgeMorph,duration);
-   target.style.opacity='0';src.style.visibility='hidden';
-   animations.forEach(a=>{try{a.play()}catch(_){}});
-   Promise.all(animations.map(a=>a.finished.catch(()=>null))).then(()=>{if(my===token)finishCleanup()});
- };
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&opened&&!busy)window.closeStoryModal()});
- addEventListener('resize',()=>{if(opened&&!busy){sheet.style.transform='none';sheet.style.borderRadius=''}},{passive:true});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)window.closeStoryModal()});
+ /* tarik ke bawah untuk menutup (seperti sheet iOS), hanya saat isi sudah di paling atas */
+ var y0=0,dy=0,drag=false;
+ sheet.addEventListener('touchstart',function(e){if(!isOpen||e.touches.length!==1)return;y0=e.touches[0].clientY;dy=0;drag=false},{passive:true});
+ sheet.addEventListener('touchmove',function(e){
+  if(!isOpen||e.touches.length!==1)return;
+  var d=e.touches[0].clientY-y0;
+  if(!drag){if(d>8&&modal.scrollTop<=0){drag=true;modal.classList.add('is-drag')}else return}
+  dy=Math.max(0,d);e.preventDefault();
+  sheet.style.setProperty('--dy',dy+'px');modal.style.setProperty('--bo',String(Math.max(.2,1-dy/420)));
+ },{passive:false});
+ function endDrag(){
+  if(!drag)return;drag=false;modal.classList.remove('is-drag');
+  if(dy>110){window.closeStoryModal()}else{sheet.style.removeProperty('--dy');modal.style.removeProperty('--bo')}
+  dy=0;
+ }
+ sheet.addEventListener('touchend',endDrag,{passive:true});sheet.addEventListener('touchcancel',endDrag,{passive:true});
 })();
 </script>
 
@@ -3458,14 +3206,14 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
 <div id="xia-chatbot-backdrop" aria-hidden="true">
   <section id="xia-chatbot-window" role="dialog" aria-modal="true" aria-labelledby="xia-chatbot-title">
     <header class="flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b" style="border-color:rgba(35,70,54,.12);background:rgba(255,255,255,.58)">
-      <div class="flex items-center gap-3 min-w-0"><div class="w-11 h-11 rounded-2xl grid place-items-center" style="background:#dceee3;color:#245b43"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg></div><div class="min-w-0"><h2 id="xia-chatbot-title" class="font-extrabold text-lg leading-tight">AI Chatbot</h2><p class="text-xs opacity-65">Asisten XI.2 Creative Lab</p></div></div>
-      <button type="button" onclick="closeChatbot()" aria-label="Tutup AI Chatbot" class="w-10 h-10 rounded-full grid place-items-center hover:bg-black/5"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      <div class="flex items-center gap-3 min-w-0"><div class="w-11 h-11 rounded-2xl grid place-items-center" style="background:#dceee3;color:#245b43"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg></div><div class="min-w-0"><h2 id="xia-chatbot-title" class="font-extrabold text-lg leading-tight">Labz AI</h2><p class="text-xs opacity-65">Asisten XI.2 Creative Lab</p></div></div>
+      <button type="button" onclick="closeChatbot()" aria-label="Tutup Labz AI" class="w-10 h-10 rounded-full grid place-items-center hover:bg-black/5"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </header>
     <div id="xia-chatbot-messages" class="xia-chat-scroll flex-1 px-5 sm:px-6 py-5 space-y-4" aria-live="polite">
-      <div class="max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed" style="background:#e8f0e9">Halo! Aku asisten XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
+      <div class="max-w-[88%] rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed" style="background:#e8f0e9">Halo! Aku Labz, asisten XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
     </div>
     <form id="xia-chatbot-form" class="p-4 sm:p-5 border-t" style="border-color:rgba(35,70,54,.12);background:rgba(255,255,255,.62)">
-      <div class="flex items-end gap-2 rounded-3xl p-2 pl-4 border" style="border-color:rgba(35,70,54,.18);background:rgba(255,255,255,.8)"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk AI Chatbot"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button></div>
+      <div class="flex items-end gap-2 rounded-3xl p-2 pl-4 border" style="border-color:rgba(35,70,54,.18);background:rgba(255,255,255,.8)"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk Labz AI"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button></div>
       <p id="xia-chat-note" class="text-[10px] opacity-55 mt-2 px-2">Jawaban AI bisa keliru. Pesan dikirim ke server untuk diproses.</p>
     </form>
   </section>
@@ -3890,6 +3638,19 @@ const open=()=>{if(!client()){msg('Belum bisa dipakai sekarang.',1);return}
 const init=()=>{const c=$('nl-card');if(!c)return;c.addEventListener('click',open);tick();wall();sync();
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){sync();wall()}});setInterval(()=>{if(!document.hidden)wall()},90000)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<script>
+/* overlay pesan anonim mengikuti area yang terlihat saat keyboard HP muncul */
+(function(){var vv=window.visualViewport;if(!vv)return;
+function fit(){var ov=document.querySelector('.nl-ov');if(!ov)return;var sh=ov.querySelector('.nl-sheet');
+ if(!ov.classList.contains('is-open')){ov.style.top='';ov.style.height='';ov.style.bottom='';if(sh)sh.style.maxHeight='';return}
+ ov.style.bottom='auto';ov.style.top=vv.offsetTop+'px';ov.style.height=vv.height+'px';
+ if(sh)sh.style.maxHeight=Math.floor(vv.height*.96)+'px';
+ var a=document.activeElement;if(a&&a.tagName==='TEXTAREA'&&ov.contains(a))setTimeout(function(){try{a.scrollIntoView({block:'nearest'})}catch(e){}},60)}
+vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit);
+document.addEventListener('focusin',function(){setTimeout(fit,250);setTimeout(fit,600)});
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#nl-card,.nl-x,.nl-back')){setTimeout(fit,100);setTimeout(fit,500)}});
 })();
 </script>
 </body>

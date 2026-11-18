@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Pesan Anonim — XI.2 Creative Lab</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#fff1f4">
@@ -357,6 +357,19 @@ const init=()=>{live();$('nl-card').addEventListener('click',open);$('more').onc
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 
+</script>
+<script>
+/* overlay pesan anonim mengikuti area yang terlihat saat keyboard HP muncul */
+(function(){var vv=window.visualViewport;if(!vv)return;
+function fit(){var ov=document.querySelector('.nl-ov');if(!ov)return;var sh=ov.querySelector('.nl-sheet');
+ if(!ov.classList.contains('is-open')){ov.style.top='';ov.style.height='';ov.style.bottom='';if(sh)sh.style.maxHeight='';return}
+ ov.style.bottom='auto';ov.style.top=vv.offsetTop+'px';ov.style.height=vv.height+'px';
+ if(sh)sh.style.maxHeight=Math.floor(vv.height*.96)+'px';
+ var a=document.activeElement;if(a&&a.tagName==='TEXTAREA'&&ov.contains(a))setTimeout(function(){try{a.scrollIntoView({block:'nearest'})}catch(e){}},60)}
+vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit);
+document.addEventListener('focusin',function(){setTimeout(fit,250);setTimeout(fit,600)});
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#nl-card,.nl-x,.nl-back')){setTimeout(fit,100);setTimeout(fit,500)}});
+})();
 </script>
 </body>
 </html>
