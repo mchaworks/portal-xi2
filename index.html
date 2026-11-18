@@ -961,7 +961,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
     <div class="fixed bottom-4 sm:bottom-5 inset-x-3 sm:inset-x-4 z-40 flex flex-col items-center pointer-events-none">
         <!-- Floating Gesture Feedback Pill -->
         <div id="liquid-dock-hint" class="mb-2 px-3.5 py-1 rounded-full multi-layer-glass text-[11px] font-bold text-m3-onSurface shadow-md translate-y-2 pointer-events-none transition-all duration-300 flex items-center gap-1.5" style="visibility: hidden;">
-            <span class="material-symbols-rounded text-m3-primary text-[14px]">water_drop</span>
+            <span id="liquid-hint-ico" class="inline-flex items-center justify-center text-m3-primary" style="width:14px;height:14px" aria-hidden="true"></span>
             <span id="liquid-hint-text">Geser lensa Liquid Glass</span>
         </div>
 
@@ -2297,6 +2297,16 @@ html[data-perf="lite"] .dcw-leak{display:none}
             const lens = document.getElementById('liquid-glass-lens');
             const hint = document.getElementById('liquid-dock-hint');
             const hintText = document.getElementById('liquid-hint-text');
+            const hintIco = document.getElementById('liquid-hint-ico');
+            /* ikon di pill "Menuju: ..." = ikon tombol tujuan (Beranda, Sorotan, Jadwal, Anggota, Tugas) */
+            function setHintIcon(btn) {
+                if (!hintIco || !btn) return;
+                const src = btn.querySelector('.dock-ico');
+                if (!src) return;
+                const c = src.cloneNode(true);
+                c.setAttribute('width', '14'); c.setAttribute('height', '14');
+                hintIco.replaceChildren(c);
+            }
             if (!dock || !lens) return;
 
             const items = Array.from(dock.querySelectorAll('.dock-nav-btn'));
@@ -2360,6 +2370,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
             function activateHoldMode(clientX) {
                 if (window.isLiquidDockDragging) return;
                 window.isLiquidDockDragging = true;
+                setHintIcon(items[activeDockIndex]);
                 if (window.__wakeLens) __wakeLens();
                 dock.style.transform = 'translate3d(0,-2px,0)';
                 if (hint) {
@@ -2397,6 +2408,7 @@ html[data-perf="lite"] .dcw-leak{display:none}
                     if (hintText) {
                         hintText.textContent = `Menuju: ${targetBtn.getAttribute('data-dock-label')}`;
                     }
+                    setHintIcon(targetBtn);
                 }
             }
 
@@ -3817,7 +3829,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
  document.querySelectorAll('.xc-chip').forEach(function(b){b.addEventListener('click',function(){if(!inp||!form)return;inp.value=b.getAttribute('data-q')||b.textContent;form.requestSubmit()})});
 })();
 </script>
-<link rel="stylesheet" href="./theme.css?v=4">
+<link rel="stylesheet" href="./theme.css?v=5">
 <script src="./theme.js?v=2"></script>
 </body>
 </html>

@@ -251,3 +251,16 @@ html[data-mode="dark"] .lg-dock-bg{background:rgb(var(--glass-rgb))}
 #liquid-glass-dock .dock-nav-btn{padding-left:0!important;padding-right:0!important;min-width:0}
 #liquid-glass-dock .dock-nav-btn>span:not(.dock-ico):not(.material-symbols-rounded){font-size:10px;letter-spacing:-.01em}
 .liquid-glass-lens,#liquid-glass-lens{top:6px!important;bottom:6px!important}
+
+/* ---------- 11. Ganti tema: header/dock tidak boleh loncat ---------- */
+/* Grup View Transition 'root' secara bawaan menganimasikan ukuran/posisi lama -> baru. Kalau viewport berubah
+   beberapa px (toolbar Chrome / theme-color), seluruh layar termasuk header sticky ikut "naik sedikit lalu balik".
+   Dikunci: yang beranimasi hanya lingkaran reveal-nya (diatur di theme.js). */
+::view-transition-group(root){animation:none!important}
+html.xia-theme-switching{overflow-anchor:none}
+
+/* ---------- 12. Background bawah tidak "kosong lalu terisi" ---------- */
+/* Saat toolbar Chrome menyusut waktu scroll, layer gradien fixed (setinggi viewport kecil) telat memanjang
+   sehingga bagian bawah sempat kosong. Dibuat setinggi viewport BESAR (lvh) dan warna dasar html disamakan. */
+html{background-color:var(--md-sys-color-surface)}
+html body::before{top:0!important;left:0!important;right:0!important;bottom:auto!important;height:120vh!important;height:100lvh!important;min-height:100%}
