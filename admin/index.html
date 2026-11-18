@@ -683,6 +683,10 @@ label.row{font-size:.85rem;color:var(--md-sys-color-on-surface);margin-top:.9rem
 #dock-hint.show{opacity:1;transform:none}
 .dock-ico{font-size:22px;line-height:1}
 .tab-in{animation:tabIn .5s var(--spring-curve)}
+.ngl-i{padding:12px 14px;border-radius:18px;background:var(--md-sys-color-surface-container-high);margin:.5rem 0;animation:tabIn .4s var(--spring-curve)}
+.ngl-i .tg{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:99px;background:linear-gradient(120deg,#ff2d7a,#ff9a3d);color:#fff}
+.ngl-i p.b{margin:.5rem 0 .2rem;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+.ngl-i .re{margin:.4rem 0;padding:.5rem .7rem;border-radius:12px;background:var(--md-sys-color-secondary-container,rgba(128,128,128,.15));font-size:.85rem;overflow-wrap:anywhere}
 @keyframes tabIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.tab-in,.notice{animation:none}#liquid-glass-lens{transition:none}}
 main#app-main{padding-bottom:9rem}
@@ -749,6 +753,7 @@ main#app-main{padding-bottom:9rem}
         <button type="button" class="stat" data-tab="tasks"><span class="stat-ico material-symbols-rounded">task_alt</span><span class="stat-l">Tugas aktif (belum lewat deadline)</span><strong id="count-tasks">—</strong></button>
         <button type="button" class="stat" data-tab="media"><span class="stat-ico material-symbols-rounded">photo_library</span><span class="stat-l">File media</span><strong id="count-media">—</strong></button>
         <button type="button" class="stat" data-tab="moments"><span class="stat-ico material-symbols-rounded">photo_camera</span><span class="stat-l">Foto menunggu persetujuan</span><strong id="count-moments">—</strong></button>
+        <button type="button" class="stat" data-tab="moments"><span class="stat-ico material-symbols-rounded">forum</span><span class="stat-l">Pesan anonim menunggu</span><strong id="count-ngl">—</strong></button>
         <button type="button" class="stat" data-tab="tasks"><span class="stat-ico material-symbols-rounded">add</span><span class="stat-l">Usulan tugas siswa</span><strong id="count-suggest">—</strong></button>
       </div>
       <div class="panel" style="max-width:720px">
@@ -761,7 +766,7 @@ main#app-main{padding-bottom:9rem}
 <section id="tab-tasks" class="hidden"><div class="panel" style="margin-bottom:16px"><h3>Usulan dari pengunjung <span id="suggest-count"></span></h3><p class="small">Usulan tugas dari siswa. Setujui untuk menampilkannya di daftar tugas, atau tolak untuk menghapusnya.</p><div id="suggest-list">Memuat…</div></div><div class="split"><form id="task-form" class="panel"><h3 id="task-form-title">Buat tugas</h3><input type="hidden" id="task-id"><div class="field"><label>Nama tugas</label><input id="task-title" required maxlength="140"></div><div class="field"><label>Mata pelajaran</label><input id="task-subject" placeholder="Contoh: Matematika"></div><div class="field"><label>Deskripsi / instruksi</label><textarea id="task-description"></textarea></div><div class="field"><label>Deadline</label><input id="task-deadline" type="date"></div><div class="field"><label>Lampiran (opsional)</label><input id="task-file" type="file"><div class="small">Maks 10 MB.</div></div><label class="row hidden" id="task-remove-file-wrap"><input id="task-remove-file" type="checkbox" style="width:auto"> Hapus lampiran saat ini</label><label class="row"><input id="task-published" type="checkbox" style="width:auto" checked> Tampilkan ke siswa</label><div class="row" style="margin-top:15px"><button class="btn" id="task-save">Simpan tugas</button><button type="button" class="btn secondary" id="task-reset">Batal / reset</button></div></form><div class="panel"><h3>Daftar tugas</h3><div id="task-list">Memuat…</div></div></div></section>
 <section id="tab-media" class="hidden"><div class="panel"><h3>Media yang diunggah</h3><p class="small">File disimpan di Supabase Storage bucket <b>class-media</b>. Menghapus berita atau tugas ikut menghapus file lampirannya.</p><div id="media-list">Memuat…</div></div></section><section id="tab-schedule" class="hidden"><div class="split"><div><form id="lesson-form" class="panel"><h3 id="lesson-form-title">Tambah mata pelajaran</h3><input type="hidden" id="lesson-id"><div class="field"><label>Hari</label><select id="lesson-day"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option></select></div><div class="field"><label>Jam</label><input id="lesson-time" maxlength="30" placeholder="Contoh: 07.00 - 08.30"></div><div class="field"><label>Mata pelajaran</label><input id="lesson-subject" required maxlength="100"></div><div class="field"><label>Guru</label><input id="lesson-teacher" maxlength="100"></div><div class="field"><label>Ruang</label><input id="lesson-room" maxlength="60" placeholder="Contoh: R. XI.2"></div><div class="field"><label>Urutan tampil</label><input id="lesson-order" type="number" value="0"><div class="small">Angka kecil tampil lebih dulu.</div></div><div class="row" style="margin-top:15px"><button class="btn" id="lesson-save">Simpan pelajaran</button><button type="button" class="btn secondary" id="lesson-reset">Batal / reset</button></div></form><form id="piket-form" class="panel" style="margin-top:18px"><h3>Regu piket</h3><div class="field"><label>Hari</label><select id="piket-day"><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option></select></div><div class="field"><label>Nama petugas (pisahkan dengan koma atau baris baru)</label><textarea id="piket-members"></textarea></div><button class="btn" id="piket-save">Simpan piket</button></form></div><div class="panel"><h3>Jadwal per hari</h3><div id="schedule-list">Memuat…</div></div></div></section>
 <section id="tab-members" class="hidden"><div class="split"><div><form id="member-form" class="panel"><h3 id="member-form-title">Tambah anggota</h3><input type="hidden" id="member-id"><div class="field"><label>Nama</label><input id="member-name" required maxlength="80"></div><div class="field"><label>Jabatan</label><input id="member-role" maxlength="80" placeholder="Contoh: Ketua Kelas"></div><div class="field"><label>Kategori</label><select id="member-category"><option value="pengurus">Pengurus Inti</option><option value="koordinator">Seksi Bidang</option><option value="anggota" selected>Anggota</option></select></div><div class="field"><label>Motto (opsional)</label><input id="member-motto" maxlength="120"></div><div class="field"><label>Urutan tampil</label><input id="member-order" type="number" value="0"></div><div class="row" style="margin-top:15px"><button class="btn" id="member-save">Simpan anggota</button><button type="button" class="btn secondary" id="member-reset">Batal / reset</button></div></form><form id="bulk-form" class="panel" style="margin-top:18px"><h3>Tambah banyak sekaligus</h3><div class="field"><label>Satu nama per baris (maks 100)</label><textarea id="bulk-names"></textarea></div><div class="field"><label>Kategori</label><select id="bulk-category"><option value="anggota" selected>Anggota</option><option value="koordinator">Seksi Bidang</option><option value="pengurus">Pengurus Inti</option></select></div><button class="btn" id="bulk-save">Tambah semua</button></form></div><div class="panel"><h3>Daftar anggota</h3><div id="member-list">Memuat…</div></div></div></section>
-<section id="tab-moments" class="hidden"><div class="panel"><h3>Menunggu persetujuan <span id="mom-count"></span></h3><p class="small">Foto dari kamera siswa. Setujui agar tampil di galeri web utama.</p><div id="mom-pending" class="moms">Memuat…</div></div><div class="panel" style="margin-top:16px"><h3>Sudah tampil</h3><div id="mom-live" class="moms"></div></div></section>
+<section id="tab-moments" class="hidden"><div class="panel"><h3>Menunggu persetujuan <span id="mom-count"></span></h3><p class="small">Foto dari kamera siswa. Setujui agar tampil di galeri web utama.</p><div class="row" style="margin:.7rem 0 .3rem"><button type="button" class="btn" data-act="ok-all-mom">Setujui semua</button><button type="button" class="btn secondary" data-act="reset-quota">Reset jatah kamera</button></div><p class="small" id="mom-quota-note">Reset jatah: semua siswa dapat 5 foto lagi hari ini.</p><div id="mom-pending" class="moms">Memuat…</div></div><div class="panel" style="margin-top:16px"><h3>Sudah tampil</h3><div class="row" style="margin:.5rem 0"><button type="button" class="btn secondary" data-act="no-all-mom">Batalkan semua persetujuan</button></div><div id="mom-live" class="moms"></div></div><div class="panel" style="margin-top:16px"><h3>Pesan anonim menunggu <span id="ngl-count"></span></h3><p class="small">Pesan dari siswa (tanpa nama). Setujui agar tampil di dinding web utama. Tolak akan menghapus pesan permanen. Pengirim dibatasi 1 pesan per 10 menit.</p><div class="row" style="margin:.7rem 0 .3rem"><button type="button" class="btn" data-act="ok-all-ngl">Setujui semua</button></div><div id="ngl-pending">Memuat…</div></div><div class="panel" style="margin-top:16px"><h3>Pesan di dinding</h3><div class="row" style="margin:.5rem 0"><button type="button" class="btn secondary" data-act="no-all-ngl">Batalkan semua persetujuan</button></div><div id="ngl-live"></div></div></section>
 <section id="tab-settings" class="hidden"><form id="settings-form" class="panel" style="max-width:640px"><h3>Pengaturan situs</h3><div class="field"><label>Nama portal kelas</label><input id="set-class" maxlength="60"></div><div class="field"><label>Sekolah &amp; tahun ajaran</label><input id="set-school" maxlength="100"></div><div class="field"><label>Wali kelas (kosongkan untuk menyembunyikan)</label><input id="set-homeroom" maxlength="100"></div><div class="field"><label>Jumlah siswa</label><input id="set-students" type="number" min="0" max="999"></div><div class="field"><label>Slogan kelas (opsional)</label><input id="set-slogan" maxlength="100"></div><div class="field"><label>Foto utama beranda (opsional)</label><input id="set-hero" type="file" accept="image/*"><div class="small" id="set-hero-current"></div><div class="small">Maks 5 MB.</div></div><label class="row hidden" id="set-hero-remove-wrap"><input id="set-hero-remove" type="checkbox" style="width:auto"> Hapus foto saat ini</label><div style="margin-top:15px"><button class="btn" id="settings-save">Simpan pengaturan</button></div></form></section>
 
   </main>
@@ -817,7 +822,7 @@ $('login-form').addEventListener('submit',async e=>{
 $('logout').onclick=()=>db&&db.auth.signOut();
 
 const TITLES={dashboard:'Dashboard',news:'Berita & Pengumuman',tasks:'Manajemen Tugas',schedule:'Jadwal & Piket',members:'Anggota Kelas',media:'Media & Lampiran',settings:'Pengaturan Situs',moments:'Momen Kelas'};
-const SUBS={dashboard:'Kelola konten yang akan tampil di website kelas.',news:'Buat, edit, dan publikasikan berita serta pengumuman.',tasks:'Atur daftar tugas dan setujui usulan dari siswa.',schedule:'Susun jadwal pelajaran dan regu piket per hari.',members:'Kelola pengurus, seksi bidang, dan anggota kelas.',media:'Semua file yang diunggah ke Supabase Storage.',settings:'Ubah identitas kelas dan foto utama beranda.',moments:'Setujui foto dari kamera sekali pakai siswa.'};
+const SUBS={dashboard:'Kelola konten yang akan tampil di website kelas.',news:'Buat, edit, dan publikasikan berita serta pengumuman.',tasks:'Atur daftar tugas dan setujui usulan dari siswa.',schedule:'Susun jadwal pelajaran dan regu piket per hari.',members:'Kelola pengurus, seksi bidang, dan anggota kelas.',media:'Semua file yang diunggah ke Supabase Storage.',settings:'Ubah identitas kelas dan foto utama beranda.',moments:'Setujui foto kamera dan pesan anonim dari siswa.'};
 const ICONS={dashboard:'home',news:'campaign',tasks:'task_alt',schedule:'calendar_month',members:'groups',media:'photo_library',settings:'tune',moments:'photo_camera'};
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 function showTab(tab){
@@ -853,7 +858,7 @@ async function removeFiles(urls){
 
 /* ---------- Load ---------- */
 async function refreshAll(){
-  const res=await Promise.allSettled([loadNews(),loadTasks(),loadSuggestions(),loadMoments(),loadMedia(),loadSchedule(),loadMembers(),loadSettings()]);
+  const res=await Promise.allSettled([loadNews(),loadTasks(),loadSuggestions(),loadMoments(),loadNgl(),loadMedia(),loadSchedule(),loadMembers(),loadSettings()]);
   const errs=res.filter(r=>r.status==='rejected').map(r=>errText(r.reason));
   renderStats();
   if(errs.length)notice('Sebagian data gagal dimuat: '+errs.join('; '),true);
@@ -864,9 +869,9 @@ function renderStats(){
   const t=todayStr();
   $('count-tasks').textContent=taskRows.filter(r=>r.published&&(!r.deadline||r.deadline>=t)).length;
   $('count-media').textContent=mediaCount;
-  const pm=momRows.filter(x=>x.status==='pending').length,ps=suggestRows.length;
-  $('count-moments').textContent=pm;$('count-suggest').textContent=ps;
-  document.querySelectorAll('[data-badge]').forEach(el=>{const n=el.dataset.badge==='moments'?pm:ps;el.textContent=n>99?'99+':String(n);el.classList.toggle('hidden',!n)});
+  const pm=momRows.filter(x=>x.status==='pending').length,ps=suggestRows.length,pn=nglRows.filter(x=>x.status==='pending').length;
+  $('count-moments').textContent=pm;$('count-suggest').textContent=ps;$('count-ngl').textContent=pn;
+  document.querySelectorAll('[data-badge]').forEach(el=>{const n=el.dataset.badge==='moments'?pm+pn:ps;el.textContent=n>99?'99+':String(n);el.classList.toggle('hidden',!n)});
 }
 async function loadNews(){
   const {data,error}=await db.from('announcements').select('*').order('created_at',{ascending:false});
@@ -907,7 +912,34 @@ async function loadMoments(){
   $('mom-live').innerHTML=live.map(card).join('')||'<p class="small">Belum ada foto yang tampil.</p>';
 }
 async function setMom(id,status){try{const {error}=await db.from('class_moments').update({status}).eq('id',id);if(error)throw error;const e=await refreshAll();if(!e.length)notice(status==='approved'?'Foto tampil di galeri.':'Foto disembunyikan.');}catch(err){notice(errText(err),true);}}
+async function bulkMom(from,to,label){const n=momRows.filter(x=>from==='pending'?x.status==='pending':x.status!=='pending').length;
+  if(!n){notice('Tidak ada foto untuk diproses.');return}
+  if(!confirm(label+' ('+n+' foto)?'))return;
+  try{const {error}=await db.from('class_moments').update({status:to}).eq('status',from==='pending'?'pending':'approved');if(error)throw error;const e=await refreshAll();if(!e.length)notice(to==='approved'?n+' foto disetujui dan tampil di galeri.':n+' foto dikembalikan ke antrean (tidak tampil).');}catch(err){notice(errText(err),true);}}
+async function resetQuota(){if(!confirm('Reset jatah kamera? Semua siswa bisa mengambil 5 foto lagi hari ini.'))return;
+  try{const {error}=await db.from('class_moments').update({quota_void:true}).eq('quota_void',false);if(error)throw error;notice('Jatah kamera direset. Siswa mendapat 5 foto lagi (berlaku dalam maksimal sekitar 1 menit di HP mereka).');}catch(err){notice(errText(err),true);}}
 async function delMom(id){const x=momRows.find(r=>r.id===id);if(!x||!confirm('Hapus foto ini permanen?'))return;try{await db.storage.from('moments').remove([x.path]);const {error}=await db.from('class_moments').delete().eq('id',id);if(error)throw error;const e=await refreshAll();if(!e.length)notice('Foto dihapus.');}catch(err){notice(errText(err),true);}}
+let nglRows=[];
+const NGLCOLS='id,body,target_name,status,reply,created_at';
+const fmtDT=s=>{const d=new Date(s);return isNaN(d)?'':d.toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})};
+async function loadNgl(){
+  const {data,error}=await db.from('ngl_messages').select(NGLCOLS).order('created_at',{ascending:false}).limit(200);
+  if(error){$('ngl-pending').innerHTML='<p class="small">Gagal memuat pesan anonim.</p>';throw error;}
+  nglRows=data||[];
+  const card=x=>`<div class="ngl-i"><span class="tg">Untuk ${esc(x.target_name||'seluruh kelas')}</span> <span class="small">${esc(fmtDT(x.created_at))}</span><p class="b">${esc(x.body)}</p>${x.reply?`<div class="re"><b>Balasan:</b> ${esc(x.reply)}</div>`:''}<div class="row">${x.status==='pending'?`<button class="btn" data-act="ok-ngl" data-id="${esc(x.id)}">Setujui</button><button class="btn danger" data-act="del-ngl" data-id="${esc(x.id)}">Tolak</button>`:`<button class="btn" data-act="re-ngl" data-id="${esc(x.id)}">${x.reply?'Ubah balasan':'Balas'}</button><button class="btn secondary" data-act="hide-ngl" data-id="${esc(x.id)}">Sembunyikan</button><button class="btn danger" data-act="del-ngl" data-id="${esc(x.id)}">Hapus</button>`}</div></div>`;
+  const pend=nglRows.filter(x=>x.status==='pending'),live=nglRows.filter(x=>x.status!=='pending');
+  $('ngl-count').textContent=pend.length?'('+pend.length+')':'';
+  $('ngl-pending').innerHTML=pend.map(card).join('')||'<p class="small">Tidak ada pesan yang menunggu.</p>';
+  $('ngl-live').innerHTML=live.map(card).join('')||'<p class="small">Belum ada pesan yang tampil.</p>';
+}
+async function setNgl(id,status){try{const {error}=await db.from('ngl_messages').update({status}).eq('id',id);if(error)throw error;const e=await refreshAll();if(!e.length)notice(status==='approved'?'Pesan tampil di dinding.':'Pesan disembunyikan (kembali ke antrean).');}catch(err){notice(errText(err),true);}}
+async function bulkNgl(from,to,label){const n=nglRows.filter(x=>x.status===from).length;
+  if(!n){notice('Tidak ada pesan untuk diproses.');return}
+  if(!confirm(label+' ('+n+' pesan)?'))return;
+  try{const {error}=await db.from('ngl_messages').update({status:to}).eq('status',from);if(error)throw error;const e=await refreshAll();if(!e.length)notice(to==='approved'?n+' pesan disetujui dan tampil di dinding.':n+' pesan dikembalikan ke antrean.');}catch(err){notice(errText(err),true);}}
+async function delNgl(id){if(!confirm('Hapus pesan ini permanen?'))return;try{const {error}=await db.from('ngl_messages').delete().eq('id',id);if(error)throw error;const e=await refreshAll();if(!e.length)notice('Pesan dihapus.');}catch(err){notice(errText(err),true);}}
+async function replyNgl(id){const x=nglRows.find(r=>r.id===id);if(!x)return;const t=window.prompt('Balasan untuk pesan ini (maks 300 huruf, kosongkan untuk menghapus balasan):',x.reply||'');if(t===null)return;
+  const v=t.trim().slice(0,300);try{const {error}=await db.from('ngl_messages').update({reply:v||null}).eq('id',id);if(error)throw error;const e=await refreshAll();if(!e.length)notice(v?'Balasan disimpan.':'Balasan dihapus.');}catch(err){notice(errText(err),true);}}
 async function loadTasks(){
   const {data,error}=await db.from('assignments').select('*').order('created_at',{ascending:false});
   if(error){$('task-list').innerHTML='<p class="small">Gagal memuat.</p>';throw error;}
@@ -1046,6 +1078,15 @@ document.addEventListener('click',e=>{
   else if(a==='ok-mom')setMom(b.dataset.id,'approved');
   else if(a==='hide-mom')setMom(b.dataset.id,'pending');
   else if(a==='del-mom')delMom(b.dataset.id);
+  else if(a==='ok-all-mom')bulkMom('pending','approved','Setujui semua foto yang menunggu');
+  else if(a==='no-all-mom')bulkMom('approved','pending','Batalkan persetujuan semua foto yang tampil');
+  else if(a==='reset-quota')resetQuota();
+  else if(a==='ok-ngl')setNgl(b.dataset.id,'approved');
+  else if(a==='hide-ngl')setNgl(b.dataset.id,'pending');
+  else if(a==='del-ngl')delNgl(b.dataset.id);
+  else if(a==='re-ngl')replyNgl(b.dataset.id);
+  else if(a==='ok-all-ngl')bulkNgl('pending','approved','Setujui semua pesan anonim yang menunggu');
+  else if(a==='no-all-ngl')bulkNgl('approved','pending','Batalkan persetujuan semua pesan yang tampil');
   else if(a==='no-suggest')rejectSuggest(b.dataset.id);
   else if(a==='del-media')delMedia(b.dataset.path);
   else if(a==='edit-lesson')editLesson(b.dataset.id);
