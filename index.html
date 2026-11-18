@@ -905,7 +905,8 @@ html[data-perf="lite"] .dcw-leak{display:none}
 .xia-absen{position:absolute;right:10px;bottom:-14px;z-index:0;font-size:clamp(88px,11vw,118px);line-height:1;letter-spacing:-.06em;color:var(--md-sys-color-on-surface-variant);opacity:.13;font-variant-numeric:tabular-nums;-webkit-mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));mask-image:linear-gradient(to bottom,#000 35%,rgba(0,0,0,.35));transition:opacity .3s ease,transform .4s cubic-bezier(.32,.72,0,1)}
 .group:hover .xia-absen{opacity:.2;transform:translate3d(0,-4px,0) scale(1.03)}
 #member-filters{row-gap:8px}
-.xia-absen-off{right:8px;bottom:-8px;font-size:clamp(64px,17vw,104px)}
+.xia-absen-off{right:14px;top:10px;bottom:auto;font-size:clamp(44px,13vw,64px);opacity:.2;-webkit-mask-image:none;mask-image:none}
+.group:hover .xia-absen-off{opacity:.28;transform:translate3d(0,2px,0) scale(1.04)}
 .xia-absen.xia-absen-row{right:14px;bottom:auto;top:50%;font-size:48px;transform:translate3d(0,-50%,0);opacity:.16;-webkit-mask-image:none;mask-image:none}
 .group:hover .xia-absen.xia-absen-row{opacity:.24;transform:translate3d(0,-50%,0) scale(1.05)}
 </style>
@@ -943,11 +944,11 @@ html[data-perf="lite"] .dcw-leak{display:none}
 
             <!-- Right Controls: Quick Palette + Settings Button -->
             <div class="relative z-10 flex items-center gap-2 shrink-0">
-                <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn w-10 h-10 rounded-full bg-m3-surfaceHigh text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
+                <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn xia-glass-btn w-10 h-10 rounded-full text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
                 <!-- Expressive Settings Trigger -->
                 <button type="button" class="xia-mode-btn" data-xia-mode aria-label="Ganti mode gelap" aria-pressed="false"><svg class="xm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="xm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
                 <button onclick="openChatbot()" aria-label="Buka Labz AI" title="Labz AI"
-                        class="m3-spring-btn inline-flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-9 sm:px-3 rounded-full bg-m3-primaryContainer text-m3-onPrimaryContainer hover:bg-m3-primary hover:text-m3-onPrimary font-bold text-xs shadow-xs">
+                        class="m3-spring-btn xia-glass-btn xia-glass-accent inline-flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-9 sm:px-3 rounded-full text-m3-primary font-bold text-xs">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3a9 9 0 0 0-9 9v7a2 2 0 0 0 2 2h3v-7H5a7 7 0 0 1 14 0h-3v7h3a2 2 0 0 0 2-2v-7a9 9 0 0 0-9-9Z"/><path d="M9 18h6"/></svg>
                     <span class="hidden sm:inline">Labz AI</span>
                 </button>
@@ -1131,10 +1132,10 @@ html[data-perf="lite"] .dcw-leak{display:none}
                 </div>
 
                 <div class="flex items-center gap-2 self-start sm:self-auto">
-                    <button id="carousel-prev" aria-label="Kartu Sebelumnya" class="m3-spring-btn w-12 h-12 rounded-full bg-m3-surfaceHigh hover:bg-m3-secondaryContainer text-m3-onSurface flex items-center justify-center border border-m3-outlineVariant/40">
+                    <button id="carousel-prev" aria-label="Kartu Sebelumnya" class="m3-spring-btn xia-glass-btn w-12 h-12 rounded-full text-m3-onSurface flex items-center justify-center">
                         <span class="material-symbols-rounded">chevron_left</span>
                     </button>
-                    <button id="carousel-next" aria-label="Kartu Berikutnya" class="m3-spring-btn w-12 h-12 rounded-full bg-m3-surfaceHigh hover:bg-m3-secondaryContainer text-m3-onSurface flex items-center justify-center border border-m3-outlineVariant/40">
+                    <button id="carousel-next" aria-label="Kartu Berikutnya" class="m3-spring-btn xia-glass-btn w-12 h-12 rounded-full text-m3-onSurface flex items-center justify-center">
                         <span class="material-symbols-rounded">chevron_right</span>
                     </button>
                 </div>
@@ -3829,7 +3830,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
  document.querySelectorAll('.xc-chip').forEach(function(b){b.addEventListener('click',function(){if(!inp||!form)return;inp.value=b.getAttribute('data-q')||b.textContent;form.requestSubmit()})});
 })();
 </script>
-<link rel="stylesheet" href="./theme.css?v=5">
+<link rel="stylesheet" href="./theme.css?v=6">
 <script src="./theme.js?v=2"></script>
 </body>
 </html>

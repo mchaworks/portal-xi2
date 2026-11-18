@@ -264,3 +264,21 @@ html.xia-theme-switching{overflow-anchor:none}
    sehingga bagian bawah sempat kosong. Dibuat setinggi viewport BESAR (lvh) dan warna dasar html disamakan. */
 html{background-color:var(--md-sys-color-surface)}
 html body::before{top:0!important;left:0!important;right:0!important;bottom:auto!important;height:120vh!important;height:100lvh!important;min-height:100%}
+
+/* ---------- 6. Tombol frosted glass (search, Labz AI, carousel prev/next) — satu gaya dgn tombol mode ---------- */
+.xia-glass-btn{
+  position:relative;flex:none;overflow:hidden;cursor:pointer;
+  background:linear-gradient(150deg,rgba(255,255,255,.62),rgba(255,255,255,.22));
+  border:1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(0,0,0,.04),0 6px 16px -8px rgba(15,23,42,.38);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.xia-glass-btn:active{transform:scale(.88)}
+.xia-glass-btn:focus-visible{outline:2px solid var(--md-sys-color-primary);outline-offset:3px}
+html[data-mode="dark"] .xia-glass-btn{
+  background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.08);
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+}
+@media(prefers-reduced-transparency:reduce){.xia-glass-btn{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgb(var(--glass-rgb,245,251,246))}}
+html[data-perf="lite"] .xia-glass-btn{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
