@@ -740,7 +740,7 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
 .nl-orb.a{width:120px;height:120px;left:-30px;top:-34px}.nl-orb.b{width:70px;height:70px;right:-14px;top:38%;animation-delay:-2.5s}.nl-orb.c{width:46px;height:46px;left:18%;bottom:-16px;animation-delay:-4.5s}
 @keyframes nlFloat{50%{transform:translateY(-14px) scale(1.07)}}
 .nl-card-top{position:relative;display:flex;align-items:center;gap:8px}
-.nl-ghost{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#ff2d7a;font-size:22px;animation:nlWig 3.2s ease-in-out infinite}
+.nl-ghost{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#ff2d7a;animation:nlWig 3.2s ease-in-out infinite}
 @keyframes nlWig{0%,100%{transform:rotate(0)}10%{transform:rotate(-12deg)}20%{transform:rotate(10deg)}30%{transform:rotate(0)}}
 .nl-card-tag{font:800 11px/1 'Space Grotesk',Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;border-radius:99px;background:rgba(0,0,0,.2)}
 .nl-card-h{position:relative;font:800 clamp(24px,7vw,30px)/1.08 'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.02em}
@@ -748,9 +748,9 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
 .nl-caret{display:inline-block;width:2px;height:18px;margin-left:3px;background:#ff2d7a;animation:nlBlink 1s steps(1) infinite}
 @keyframes nlBlink{50%{opacity:0}}
 .nl-cta{position:relative;display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:99px;background:#111;color:#fff;font-size:15px}
-.nl-cta .material-symbols-rounded{font-size:20px;animation:nlNudge 2s ease-in-out infinite}
+.nl-cta .nl-ci{display:inline-flex;animation:nlNudge 2s ease-in-out infinite}
 @keyframes nlNudge{50%{transform:translate(3px,-3px)}}
-.nl-card[data-cd="1"] .nl-cta .material-symbols-rounded,.nl-card[data-cd="1"] .nl-caret{animation:none}
+.nl-card[data-cd="1"] .nl-cta .nl-ci,.nl-card[data-cd="1"] .nl-caret{animation:none}
 .nl-card[data-cd="1"] .nl-cta{background:rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
 .nl-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.18);opacity:0;transition:opacity .3s}
 .nl-card[data-cd="1"] .nl-bar{opacity:1}
@@ -798,9 +798,33 @@ html[data-perf="mid"] .m3-spin-slow{animation-duration:40s}
 .nl-conf{position:absolute;left:50%;top:150px;width:0;height:0;pointer-events:none}
 .nl-conf i{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:3px;background:var(--c);animation:nlConf .9s cubic-bezier(.1,.7,.3,1) forwards}
 @keyframes nlConf{0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.4);opacity:0}}
-@media(prefers-reduced-motion:reduce){.nl-orb,.nl-ghost,.nl-caret,.nl-cta .material-symbols-rounded,.nl-b{animation:none}.nl-sheet{transition:none}}
+@media(prefers-reduced-motion:reduce){.nl-orb,.nl-ghost,.nl-caret,.nl-cta .nl-ci,.nl-b{animation:none}.nl-sheet{transition:none}}
 .nl-nope{animation:nlNope .4s}@keyframes nlNope{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .nl-shake{animation:nlNope .4s}
+
+/* ===== STATUS PELAJARAN (berlangsung / selesai / berikutnya) ===== */
+.les-item.is-live{background:linear-gradient(135deg,color-mix(in srgb,var(--md-sys-color-primary) 16%,var(--md-sys-color-surface-container-high)),var(--md-sys-color-surface-container-high))!important;box-shadow:0 0 0 2px var(--md-sys-color-primary),0 12px 28px -12px color-mix(in srgb,var(--md-sys-color-primary) 70%,transparent);animation:lesGlow 2.6s ease-in-out infinite}
+@keyframes lesGlow{50%{box-shadow:0 0 0 2px var(--md-sys-color-primary),0 14px 34px -8px color-mix(in srgb,var(--md-sys-color-primary) 85%,transparent)}}
+.les-item.is-live .les-ico{background:var(--md-sys-color-primary)!important;color:var(--md-sys-color-on-primary)!important}
+.les-item.is-done{opacity:.55}.les-item.is-done h4{text-decoration:line-through;text-decoration-thickness:1.5px}
+.les-item.is-next{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--md-sys-color-primary) 45%,transparent)}
+.les-st{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.04em;animation:lesIn .5s var(--spring-curve) both}
+@keyframes lesIn{from{opacity:0;transform:scale(.7)}}
+.les-st.live{background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary)}
+.les-st.done{background:rgba(128,128,128,.2)}
+.les-st.next{border:1.5px dashed var(--md-sys-color-primary);color:var(--md-sys-color-primary)}
+.les-st.hidden,.les-sub.hidden{display:none!important}
+.les-sub{font-size:11px;font-weight:700;color:var(--md-sys-color-primary)}
+.les-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:lesDot 1.2s ease-in-out infinite}
+@keyframes lesDot{50%{opacity:.25;transform:scale(.7)}}
+.les-bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(128,128,128,.18);display:none}
+.les-item.is-live .les-bar{display:block}
+.les-bar b{display:block;height:100%;width:0;background:var(--md-sys-color-primary);border-radius:0 4px 4px 0;transition:width 1s linear}
+.les-sum{margin:0 0 12px;padding:13px 15px;border-radius:22px;background:var(--md-sys-color-surface-container-high);animation:lesIn .5s var(--spring-curve) both}
+.les-sum b{display:block;font:800 15px/1.25 'Bricolage Grotesque',Inter,sans-serif}.les-sum span{display:block;margin-top:2px;font-size:12px;opacity:.7}
+.les-seg{display:flex;gap:4px;margin-top:9px}.les-seg i{flex:1;height:6px;border-radius:9px;background:rgba(128,128,128,.25)}
+.les-seg i.d{background:var(--md-sys-color-primary);opacity:.5}.les-seg i.l{background:var(--md-sys-color-primary);animation:lesDot 1.2s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.les-item.is-live,.les-dot,.les-seg i.l,.les-st,.les-sum{animation:none}}
 /* ===== KARTU KAMERA (halaman utama) ===== */
 .dc-dome{position:relative}
 .dc:not([data-empty="1"]) .dc-dome::after{content:"";position:absolute;inset:-1cqw;border-radius:50%;border:.6cqw solid rgba(255,255,255,.55);animation:dcRing 2.4s ease-out infinite;pointer-events:none}
@@ -1123,16 +1147,16 @@ html[data-perf="lite"] .dcw-leak{display:none}
         </div>
         <div id="ngl" class="space-y-4 pt-6">
             <div>
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-m3-primary mb-1.5"><span class="material-symbols-rounded text-[16px]">forum</span>Pesan Anonim</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-m3-primary mb-1.5"><span class="inline-flex"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/></svg></span>Pesan Anonim</span>
                 <h2 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight">Kirim Pesan Rahasia</h2>
                 <p class="text-sm opacity-70 mt-1">Tanpa nama. Tiap 10 menit boleh kirim 1 pesan. Tampil di dinding setelah disetujui admin.</p>
             </div>
             <button id="nl-card" type="button" class="nl-card" aria-label="Kirim pesan anonim">
                 <i class="nl-orb a" aria-hidden="true"></i><i class="nl-orb b" aria-hidden="true"></i><i class="nl-orb c" aria-hidden="true"></i>
-                <span class="nl-card-top"><span class="nl-ghost material-symbols-rounded" aria-hidden="true">visibility_off</span><span class="nl-card-tag">anonim 100%</span></span>
+                <span class="nl-card-top"><span class="nl-ghost" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.6.9-1.8 2.3-3.5 3.5M6.5 7.5C4.3 8.9 2.8 10.9 2 12c1 1.5 5 6 10 6 1.4 0 2.7-.3 3.9-.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></span><span class="nl-card-tag">anonim 100%</span></span>
                 <span class="nl-card-h">kirim aku pesan<br>anonim!</span>
                 <span class="nl-fake" aria-hidden="true"><span class="nl-fake-t">ketik sesuatu</span><i class="nl-caret"></i></span>
-                <span class="nl-cta" id="nl-cta"><span class="material-symbols-rounded" aria-hidden="true">send</span><b id="nl-cta-t">Tulis pesan</b></span>
+                <span class="nl-cta" id="nl-cta"><span class="nl-ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span><b id="nl-cta-t">Tulis pesan</b></span>
                 <span class="nl-bar" aria-hidden="true"><i id="nl-bar-i"></i></span>
             </button>
             <p id="nl-msg" class="hidden text-xs font-medium px-1 text-center" role="status"></p>
@@ -1894,24 +1918,25 @@ html[data-perf="lite"] .dcw-leak{display:none}
 
             setTimeout(() => {
                 listEl.innerHTML = xiaLoadingNow() ? xiaSkel(3, 72) : !data.lessons.length ? xiaEmpty('event_note', xiaFail('schedule') ? 'Jadwal tidak dapat dimuat' : 'Jadwal belum diisi', xiaFail('schedule') ? 'Coba muat ulang halaman beberapa saat lagi.' : 'Jadwal hari ' + dayName + ' belum tersedia.') : data.lessons.map(item => `
-                    <div class="bg-m3-surfaceHigh/80 hover:bg-m3-surfaceHighest rounded-[24px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
+                    <div class="les-item relative overflow-hidden bg-m3-surfaceHigh/80 hover:bg-m3-surfaceHighest rounded-[24px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors" data-time="${xiaEsc(item.time)}">
                         <div class="flex items-start sm:items-center gap-3.5">
-                            <div class="w-11 h-11 rounded-2xl bg-m3-primaryContainer text-m3-onPrimaryContainer flex items-center justify-center shrink-0">
+                            <div class="les-ico w-11 h-11 rounded-2xl bg-m3-primaryContainer text-m3-onPrimaryContainer flex items-center justify-center shrink-0">
                                 <span class="material-symbols-rounded text-[20px]">${xiaEsc(item.icon)}</span>
                             </div>
                             <div>
                                 <h4 class="font-display font-bold text-base leading-snug">${xiaEsc(item.subject)}</h4>
                                 <p class="text-xs text-m3-onSurfaceVariant mt-0.5">${xiaEsc(item.teacher)}</p>
+                                <p class="les-sub hidden mt-1"></p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 self-end sm:self-center">
+                        <div class="flex items-center gap-2 self-end sm:self-center flex-wrap justify-end">
+                            <span class="les-st hidden"></span>
                             <span class="px-3 py-1 rounded-full bg-m3-surface text-xs font-mono font-bold text-m3-primary border border-m3-outlineVariant/40">
                                 ${xiaEsc(item.time)}
                             </span>
-                            <span class="px-3 py-1 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer text-xs font-semibold">
-                                ${xiaEsc(item.room)}
-                            </span>
+                            ${item.room ? `<span class="px-3 py-1 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer text-xs font-semibold">${xiaEsc(item.room)}</span>` : ''}
                         </div>
+                        <i class="les-bar" aria-hidden="true"><b></b></i>
                     </div>
                 `).join('');
 
@@ -1922,11 +1947,81 @@ html[data-perf="lite"] .dcw-leak{display:none}
                     </span>
                 `).join('');
 
+                xiaLesDay = dayName; xiaLesTick();
                 listEl.style.transform = 'translateY(0)';
             }, 120);
         }
 
+        let xiaLesDay = '';
+        const XIA_WD = {Monday:'Senin',Tuesday:'Selasa',Wednesday:'Rabu',Thursday:'Kamis',Friday:'Jumat',Saturday:'Sabtu',Sunday:'Minggu'};
+        function xiaJkt() {
+            const p = new Intl.DateTimeFormat('en-GB', {timeZone:'Asia/Jakarta', weekday:'long', hour:'2-digit', minute:'2-digit', hour12:false}).formatToParts(new Date());
+            const g = t => (p.find(x => x.type === t) || {}).value;
+            return {wd: g('weekday'), min: (+g('hour') % 24) * 60 + (+g('minute'))};
+        }
+        function xiaLesTick() {
+            const list = document.getElementById('schedule-list');
+            if (!list) return;
+            const items = [...list.querySelectorAll('.les-item')];
+            const k = xiaJkt(), isToday = XIA_WD[k.wd] === xiaLesDay;
+            let sum = document.getElementById('les-sum');
+            const reset = el => {
+                el.classList.remove('is-live', 'is-done', 'is-next');
+                const st = el.querySelector('.les-st'), sb = el.querySelector('.les-sub');
+                st.className = 'les-st hidden'; st.textContent = ''; sb.classList.add('hidden'); sb.textContent = '';
+            };
+            items.forEach(reset);
+            if (!isToday || !items.length) { if (sum) sum.style.display = 'none'; return; }
+            const re = /(\d{1,2})[.:](\d{2})\s*(?:-|–|—|s\/d|sd|to)\s*(\d{1,2})[.:](\d{2})/i;
+            const fm = n => n >= 60 ? Math.floor(n / 60) + ' jam' + (n % 60 ? ' ' + (n % 60) + ' menit' : '') : n + ' menit';
+            const fh = m => String(Math.floor(m / 60)).padStart(2, '0') + '.' + String(m % 60).padStart(2, '0');
+            const now = k.min;
+            const rows = items.map(el => {
+                const m = re.exec(el.dataset.time || '');
+                return m ? {el, s: +m[1] * 60 + +m[2], e: +m[3] * 60 + +m[4], name: (el.querySelector('h4') || {}).textContent || 'Pelajaran'} : null;
+            }).filter(Boolean).sort((a, b) => a.s - b.s);
+            if (!rows.length) { if (sum) sum.style.display = 'none'; return; }
+            const next = rows.find(r => r.s > now);
+            const live = rows.find(r => now >= r.s && now < r.e);
+            let done = 0;
+            rows.forEach(r => {
+                const st = r.el.querySelector('.les-st'), sb = r.el.querySelector('.les-sub'), bar = r.el.querySelector('.les-bar b');
+                if (now >= r.e) {
+                    done++; r.el.classList.add('is-done');
+                    st.className = 'les-st done'; st.textContent = '✓ Selesai';
+                } else if (now >= r.s) {
+                    r.el.classList.add('is-live');
+                    st.className = 'les-st live'; st.innerHTML = '<i class="les-dot"></i>Berlangsung';
+                    sb.classList.remove('hidden'); sb.textContent = 'Sisa ' + fm(r.e - now) + ' · selesai ' + fh(r.e);
+                    if (bar) bar.style.width = Math.max(3, Math.min(100, (now - r.s) / (r.e - r.s) * 100)) + '%';
+                } else if (r === next) {
+                    r.el.classList.add('is-next');
+                    st.className = 'les-st next'; st.textContent = 'Berikutnya';
+                    sb.classList.remove('hidden'); sb.textContent = 'Mulai ' + fh(r.s) + ' · ' + fm(r.s - now) + ' lagi';
+                }
+            });
+            if (!sum) {
+                sum = document.createElement('div'); sum.id = 'les-sum'; sum.className = 'les-sum';
+                sum.setAttribute('role', 'status'); sum.setAttribute('aria-live', 'polite');
+                list.parentNode.insertBefore(sum, list);
+            }
+            sum.style.display = '';
+            let t1, t2;
+            if (live) { t1 = 'Sedang berlangsung: ' + live.name; t2 = 'Sisa ' + fm(live.e - now) + ' (sampai ' + fh(live.e) + ')' + (next ? ' · berikutnya ' + next.name : ''); }
+            else if (next && done) { t1 = 'Istirahat · berikutnya: ' + next.name; t2 = 'Mulai ' + fh(next.s) + ', ' + fm(next.s - now) + ' lagi'; }
+            else if (next) { t1 = 'Belum mulai · pertama: ' + next.name; t2 = 'Pukul ' + fh(next.s) + ', ' + fm(next.s - now) + ' lagi'; }
+            else { t1 = 'Semua pelajaran hari ini sudah selesai'; t2 = 'Kerja bagus! ' + done + ' dari ' + rows.length + ' pelajaran selesai.'; }
+            sum.textContent = '';
+            const b = document.createElement('b'); b.textContent = t1;
+            const sp = document.createElement('span'); sp.textContent = t2;
+            const seg = document.createElement('div'); seg.className = 'les-seg';
+            rows.forEach(r => { const i = document.createElement('i'); if (r === live) i.className = 'l'; else if (now >= r.e) i.className = 'd'; seg.appendChild(i); });
+            sum.append(b, sp, seg);
+        }
+
         function setupDayTabs() {
+            setInterval(() => { if (!document.hidden) xiaLesTick(); }, 20000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) xiaLesTick(); });
             document.querySelectorAll('.day-tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => selectDay(btn.dataset.day));
             });
@@ -3777,12 +3872,12 @@ const submit=async()=>{if(sending)return;const t=ta.value.trim();
  ov.querySelector('.nl-sheet').classList.add('sent');confetti();try{navigator.vibrate&&navigator.vibrate([20,40,20])}catch(_){}
  msg('Terkirim! Pesanmu tampil di dinding setelah disetujui admin.');closeT=setTimeout(close,2200)};
 const build=()=>{ov=h('div','nl-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kirim pesan anonim');
- ov.innerHTML='<div class="nl-back glass-modal-backdrop"></div><div class="nl-sheet"><div class="nl-grab"></div><div class="nl-form"><div class="nl-sh"><h3>Pesan anonim</h3><button type="button" class="nl-x" aria-label="Tutup"><span class="material-symbols-rounded">close</span></button></div>'+
+ ov.innerHTML='<div class="nl-back glass-modal-backdrop"></div><div class="nl-sheet"><div class="nl-grab"></div><div class="nl-form"><div class="nl-sh"><h3>Pesan anonim</h3><button type="button" class="nl-x" aria-label="Tutup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
  '<div class="nl-lbl">Untuk siapa?</div><div class="nl-chips" data-k="to"><button type="button" class="nl-chip on" data-id="">Seluruh kelas</button></div>'+
  '<div class="nl-lbl">Pesanmu</div><textarea class="nl-ta" id="nl-ta" maxlength="'+MAXL+'" placeholder="Tulis apa saja. Namamu tidak ikut terkirim." aria-label="Isi pesan"></textarea>'+
  '<div class="nl-chips" data-k="seed" style="margin-top:8px">'+SEEDS.map((s,i)=>'<button type="button" class="nl-chip" data-s="'+i+'">'+s.trim()+'</button>').join('')+'</div>'+
  '<div class="nl-foot"><span>Admin menyaring pesan sebelum tampil.</span><span id="nl-cnt">0/'+MAXL+'</span></div><div class="nl-err" id="nl-err" role="status" aria-live="polite"></div>'+
- '<button type="button" class="nl-go" id="nl-go"><span class="nl-plane material-symbols-rounded" aria-hidden="true">send</span><span id="nl-go-t">Kirim</span></button></div>'+
+ '<button type="button" class="nl-go" id="nl-go"><span class="nl-plane"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span><span id="nl-go-t">Kirim</span></button></div>'+
  '<div class="nl-done"><div class="nl-ck"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h4>Terkirim!</h4><p>Pesanmu menunggu persetujuan admin.<br>Kirim lagi 10 menit lagi.</p></div></div>';
  document.body.appendChild(ov);ta=$('nl-ta');go=$('nl-go');
  ov.querySelector('.nl-back').onclick=close;ov.querySelector('.nl-x').onclick=close;go.onclick=submit;ta.addEventListener('input',()=>{count();err('')});
