@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pesan Anonim — XI.2 Creative Lab</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fff1f4">
+<meta property="og:title" content="Kirim pesan anonim ke XI.2 Creative Lab">
+<meta property="og:description" content="Namamu tidak ikut terkirim.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script defer src="../config.js"></script>
+<style>
+:root{--md-sys-color-primary:#1B6B51;--md-sys-color-on-primary:#fff;--md-sys-color-primary-container:#A6F2D1;--md-sys-color-surface:#F5FBF6;--md-sys-color-surface-container-low:#EFF5F0;--md-sys-color-surface-container:#E9EFEA;--md-sys-color-surface-container-high:#E3EAE5;--md-sys-color-surface-container-highest:#DDE4DF;--md-sys-color-on-surface:#171D1A;--md-sys-color-outline-variant:#BFC9C2;--spring-curve:cubic-bezier(.2,.82,.2,1);--ease-out:cubic-bezier(.16,1,.3,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{min-height:100vh;min-height:100dvh;font-family:Inter,system-ui,sans-serif;color:#1d1b1e;background:linear-gradient(180deg,#fff1f4 0%,#fff7ee 55%,#f0fbf5 100%);background-attachment:fixed;-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:bgF 14s ease-in-out infinite}
+.bg i:nth-child(1){width:340px;height:340px;left:-90px;top:-60px;background:#ff8fb1}
+.bg i:nth-child(2){width:300px;height:300px;right:-90px;top:32%;background:#ffc58a;animation-delay:-5s}
+.bg i:nth-child(3){width:320px;height:320px;left:12%;bottom:-120px;background:#9fe3c6;animation-delay:-9s}
+@keyframes bgF{50%{transform:translate(24px,-30px) scale(1.08)}}
+.wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 18px calc(40px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:22px}
+.brand{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:99px;text-decoration:none;color:#1d1b1e;font:800 12px/1 'Space Grotesk',Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 6px 18px -8px rgba(0,0,0,.2)}
+.brand b{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--md-sys-color-primary)}
+.ttl{font:800 clamp(28px,7vw,40px)/1.05 'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.02em;margin:0}
+.sub{margin:8px 0 0;font-size:14px;opacity:.65;max-width:520px}
+.view[hidden]{display:none}
+.hero{max-width:420px;margin:6vh auto 0}
+.note{margin:16px auto 0;max-width:420px;text-align:center;font-size:12.5px;opacity:.6}
+.more{display:block;margin:22px auto 0;border:0;cursor:pointer;padding:13px 26px;border-radius:99px;font:800 14px/1 Inter,sans-serif;color:#1d1b1e;background:rgba(255,255,255,.85);box-shadow:0 8px 20px -10px rgba(0,0,0,.25)}
+.more[hidden]{display:none}
+.empty{grid-column:1/-1;text-align:center;opacity:.6;font-size:14px;padding:30px 0}
+.act{display:flex;gap:8px;margin-top:12px}
+.ab{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;cursor:pointer;padding:10px 12px;border-radius:99px;font:800 12.5px/1 Inter,sans-serif;color:inherit;background:rgba(128,128,128,.14);transition:transform .3s var(--spring-curve),opacity .2s}
+.ab:active{transform:scale(.94)}.ab:disabled{opacity:.5;cursor:progress}
+.ab.pri{color:#fff;background:linear-gradient(120deg,#ff2d7a,#ff9a3d)}
+.toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));z-index:300;max-width:min(92vw,420px);transform:translate(-50%,30px);opacity:0;padding:12px 18px;border-radius:99px;font:700 13px/1.3 Inter,sans-serif;color:#fff;text-align:center;background:rgba(25,25,28,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:transform .45s var(--spring-curve),opacity .3s;pointer-events:none}
+.toast.on{transform:translate(-50%,0);opacity:1}
+.nl-back,.glass-modal-backdrop{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+@media(prefers-reduced-motion:reduce){.bg i{animation:none}}
+
+/* ===== PESAN ANONIM (ala NGL) ===== */
+.nl-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;overflow:hidden;border:0;cursor:pointer;text-align:center;color:#fff;padding:26px 20px 22px;border-radius:32px;background:linear-gradient(150deg,#ff2d7a 0%,#ff5a4d 55%,#ff9a3d 100%);box-shadow:0 16px 34px -12px rgba(255,45,122,.55);transition:transform .4s var(--spring-curve),box-shadow .3s}
+.nl-card:active{transform:scale(.97)}
+.nl-card[data-cd="1"]{filter:saturate(.75)}
+.nl-orb{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);pointer-events:none;animation:nlFloat 7s ease-in-out infinite}
+.nl-orb.a{width:120px;height:120px;left:-30px;top:-34px}.nl-orb.b{width:70px;height:70px;right:-14px;top:38%;animation-delay:-2.5s}.nl-orb.c{width:46px;height:46px;left:18%;bottom:-16px;animation-delay:-4.5s}
+@keyframes nlFloat{50%{transform:translateY(-14px) scale(1.07)}}
+.nl-card-top{position:relative;display:flex;align-items:center;gap:8px}
+.nl-ghost{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#ff2d7a;animation:nlWig 3.2s ease-in-out infinite}
+@keyframes nlWig{0%,100%{transform:rotate(0)}10%{transform:rotate(-12deg)}20%{transform:rotate(10deg)}30%{transform:rotate(0)}}
+.nl-card-tag{font:800 11px/1 'Space Grotesk',Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 11px;border-radius:99px;background:rgba(0,0,0,.2)}
+.nl-card-h{position:relative;font:800 clamp(24px,7vw,30px)/1.08 'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.02em}
+.nl-fake{position:relative;display:flex;align-items:center;width:100%;max-width:340px;padding:15px 18px;border-radius:20px;background:rgba(255,255,255,.95);color:#9a8f95;font-weight:600;font-size:15px;text-align:left}
+.nl-caret{display:inline-block;width:2px;height:18px;margin-left:3px;background:#ff2d7a;animation:nlBlink 1s steps(1) infinite}
+@keyframes nlBlink{50%{opacity:0}}
+.nl-cta{position:relative;display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:99px;background:#111;color:#fff;font-size:15px}
+.nl-cta .nl-ci{display:inline-flex;animation:nlNudge 2s ease-in-out infinite}
+@keyframes nlNudge{50%{transform:translate(3px,-3px)}}
+.nl-card[data-cd="1"] .nl-cta .nl-ci,.nl-card[data-cd="1"] .nl-caret{animation:none}
+.nl-card[data-cd="1"] .nl-cta{background:rgba(0,0,0,.35);font-variant-numeric:tabular-nums}
+.nl-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.18);opacity:0;transition:opacity .3s}
+.nl-card[data-cd="1"] .nl-bar{opacity:1}
+.nl-bar i{display:block;height:100%;width:0;background:#fff;transition:width 1s linear}
+/* dinding */
+.nl-wall{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.nl-wall{grid-template-columns:1fr 1fr}}@media(min-width:1024px){.nl-wall{grid-template-columns:repeat(3,1fr)}}
+.nl-b{position:relative;padding:14px 16px 12px;border-radius:24px 24px 24px 8px;background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface);border:1px solid color-mix(in srgb,#ff2d7a 22%,transparent);animation:nlPop .6s var(--spring-curve) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes nlPop{0%{opacity:0;transform:translateY(18px) scale(.9)}100%{opacity:1;transform:none}}
+.nl-b:nth-child(3n+2){border-radius:24px 24px 8px 24px}
+.nl-to{display:inline-flex;align-items:center;gap:4px;font:800 11px/1 'Space Grotesk',Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:99px;background:linear-gradient(120deg,#ff2d7a,#ff9a3d);color:#fff}
+.nl-txt{margin-top:9px;font-size:15px;line-height:1.45;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+.nl-t{margin-top:8px;font-size:11px;opacity:.55}
+.nl-re{margin-top:10px;padding:9px 12px;border-radius:16px 16px 16px 4px;background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);font-size:13px;line-height:1.4;font-weight:600;overflow-wrap:anywhere}
+.nl-re small{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+/* penulis pesan (bottom sheet) */
+.nl-ov{position:fixed;inset:0;z-index:118;display:none;touch-action:manipulation}
+.nl-back{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .28s}
+.nl-sheet{position:absolute;left:50%;bottom:0;width:100%;max-width:480px;transform:translate(-50%,105%);padding:10px 18px calc(18px + env(safe-area-inset-bottom));border-radius:32px 32px 0 0;background:var(--md-sys-color-surface-container-low);color:var(--md-sys-color-on-surface);box-shadow:0 -12px 40px rgba(0,0,0,.3);transition:transform .5s var(--spring-curve);max-height:92vh;overflow:auto}
+.nl-ov.is-open .nl-back{opacity:1}.nl-ov.is-open .nl-sheet{transform:translate(-50%,0)}
+.nl-grab{width:42px;height:5px;border-radius:9px;background:currentColor;opacity:.25;margin:0 auto 12px}
+.nl-sh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.nl-sh h3{font:800 20px/1.1 'Bricolage Grotesque',Inter,sans-serif}
+.nl-x{width:38px;height:38px;border-radius:50%;border:0;background:rgba(128,128,128,.16);color:inherit;display:grid;place-items:center;cursor:pointer}
+.nl-lbl{margin:14px 0 6px;font:800 11px/1 'Space Grotesk',Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+.nl-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}.nl-chips::-webkit-scrollbar{display:none}
+.nl-chip{flex:0 0 auto;border:0;cursor:pointer;padding:9px 15px;border-radius:99px;font-size:13px;font-weight:700;background:var(--md-sys-color-surface-container-highest);color:inherit;transition:transform .3s var(--spring-curve),background-color .2s}
+.nl-chip:active{transform:scale(.92)}
+.nl-chip.on{background:linear-gradient(120deg,#ff2d7a,#ff9a3d);color:#fff;transform:scale(1.05)}
+.nl-ta{width:100%;min-height:120px;resize:none;border:2px solid transparent;border-radius:22px;padding:14px 16px;font:600 16px/1.45 Inter,sans-serif;background:var(--md-sys-color-surface-container-highest);color:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.nl-ta:focus{border-color:#ff2d7a;box-shadow:0 0 0 4px rgba(255,45,122,.15)}
+.nl-foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;font-size:12px;opacity:.7}
+.nl-err{min-height:18px;font-size:12px;font-weight:700;color:#b3261e;margin-top:6px}
+.nl-go{position:relative;overflow:hidden;width:100%;margin-top:6px;height:54px;border:0;border-radius:99px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font:800 16px/1 Inter,sans-serif;color:#fff;background:linear-gradient(120deg,#ff2d7a,#ff9a3d);transition:transform .3s var(--spring-curve),opacity .2s}
+.nl-go:active{transform:scale(.96)}.nl-go:disabled{opacity:.45;cursor:not-allowed}
+.nl-go .nl-plane{display:inline-flex}
+.nl-go.fly .nl-plane{animation:nlFly .7s ease-in forwards}
+@keyframes nlFly{0%{transform:none;opacity:1}40%{transform:translate(-6px,4px) rotate(-14deg)}100%{transform:translate(160px,-120px) rotate(-8deg) scale(.5);opacity:0}}
+.nl-done{display:none;text-align:center;padding:22px 0 12px}
+.nl-sheet.sent .nl-form{display:none}.nl-sheet.sent .nl-done{display:block}
+.nl-ck{width:84px;height:84px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff2d7a,#ff9a3d);color:#fff;animation:nlBoom .6s var(--spring-curve) both}
+@keyframes nlBoom{0%{transform:scale(0)}100%{transform:scale(1)}}
+.nl-ck path{stroke-dasharray:30;stroke-dashoffset:30;animation:nlDraw .4s .3s ease forwards}@keyframes nlDraw{to{stroke-dashoffset:0}}
+.nl-done h4{font:800 22px/1.1 'Bricolage Grotesque',Inter,sans-serif}.nl-done p{font-size:13px;opacity:.7;margin-top:6px}
+.nl-conf{position:absolute;left:50%;top:150px;width:0;height:0;pointer-events:none}
+.nl-conf i{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:3px;background:var(--c);animation:nlConf .9s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes nlConf{0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.4);opacity:0}}
+@media(prefers-reduced-motion:reduce){.nl-orb,.nl-ghost,.nl-caret,.nl-cta .nl-ci,.nl-b{animation:none}.nl-sheet{transition:none}}
+.nl-nope{animation:nlNope .4s}@keyframes nlNope{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.nl-shake{animation:nlNope .4s}
+
+/* ===== POPUP KACA CAIR (gaya iOS 26 Liquid Glass) ===== */
+.lg-ov{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(20,10,30,.28);opacity:0;transition:opacity .35s ease;-webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%)}
+.lg-ov.on{opacity:1}
+.lg{position:relative;width:100%;max-width:360px;padding:30px 24px 22px;text-align:center;color:#17141a;border-radius:44px;overflow:hidden;isolation:isolate;
+ background:linear-gradient(155deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.26) 48%,rgba(255,255,255,.4) 100%);
+ -webkit-backdrop-filter:blur(34px) saturate(190%);backdrop-filter:blur(34px) saturate(190%);
+ border:1px solid rgba(255,255,255,.55);
+ box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1.5px 0 rgba(255,255,255,.35),inset 0 0 26px rgba(255,255,255,.28),0 30px 70px -18px rgba(40,10,60,.45),0 6px 18px rgba(0,0,0,.12);
+ transform:translateY(36px) scale(.82);opacity:0;transition:transform .7s cubic-bezier(.2,1.25,.3,1),opacity .35s ease}
+.lg-ov.on .lg{transform:none;opacity:1}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 70% at 18% -10%,rgba(255,255,255,.85),rgba(255,255,255,0) 58%),radial-gradient(90% 60% at 100% 110%,rgba(255,255,255,.4),rgba(255,255,255,0) 60%)}
+.lg::after{content:"";position:absolute;left:12%;right:12%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent);opacity:.9;pointer-events:none}
+.lg-ic{position:relative;width:78px;height:78px;margin:0 auto 14px;border-radius:24px;display:grid;place-items:center;color:#fff;font:800 24px/1 'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.02em;background:linear-gradient(145deg,#2fa57d,#1B6B51);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 -6px 14px rgba(0,0,0,.18),0 14px 26px -10px rgba(27,107,81,.7)}
+.lg-ic::after{content:"";position:absolute;left:8px;right:8px;top:4px;height:34%;border-radius:18px 18px 40px 40px;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0));pointer-events:none}
+.lg-ok{position:absolute;right:-6px;bottom:-6px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#ff2d7a,#ff9a3d);border:2px solid rgba(255,255,255,.9);box-shadow:0 6px 12px -4px rgba(255,45,122,.6)}
+.lg h3{margin:0;font:800 23px/1.15 'Bricolage Grotesque',Inter,sans-serif;letter-spacing:-.02em}
+.lg p{margin:8px 0 0;font-size:14.5px;line-height:1.45;color:rgba(23,20,26,.7)}
+.lg-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin:16px 0 4px}
+.lg-chips span{padding:7px 12px;border-radius:99px;font:700 12px/1 Inter,sans-serif;color:rgba(23,20,26,.78);background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.lg-go,.lg-no{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:52px;border:0;border-radius:99px;cursor:pointer;text-decoration:none;font:800 16px/1 Inter,sans-serif;transition:transform .35s var(--spring-curve)}
+.lg-go:active,.lg-no:active{transform:scale(.95)}
+.lg-go{margin-top:18px;color:#fff;background:linear-gradient(180deg,#2f9f78,#1B6B51);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.5),inset 0 -2px 6px rgba(0,0,0,.18),0 12px 22px -10px rgba(27,107,81,.8)}
+.lg-no{margin-top:9px;height:46px;font-size:15px;font-weight:700;color:rgba(23,20,26,.75);background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.65);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.lg{background:rgba(250,250,252,.96)}.lg-ov{background:rgba(20,10,30,.5)}}
+@media(prefers-reduced-motion:reduce){.lg,.lg-ov{transition:opacity .2s}.lg{transform:none}}
+
+.hidden{display:none}
+.nl-card{box-shadow:0 22px 44px -14px rgba(255,45,122,.6)}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<main class="wrap">
+  <header class="top"><a class="brand" href="../"><b></b>XI.2 Creative Lab</a></header>
+
+  <section id="v-send" class="view">
+    <div class="hero">
+      <button id="nl-card" type="button" class="nl-card" aria-label="Kirim pesan anonim">
+        <i class="nl-orb a" aria-hidden="true"></i><i class="nl-orb b" aria-hidden="true"></i><i class="nl-orb c" aria-hidden="true"></i>
+        <span class="nl-card-top"><span class="nl-ghost" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 4.5 10 6-.6.9-1.8 2.3-3.5 3.5M6.5 7.5C4.3 8.9 2.8 10.9 2 12c1 1.5 5 6 10 6 1.4 0 2.7-.3 3.9-.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></span><span class="nl-card-tag">anonim 100%</span></span>
+        <span class="nl-card-h">kirim aku pesan<br>anonim!</span>
+        <span class="nl-fake" aria-hidden="true"><span class="nl-fake-t">ketik sesuatu</span><i class="nl-caret"></i></span>
+        <span class="nl-cta"><span class="nl-ci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span><b id="nl-cta-t">Tulis pesan</b></span>
+        <span class="nl-bar" aria-hidden="true"><i id="nl-bar-i"></i></span>
+      </button>
+      <p id="nl-msg" class="hidden note" role="status"></p>
+      <p class="note">Namamu tidak ikut terkirim. Tiap 10 menit boleh kirim 1 pesan.</p>
+    </div>
+  </section>
+
+  <section id="v-wall" class="view" hidden>
+    <h1 class="ttl">Semua pesan anonim</h1>
+    <p class="sub">Bagikan link-nya atau buat template Story Instagram dari tiap pesan.</p>
+    <div id="nl-wall" class="nl-wall" style="margin-top:20px"></div>
+    <button id="more" type="button" class="more" hidden>Muat lebih banyak</button>
+  </section>
+</main>
+<script>
+
+(function(){
+const CD=600,MAXL=300,PS=24;
+
+const $=id=>document.getElementById(id);
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const cfg=()=>{const c=window.XIA_CONFIG||{};return (c.SUPABASE_URL&&!/YOUR_/.test(c.SUPABASE_URL)&&c.SUPABASE_ANON_KEY&&!/^YOUR_/.test(c.SUPABASE_ANON_KEY))?c:null};
+const client=()=>{const c=cfg();if(!c||!window.supabase)return null;return window.__xiaSb=window.__xiaSb||window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}})};
+const dev=(()=>{try{let d=localStorage.getItem('xia_dev');if(!d){d=((crypto.randomUUID&&crypto.randomUUID())||(Math.random().toString(36).slice(2)+Date.now().toString(36)+'abcdefgh')).replace(/-/g,'');localStorage.setItem('xia_dev',d)}return d}catch(_){return 'tmp'+Math.random().toString(36).slice(2,12)+'xyz'}})();
+const retrig=(e,c)=>{e.classList.remove(c);void e.offsetWidth;e.classList.add(c)};
+const BRAND='XI.2 Creative Lab';
+const HOME=new URL('../',location.href).href;
+const HOST=location.host;
+const IC_LINK='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/></svg>';
+const IC_IG='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg>';
+let toastT=0;
+const toast=t=>{let e=$('toast');if(!e){e=h('div','toast');e.id='toast';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;void e.offsetWidth;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),3600)};
+const btn=(cls,ico,txt,fn)=>{const b=h('button','ab '+cls);b.type='button';b.innerHTML=ico+'<span></span>';b.lastChild.textContent=txt;b.onclick=()=>fn(b);return b};
+/* bagikan link: share sheet bawaan HP, cadangan salin ke clipboard */
+const shareLink=async(url,text)=>{
+ if(navigator.share){try{await navigator.share({title:BRAND,text:text,url:url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ try{await navigator.clipboard.writeText(url);toast('Link disalin: '+url)}catch(_){window.prompt('Salin link ini:',url)}};
+/* canvas helpers */
+const rr=(g,x,y,w,hh,r)=>{g.beginPath();if(g.roundRect){g.roundRect(x,y,w,hh,r)}else{r=Math.min(r,w/2,hh/2);g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+hh,r);g.arcTo(x+w,y+hh,x,y+hh,r);g.arcTo(x,y+hh,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}};
+const wrap=(g,text,maxW)=>{const out=[];String(text).split('\n').forEach(par=>{let line='';const words=par.split(/\s+/).filter(Boolean);if(!words.length){out.push('');return}
+ words.forEach(w=>{while(g.measureText(w).width>maxW){let k=w.length;while(k>1&&g.measureText(w.slice(0,k)).width>maxW)k--;if(line){out.push(line);line=''}out.push(w.slice(0,k));w=w.slice(k)}
+  const t=line?line+' '+w:w;if(g.measureText(t).width>maxW&&line){out.push(line);line=w}else line=t});out.push(line)});return out};
+const clip=(lines,n)=>{if(lines.length<=n)return lines;const o=lines.slice(0,n);o[n-1]=o[n-1].replace(/\s+$/,'').slice(0,-1)+'…';return o};
+const fontsReady=async()=>{try{await Promise.all(['800 60px "Bricolage Grotesque"','700 30px "Space Grotesk"','600 40px Inter'].map(f=>document.fonts.load(f)))}catch(_){}};
+const loadImg=u=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>res(i);i.onerror=()=>rej(new Error('img'));i.src=u});
+/* kirim hasil: share sheet (file) -> IG Story; cadangan unduh PNG */
+const deliver=async(cv,name,link)=>{
+ const blob=await new Promise(r=>cv.toBlob(r,'image/png'));if(!blob)throw new Error('blob');
+ const f=new File([blob],name,{type:'image/png'});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:BRAND});toast('Pilih Story Instagram. Link sudah disalin untuk stiker Link.');return}catch(e){if(e&&e.name==='AbortError')return}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+ toast('Gambar tersimpan. Buka Instagram, buat Story, pilih gambar ini, lalu tempel link di stiker Link.')};
+const copyQuiet=t=>{try{navigator.clipboard&&navigator.clipboard.writeText(t).catch(()=>{})}catch(_){}};
+
+const LINK=new URL('./',location.href).href;
+const msg=(t,bad)=>{const m=$('nl-msg');if(!m)return;m.textContent=t;m.style.color=bad?'#b3261e':'';m.classList.toggle('hidden',!t)};
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+
+/* ---- cooldown 10 menit (disinkronkan ke server lewat ngl_wait) ---- */
+let endAt=0,timer=null,sending=false;
+try{endAt=+localStorage.getItem('xia_ngl_end')||0}catch(_){}
+const setEnd=ms=>{endAt=ms;try{localStorage.setItem('xia_ngl_end',String(ms))}catch(_){}tick()};
+const remain=()=>Math.max(0,Math.ceil((endAt-Date.now())/1000));
+const tick=()=>{const r=remain(),card=$('nl-card'),t=$('nl-cta-t'),bar=$('nl-bar-i');if(!card)return;
+ card.dataset.cd=r?'1':'0';if(t)t.textContent=r?'Tunggu '+fmt(r):'Tulis pesan';if(bar)bar.style.width=r?((1-r/CD)*100)+'%':'0';
+ const go=$('nl-go');if(go&&!sending)go.disabled=!!r;const lb=$('nl-go-t');if(lb&&!sending)lb.textContent=r?'Tunggu '+fmt(r):'Kirim';
+ if(r&&!timer)timer=setInterval(tick,1000);if(!r&&timer){clearInterval(timer);timer=null}};
+const sync=async()=>{const c=client();if(!c)return;try{const r=await Promise.race([c.rpc('ngl_wait',{p_device:dev}),new Promise(z=>setTimeout(()=>z(null),2500))]);if(r&&!r.error&&typeof r.data==='number')setEnd(r.data>0?Date.now()+r.data*1000:0)}catch(_){}};
+
+/* ---- popup kaca cair setelah kirim ---- */
+let lg=null;
+const popup=()=>{
+ if(!lg){lg=h('div','lg-ov');lg.setAttribute('role','dialog');lg.setAttribute('aria-modal','true');lg.setAttribute('aria-labelledby','lg-t');
+  lg.innerHTML='<div class="lg"><div class="lg-ic">XI.2<span class="lg-ok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div><h3 id="lg-t">Pesanmu terkirim</h3><p>Admin akan menyaringnya dulu. Sambil menunggu, yuk lihat isi portal kelas XI.2.</p><div class="lg-chips"><span>Jadwal</span><span>Tugas</span><span>Galeri</span><span>Anggota</span></div><a class="lg-go" id="lg-go" href="'+HOME+'">Jelajahi Portal</a><button type="button" class="lg-no" id="lg-no">Nanti saja</button></div>';
+  document.body.appendChild(lg);
+  lg.addEventListener('click',e=>{if(e.target===lg)closePop()});
+  $('lg-no').onclick=closePop}
+ lg.style.display='flex';void lg.offsetWidth;lg.classList.add('on');
+ document.addEventListener('keydown',popKey);setTimeout(()=>{try{$('lg-go').focus({preventScroll:true})}catch(_){}},400)};
+const popKey=e=>{if(e.key==='Escape')closePop()};
+const closePop=()=>{if(!lg)return;lg.classList.remove('on');document.removeEventListener('keydown',popKey);setTimeout(()=>{if(!lg.classList.contains('on'))lg.style.display='none'},380)};
+
+/* ---- penulis pesan (bottom sheet) ---- */
+let ov,ta,go,target=null,members=null,closeT=0;
+const SEEDS=['Semangat ya! ','Boleh kasih saran: ','Makasih banget udah ','Diam-diam aku kagum sama '];
+const err=t=>{const e=$('nl-err');if(e)e.textContent=t||''};
+const count=()=>{const n=ta.value.length,c=$('nl-cnt');c.textContent=n+'/'+MAXL;c.style.color=n>=MAXL-20?'#b3261e':''};
+const close=()=>{if(!ov)return;clearTimeout(closeT);ov.classList.remove('is-open');document.body.style.overflow='';document.removeEventListener('keydown',key);setTimeout(()=>{if(!ov.classList.contains('is-open'))ov.style.display='none'},400)};
+const key=e=>{if(e.key==='Escape'){e.stopPropagation();close()}};
+const pick=id=>{target=id;ov.querySelectorAll('.nl-chips[data-k="to"] .nl-chip').forEach(b=>b.classList.toggle('on',(b.dataset.id||'')===(id||'')))};
+const loadMembers=async()=>{if(members)return;const c=client();if(!c)return;
+ try{const r=await c.from('members').select('id,name').order('sort_order',{ascending:true}).limit(60);members=(r.data||[])}catch(_){members=[]}
+ const box=ov.querySelector('.nl-chips[data-k="to"]');members.forEach(m=>{const b=h('button','nl-chip',m.name);b.type='button';b.dataset.id=m.id;b.onclick=()=>pick(m.id);box.appendChild(b)})};
+const confetti=()=>{const s=ov.querySelector('.nl-sheet'),w=h('div','nl-conf');const cols=['#ff2d7a','#ff9a3d','#ffd23d','#3dd6ff','#7c5cff'];
+ for(let i=0;i<22;i++){const e=h('i');const a=Math.random()*Math.PI*2,d=70+Math.random()*110;e.style.setProperty('--x',Math.cos(a)*d+'px');e.style.setProperty('--y',Math.sin(a)*d-30+'px');e.style.setProperty('--r',(Math.random()*540-270)+'deg');e.style.setProperty('--c',cols[i%cols.length]);w.appendChild(e)}
+ s.appendChild(w);setTimeout(()=>w.remove(),1200)};
+const submit=async()=>{if(sending)return;const t=ta.value.trim();
+ if(t.length<2){err('Tulis dulu pesannya ya.');retrig(ta,'nl-shake');return}
+ if(remain()){err('Tunggu '+fmt(remain())+' lagi.');return}
+ const c=client();if(!c){err('Belum bisa mengirim sekarang.');return}
+ sending=true;go.disabled=true;go.classList.add('fly');err('');
+ const min=new Promise(z=>setTimeout(z,650));let r;
+ try{r=await c.from('ngl_messages').insert({body:t,target_id:target,device_id:dev})}catch(_){r={error:{message:'net'}}}
+ await min;go.classList.remove('fly');sending=false;
+ if(r&&r.error){const m=r.error.message||'',cd=m.match(/Cooldown (\d+)/);
+  if(cd){setEnd(Date.now()+(+cd[1])*1000);err('Tunggu '+fmt(+cd[1])+' dulu sebelum kirim lagi.')}
+  else if(/ramai/i.test(m))err('Lagi ramai banget, coba beberapa menit lagi.');
+  else if(/penuh/i.test(m))err('Antrean pesan lagi penuh, coba nanti.');
+  else err('Gagal mengirim. Coba lagi ya.');
+  go.disabled=!!remain();return}
+ setEnd(Date.now()+CD*1000);ta.value='';count();
+ ov.querySelector('.nl-sheet').classList.add('sent');confetti();try{navigator.vibrate&&navigator.vibrate([20,40,20])}catch(_){}
+ closeT=setTimeout(()=>{close();setTimeout(popup,380)},1100)};
+const build=()=>{ov=h('div','nl-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kirim pesan anonim');
+ ov.innerHTML='<div class="nl-back"></div><div class="nl-sheet"><div class="nl-grab"></div><div class="nl-form"><div class="nl-sh"><h3>Pesan anonim</h3><button type="button" class="nl-x" aria-label="Tutup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
+ '<div class="nl-lbl">Untuk siapa?</div><div class="nl-chips" data-k="to"><button type="button" class="nl-chip on" data-id="">Seluruh kelas</button></div>'+
+ '<div class="nl-lbl">Pesanmu</div><textarea class="nl-ta" id="nl-ta" maxlength="'+MAXL+'" placeholder="Tulis apa saja. Namamu tidak ikut terkirim." aria-label="Isi pesan"></textarea>'+
+ '<div class="nl-chips" data-k="seed" style="margin-top:8px">'+SEEDS.map((s,i)=>'<button type="button" class="nl-chip" data-s="'+i+'">'+s.trim()+'</button>').join('')+'</div>'+
+ '<div class="nl-foot"><span>Admin menyaring pesan sebelum tampil.</span><span id="nl-cnt">0/'+MAXL+'</span></div><div class="nl-err" id="nl-err" role="status" aria-live="polite"></div>'+
+ '<button type="button" class="nl-go" id="nl-go"><span class="nl-plane"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span><span id="nl-go-t">Kirim</span></button></div>'+
+ '<div class="nl-done"><div class="nl-ck"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h4>Terkirim!</h4><p>Pesanmu menunggu persetujuan admin.</p></div></div>';
+ document.body.appendChild(ov);ta=$('nl-ta');go=$('nl-go');
+ ov.querySelector('.nl-back').onclick=close;ov.querySelector('.nl-x').onclick=close;go.onclick=submit;ta.addEventListener('input',()=>{count();err('')});
+ ov.querySelector('.nl-chips[data-k="to"] .nl-chip').onclick=()=>pick(null);
+ ov.querySelector('.nl-chips[data-k="seed"]').addEventListener('click',e=>{const b=e.target.closest('.nl-chip');if(!b)return;const s=SEEDS[+b.dataset.s];if(!ta.value.trim())ta.value=s;else if(ta.value.length+s.length<=MAXL)ta.value+=(/\s$/.test(ta.value)?'':' ')+s;count();ta.focus()})};
+const open=()=>{if(!client()){msg('Belum bisa dipakai sekarang.',1);return}
+ if(remain()){retrig($('nl-card'),'nl-nope');msg('Sabar ya, bisa kirim lagi dalam '+fmt(remain())+'.',1);try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}return}
+ msg('');if(!ov)build();ov.querySelector('.nl-sheet').classList.remove('sent');err('');go.classList.remove('fly');tick();loadMembers();
+ ov.style.display='block';void ov.offsetWidth;ov.classList.add('is-open');document.body.style.overflow='hidden';document.addEventListener('keydown',key);setTimeout(()=>{try{ta.focus({preventScroll:true})}catch(_){}},420)};
+
+/* ---- dinding semua pesan (halaman tersembunyi: /ngl/#semua) ---- */
+const ago=d=>{const s=Math.max(0,(Date.now()-new Date(d).getTime())/1000);if(s<90)return 'baru saja';if(s<3600)return Math.round(s/60)+' menit lalu';if(s<86400)return Math.round(s/3600)+' jam lalu';if(s<604800)return Math.round(s/86400)+' hari lalu';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short'})};
+const story=async(x,b)=>{b.disabled=true;copyQuiet(LINK);
+ try{await fontsReady();
+  const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+  const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#ff2d7a');bg.addColorStop(.55,'#ff5a4d');bg.addColorStop(1,'#ff9a3d');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  g.fillStyle='rgba(255,255,255,.12)';[[130,260,260],[960,760,170],[180,1640,210],[930,1560,120]].forEach(o=>{g.beginPath();g.arc(o[0],o[1],o[2],0,7);g.fill()});
+  const CW=900,CX=90,PAD=64,TW=CW-PAD*2;
+  g.font='800 62px "Bricolage Grotesque",Inter,sans-serif';
+  const hasRe=!!x.reply;const tl=clip(wrap(g,x.body,TW),hasRe?6:9);
+  let rl=[];if(hasRe){g.font='600 42px Inter,sans-serif';rl=clip(wrap(g,x.reply,TW-60),3)}
+  const to=('UNTUK '+(x.target_name||'SELURUH KELAS')).toUpperCase();g.font='700 32px "Space Grotesk",Inter,sans-serif';
+  const chipW=Math.min(TW,g.measureText(to).width+64),chipH=70;
+  const textH=tl.length*78,reH=hasRe?(34+78+rl.length*56+26):0;
+  const cardH=PAD+chipH+40+textH+(hasRe?30+reH:0)+PAD;
+  const brandH=84,ctaH=2*84,pillH=96,G1=64,G2=84,G3=40;
+  const total=brandH+G1+cardH+G2+ctaH+G3+pillH;let y=Math.max(110,Math.round((H-total)/2));
+  /* brand */
+  g.font='700 32px "Space Grotesk",Inter,sans-serif';const bt=BRAND.toUpperCase(),bw=g.measureText(bt).width+80;
+  g.fillStyle='rgba(255,255,255,.92)';rr(g,(W-bw)/2,y,bw,brandH,42);g.fill();g.fillStyle='#d61a62';g.textAlign='center';g.textBaseline='middle';g.fillText(bt,W/2,y+brandH/2+2);y+=brandH+G1;
+  /* kartu */
+  g.save();g.shadowColor='rgba(80,0,30,.35)';g.shadowBlur=70;g.shadowOffsetY=28;g.fillStyle='#fff';rr(g,CX,y,CW,cardH,56);g.fill();g.restore();
+  let cy=y+PAD;const cg=g.createLinearGradient(CX+PAD,0,CX+PAD+chipW,0);cg.addColorStop(0,'#ff2d7a');cg.addColorStop(1,'#ff9a3d');
+  g.fillStyle=cg;rr(g,CX+PAD,cy,chipW,chipH,35);g.fill();g.fillStyle='#fff';g.font='700 32px "Space Grotesk",Inter,sans-serif';g.textAlign='left';g.textBaseline='middle';g.fillText(clip([to],1)[0],CX+PAD+32,cy+chipH/2+2,chipW-48);cy+=chipH+40;
+  g.fillStyle='#1d1b1e';g.font='800 62px "Bricolage Grotesque",Inter,sans-serif';g.textBaseline='top';tl.forEach((l,i)=>g.fillText(l,CX+PAD,cy+i*78+6));cy+=textH;
+  if(hasRe){cy+=30;g.fillStyle='#1B6B51';rr(g,CX+PAD,cy,TW,reH,36);g.fill();g.fillStyle='rgba(255,255,255,.75)';g.font='700 26px "Space Grotesk",Inter,sans-serif';g.fillText('BALASAN',CX+PAD+30,cy+26);
+   g.fillStyle='#fff';g.font='600 42px Inter,sans-serif';rl.forEach((l,i)=>g.fillText(l,CX+PAD+30,cy+34+44+i*56))}
+  y+=cardH+G2;
+  /* ajakan + link */
+  g.fillStyle='#fff';g.textAlign='center';g.textBaseline='top';g.font='800 76px "Bricolage Grotesque",Inter,sans-serif';g.shadowColor='rgba(80,0,30,.25)';g.shadowBlur=18;g.fillText('kirim pesan anonim',W/2,y);g.fillText('juga ke kami!',W/2,y+84);g.shadowBlur=0;y+=ctaH+G3;
+  const lt=HOST+'/ngl';g.font='700 44px "Space Grotesk",Inter,sans-serif';const lw=g.measureText(lt).width+110;
+  g.fillStyle='#111';rr(g,(W-lw)/2,y,lw,pillH,48);g.fill();g.fillStyle='#fff';g.textBaseline='middle';g.fillText(lt,W/2,y+pillH/2+2);
+  await deliver(cv,'pesan-anonim-xi2.png',LINK)
+ }catch(_){toast('Gagal membuat gambar. Coba lagi ya.')}finally{b.disabled=false}};
+const card=(x,i)=>{const b=h('article','nl-b');b.style.setProperty('--i',Math.min(i,8));
+ const to=h('span','nl-to');to.appendChild(h('span',null,'Untuk '+(x.target_name||'seluruh kelas')));b.appendChild(to);
+ b.appendChild(h('p','nl-txt',x.body));b.appendChild(h('div','nl-t',ago(x.created_at)));
+ if(x.reply){const r=h('div','nl-re');r.appendChild(h('small',null,'Balasan'));r.appendChild(document.createTextNode(x.reply));b.appendChild(r)}
+ const a=h('div','act');a.appendChild(btn('',IC_LINK,'Bagikan link',()=>shareLink(LINK,'Kirim pesan anonim ke '+BRAND+'. Namamu tidak ikut terkirim.')));a.appendChild(btn('pri',IC_IG,'Story IG',bt=>story(x,bt)));b.appendChild(a);return b};
+let pg=0;
+const wall=async more=>{const c=client(),w=$('nl-wall');if(!c||!w)return;const mb=$('more');
+ if(!more){pg=0;w.textContent=''}
+ mb.disabled=true;
+ const {data,error}=await c.from('ngl_messages').select('id,body,target_name,reply,created_at').eq('status','approved').order('created_at',{ascending:false}).range(pg*PS,pg*PS+PS-1);
+ mb.disabled=false;
+ if(error){if(!more)w.appendChild(h('p','empty','Dinding belum bisa dimuat.'));return}
+ if(!data.length&&!more){w.appendChild(h('p','empty','Belum ada pesan di dinding.'));mb.hidden=true;return}
+ data.forEach((x,i)=>w.appendChild(card(x,i)));pg++;mb.hidden=data.length<PS};
+
+/* ---- mode halaman: default = langsung menulis; #semua = dinding ---- */
+let wallLoaded=false;
+const mode=()=>{const isWall=location.hash==='#semua';$('v-send').hidden=isWall;$('v-wall').hidden=!isWall;
+ document.title=(isWall?'Semua Pesan Anonim':'Pesan Anonim')+' — '+BRAND;
+ if(isWall){close();if(!wallLoaded){wallLoaded=true;wall(false)}}};
+const init=()=>{$('nl-card').addEventListener('click',open);$('more').onclick=()=>wall(true);tick();sync();mode();
+ window.addEventListener('hashchange',mode);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+ /* buka link langsung ke bagian mengetik */
+ if(location.hash!=='#semua'){const go1=()=>{if(remain())msg('Sabar ya, bisa kirim lagi dalam '+fmt(remain())+'.',1);else open()};
+  /* tunggu sinkron cooldown server sebentar agar tidak membuka form saat masih cooldown */
+  Promise.race([sync(),new Promise(z=>setTimeout(z,900))]).then(go1)}};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+
+</script>
+</body>
+</html>
