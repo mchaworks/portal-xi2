@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0&icon_names=add,arrow_forward,attach_file,auto_awesome,auto_awesome_motion,auto_fix_high,balance,biotech,bolt,calculate,calendar_month,campaign,check,chevron_left,chevron_right,cleaning_services,close,code,delete,diversity_3,eco,emoji_events,event,event_note,flag,forum,functions,groups,history_edu,home,language,menu_book,north_east,open_in_full,palette,photo_camera,photo_library,psychology,restart_alt,rocket_launch,school,science,search,self_improvement,send,share,spark,sports_basketball,task_alt,translate,trending_up,tune,verified,visibility_off,volunteer_activism,water_drop&display=block" rel="stylesheet" />
 
-<script>(()=>{const r=document.documentElement;let t;try{t=sessionStorage.getItem('xia-perf')}catch(e){}
+<script>(()=>{const r=document.documentElement;let t;try{const q=new URLSearchParams(location.search).get('perf');if(q==='lite'||q==='mid'||q==='high')sessionStorage.setItem('xia-perf',q)}catch(e){}try{t=sessionStorage.getItem('xia-perf')}catch(e){}
 const mem=navigator.deviceMemory||0,cores=navigator.hardwareConcurrency||0,a=/Android (\d+)/.exec(navigator.userAgent),old=a&&+a[1]<=9,
 nb=!(window.CSS&&CSS.supports&&(CSS.supports('backdrop-filter','blur(1px)')||CSS.supports('-webkit-backdrop-filter','blur(1px)'))),
 coarse=matchMedia('(pointer:coarse)').matches,save=!!(navigator.connection&&navigator.connection.saveData),
