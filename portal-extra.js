@@ -97,7 +97,6 @@
       sec.id = 'kelompok';
       sec.className = 'space-y-6';
       anchor.parentNode.insertBefore(sec, anchor);
-      watch(sec);
     }
     var byTitle = {}, order = [];
     rows.forEach(function (g) { if (!byTitle[g.title]) { byTitle[g.title] = []; order.push(g.title); } byTitle[g.title].push(g); });
@@ -117,21 +116,24 @@
     rest('class_groups?select=title,group_name,members,sort_order,created_at&order=sort_order.asc,created_at.asc&limit=200').then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) { if (rows) renderGroups(rows); }).catch(function () {});
   }
 
-  /* ---------- Hemat tenaga: jeda animasi CSS untuk bagian yang di luar layar ---------- */
-  var io = null;
-  function watch(el) { if (io && el && !el.__xiaWatched) { el.__xiaWatched = 1; io.observe(el); } }
-  function setupPause() {
-    if (!('IntersectionObserver' in window) || !document.getElementById('papan')) return;
+  /* ---------- Ringankan GPU saat scroll: blur kaca dimatikan sementara, kembali begitu berhenti ---------- */
+  function setupScrollLite() {
+    if (!document.getElementById('papan')) return;
     var st = document.createElement('style');
-    st.textContent = '[data-xia-off],[data-xia-off] *,[data-xia-off] *::before,[data-xia-off] *::after{animation-play-state:paused!important}';
+    st.textContent =
+      'html.xia-scrolling .multi-layer-glass,html.xia-scrolling #liquid-glass-dock,html.xia-scrolling .liquid-dock-shell,html.xia-scrolling .glass-image-overlay{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}' +
+      'html.xia-scrolling .multi-layer-glass{background-color:rgba(var(--glass-rgb),.94)!important}' +
+      'html.xia-scrolling #liquid-glass-lens,html.xia-scrolling .liquid-glass-lens{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}';
     document.head.appendChild(st);
-    io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) e.target.removeAttribute('data-xia-off'); else e.target.setAttribute('data-xia-off', ''); });
-    }, { rootMargin: '300px 0px 300px 0px' });
-    document.querySelectorAll('main > section[id], footer').forEach(watch);
+    var root = document.documentElement, on = false, t = 0;
+    function stop() { on = false; root.classList.remove('xia-scrolling'); }
+    window.addEventListener('scroll', function () {
+      if (!on) { on = true; root.classList.add('xia-scrolling'); }
+      clearTimeout(t); t = setTimeout(stop, 140);
+    }, { passive: true });
   }
 
-  function boot() { setupPause(); checkMaint(); loadGroups(); track(); }
+  function boot() { setupScrollLite(); checkMaint(); loadGroups(); track(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
   setInterval(function () { if (!document.hidden) { checkMaint(); loadGroups(); } }, 60000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) { checkMaint(); loadGroups(); } });
