@@ -22,7 +22,7 @@
       "purpose": "any"
     }
   ],
-  "id": "./",
+  "id": "/",
   "display_override": [
     "fullscreen",
     "standalone",
