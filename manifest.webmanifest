@@ -1,6 +1,6 @@
 {
-  "name": "XI.2 Creative Lab",
-  "short_name": "XI.2",
+  "name": "XI.2 Labz",
+  "short_name": "XI.2 Labz",
   "description": "Portal kelas XI.2: jadwal, piket, tugas, pengumuman, dan momen kelas.",
   "lang": "id",
   "start_url": "./",
@@ -10,13 +10,13 @@
   "theme_color": "#F5FBF6",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icons/logo-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/logo-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

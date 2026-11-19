@@ -36,8 +36,8 @@
   var root = null;
 
   var TXT = ADMIN
-    ? { t: 'Pasang Admin XI.2', d: 'Buka panel admin layar penuh langsung dari layar utama, lebih cepat dan tanpa bilah browser.' }
-    : { t: 'Pasang XI.2 Creative Lab', d: 'Buka portal layar penuh dari layar utama: lebih cepat, tanpa bilah browser, dan tetap bisa dibuka saat sinyal lemah.' };
+    ? { t: 'Pasang XI.2 Console', d: 'Buka console admin layar penuh langsung dari layar utama, lebih cepat dan tanpa bilah browser.' }
+    : { t: 'Pasang XI.2 Labz', d: 'Buka portal layar penuh dari layar utama: lebih cepat, tanpa bilah browser, dan tetap bisa dibuka saat sinyal lemah.' };
 
   function css() {
     if (document.getElementById('xia-pwa-css')) return;

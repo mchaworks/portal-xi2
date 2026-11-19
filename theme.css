@@ -286,8 +286,11 @@ html[data-perf="lite"] .xia-glass-btn{-webkit-backdrop-filter:blur(8px);backdrop
 /* ---------- 13. Mode fullscreen PWA: jangan tertutup notch / status bar ---------- */
 /* viewport-fit=cover + display:fullscreen membuat halaman menggambar sampai tepi layar.
    Offset header sticky ditambah safe-area atas (bernilai 0 di layar tanpa notch). */
-header.sticky{top:calc(.75rem + env(safe-area-inset-top,0px))!important}
-.notice{top:calc(5.2rem + env(safe-area-inset-top,0px))!important}
+/* Header sticky: naik sedikit, tetap di bawah notch. Jarak atas = notch (kalau ada), minimal .75rem seperti semula.
+   body diberi padding setara selisihnya supaya posisi awal header = posisi sticky-nya (tidak menimpa konten di bawahnya). */
+header.sticky{top:max(.75rem,env(safe-area-inset-top,0px))!important}
+body:has(header.sticky){padding-top:max(0px,calc(env(safe-area-inset-top,0px) - .75rem))}
+.notice{top:calc(5.2rem + max(0px,calc(env(safe-area-inset-top,0px) - .75rem)))!important}
 body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 html{-webkit-text-size-adjust:100%}
 @media (display-mode:fullscreen),(display-mode:standalone){
