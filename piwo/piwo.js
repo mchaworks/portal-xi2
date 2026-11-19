@@ -7,7 +7,7 @@ let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 const put=a=>{cur=a;host.style.width=host.style.height=a.s+'px';host.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px)'};
 const setZ=z=>[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);
 const A={
- home(){const s=clamp(innerWidth*.17,58,84),d=$('liquid-glass-dock'),t=d?d.getBoundingClientRect().top:innerHeight-90;return{x:innerWidth-s-6,y:t-s*.92-4,s}},
+ home(){const s=clamp(innerWidth*.15,52,76),d=$('liquid-glass-dock'),t=d?d.getBoundingClientRect().top:innerHeight-90;return{x:innerWidth-s-6,y:t-s*.92-4,s}},
  center(){const s=Math.min(innerWidth*.52,innerHeight*.34,280);return{x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.03,s}},
  chat(){const e=$('xc-piwo');if(!e)return A.home();const r=e.getBoundingClientRect(),s=r.width*1.15;return{x:r.left+r.width/2-s/2,y:r.bottom+4-s*.92,s}}
 };
