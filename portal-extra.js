@@ -116,24 +116,26 @@
     rest('class_groups?select=title,group_name,members,sort_order,created_at&order=sort_order.asc,created_at.asc&limit=200').then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) { if (rows) renderGroups(rows); }).catch(function () {});
   }
 
-  /* ---------- Ringankan GPU saat scroll: blur kaca dimatikan sementara, kembali begitu berhenti ---------- */
-  function setupScrollLite() {
-    if (!document.getElementById('papan')) return;
-    var st = document.createElement('style');
-    st.textContent =
-      'html.xia-scrolling .multi-layer-glass,html.xia-scrolling #liquid-glass-dock,html.xia-scrolling .liquid-dock-shell,html.xia-scrolling .glass-image-overlay{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}' +
-      'html.xia-scrolling .multi-layer-glass{background-color:rgba(var(--glass-rgb),.94)!important}' +
-      'html.xia-scrolling #liquid-glass-lens,html.xia-scrolling .liquid-glass-lens{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}';
-    document.head.appendChild(st);
-    var root = document.documentElement, on = false, t = 0;
-    function stop() { on = false; root.classList.remove('xia-scrolling'); }
-    window.addEventListener('scroll', function () {
-      if (!on) { on = true; root.classList.add('xia-scrolling'); }
-      clearTimeout(t); t = setTimeout(stop, 140);
-    }, { passive: true });
+  /* ---------- Lencana debug (?debug=1): tier perangkat + waktu frame saat scroll ---------- */
+  function setupDebug() {
+    if (!/[?&]debug=1/.test(location.search)) return;
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;left:6px;bottom:96px;z-index:2147482000;background:rgba(0,0,0,.78);color:#fff;font:11px/1.35 monospace;padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre';
+    document.body.appendChild(el);
+    var last = 0, worst = 0, sum = 0, n = 0, long50 = 0, scrolling = 0, tmr = 0;
+    function loop(t) {
+      if (last && scrolling) { var d = t - last; sum += d; n++; if (d > worst) worst = d; if (d > 50) long50++; }
+      last = t; requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    window.addEventListener('scroll', function () { scrolling = 1; clearTimeout(tmr); tmr = setTimeout(function () { scrolling = 0; last = 0; }, 200); }, { passive: true });
+    function bd() { var c = 0; document.querySelectorAll('*').forEach(function (e) { var cs = getComputedStyle(e); if ((cs.backdropFilter && cs.backdropFilter !== 'none') || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) c++; }); return c; }
+    setInterval(function () {
+      el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\nblur aktif: ' + bd() + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?');
+    }, 1000);
   }
 
-  function boot() { setupScrollLite(); checkMaint(); loadGroups(); track(); }
+  function boot() { setupDebug(); checkMaint(); loadGroups(); track(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
   setInterval(function () { if (!document.hidden) { checkMaint(); loadGroups(); } }, 60000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) { checkMaint(); loadGroups(); } });

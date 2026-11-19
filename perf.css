@@ -1,0 +1,11 @@
+/* XI.2 perf.css: optimasi render tanpa menghapus fitur.
+   Kartu di dalam halaman (jadwal, anggota, papan, kelompok) berlatar gradien halus, jadi blur belakangnya
+   nyaris tidak kelihatan tapi sangat mahal di GPU HP. Blur tetap dipakai di header, dock, hero, momen, dan modal. */
+:is(#jadwal, #anggota, #papan, #kelompok) *,
+:is(#jadwal, #anggota, #papan, #kelompok) *::before,
+:is(#jadwal, #anggota, #papan, #kelompok) *::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+/* layer GPU permanen hanya untuk elemen yang memang bergerak terus; sisanya dilepas */
+:is(#jadwal, #anggota, #papan, #kelompok) * { will-change: auto !important; }
