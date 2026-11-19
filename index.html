@@ -945,6 +945,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
 <div id="piwo-splash" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="piwo-line" viewBox="4 62 1016 915"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path vector-effect="non-scaling-stroke" d="M235 106 L209 133 L192 169 L188 214 L196 246 L197 284 L156 380 L139 440 L98 463 L61 502 L36 550 L24 612 L33 665 L45 687 L61 704 L79 715 L104 722 L130 721 L161 711 L184 748 L213 782 L187 811 L176 840 L178 875 L192 903 L212 923 L238 939 L268 950 L308 957 L361 955 L402 944 L437 925 L462 899 L562 899 L583 922 L617 942 L680 957 L744 953 L777 943 L808 926 L838 894 L849 858 L843 823 L833 805 L811 782 L840 748 L863 711 L894 721 L920 722 L945 715 L963 704 L988 672 L1000 618 L992 562 L969 511 L931 467 L885 440 L862 364 L828 289 L826 266 L835 222 L836 189 L828 157 L815 133 L777 98 L748 86 L724 82 L682 87 L619 111 L596 112 L532 101 L479 102 L405 111 L342 87 L314 82 L276 86Z"/><path vector-effect="non-scaling-stroke" d="M297 720A215 175 0 0 1 727 720"/><path vector-effect="non-scaling-stroke" d="M486 520q13 20 26 0q13 20 26 0"/></g><circle cx="357" cy="450" r="26" fill="currentColor"/><circle cx="667" cy="450" r="26" fill="currentColor"/></symbol></svg>
 
     <!-- ======================================================================
          FLOATING MULTI-LAYER GLASS TOP NAVBAR + QUICK THEME & SETTINGS
@@ -978,10 +979,10 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
                 <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn xia-glass-btn w-10 h-10 rounded-full text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
                 <!-- Expressive Settings Trigger -->
                 <button type="button" class="xia-mode-btn" data-xia-mode aria-label="Ganti mode gelap" aria-pressed="false"><svg class="xm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="xm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
-                <button onclick="openChatbot()" aria-label="Buka Labz AI" title="Labz AI"
+                <button onclick="openChatbot()" aria-label="Buka Piwo" title="Piwo"
                         class="m3-spring-btn xia-glass-btn xia-glass-accent inline-flex items-center justify-center gap-1.5 w-10 h-10 sm:w-auto sm:h-9 sm:px-3 rounded-full text-m3-primary font-bold text-xs">
-                    <img src="./icons/piwo.png" alt="" width="24" height="24" class="piwo-ico" style="width:24px;height:24px">
-                    <span class="hidden sm:inline">Labz AI</span>
+                    <svg class="piwo-ico" width="24" height="24" aria-hidden="true"><use href="#piwo-line"/></svg>
+                    <span class="hidden sm:inline">Piwo</span>
                 </button>
             </div>
         </div>
@@ -1038,12 +1039,12 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
             </a>
         </nav>
 
-        <!-- Labz AI: tombol bulat, terpisah dari dock -->
-        <button type="button" id="labz-ai-fab" data-dock-action="chatbot" aria-label="Buka Labz AI"
+        <!-- Piwo: tombol bulat, terpisah dari dock -->
+        <button type="button" id="labz-ai-fab" data-dock-action="chatbot" aria-label="Buka Piwo"
                 onclick="try{triggerHaptic(12)}catch(e){}openChatbot()"
                 class="ai-fab liquid-dock-shell pointer-events-auto rounded-full shrink-0 flex flex-col items-center justify-center gap-0.5 text-m3-primary">
-            <img src="./icons/piwo.png" alt="" width="26" height="26" class="piwo-ico" style="width:26px;height:26px">
-            <span class="text-[10px] font-bold tracking-tight leading-none">Labz AI</span>
+            <svg class="piwo-ico" width="26" height="26" aria-hidden="true"><use href="#piwo-line"/></svg>
+            <span class="text-[10px] font-bold tracking-tight leading-none">Piwo</span>
         </button>
         </div>
     </div>
@@ -1081,7 +1082,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
                         </a>
                         <button onclick="openChatbot()" class="m3-spring-btn inline-flex items-center gap-2 px-6 py-4 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer font-bold text-sm sm:text-base hover:brightness-95">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg>
-                            <span>Tanya Labz AI</span>
+                            <span>Tanya Piwo</span>
                         </button>
                     </div>
 
@@ -2848,7 +2849,7 @@ addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.
 })();
 </script>
 <style id="ai-fab-style">
-/* Tombol Labz AI: bulat, tinggi mengikuti dock, tidak ikut jadi squircle saat ditekan */
+/* Tombol Piwo: bulat, tinggi mengikuti dock, tidak ikut jadi squircle saat ditekan */
 .ai-fab{width:66px;height:66px;padding:0;border-radius:9999px!important;cursor:pointer;transition:transform .35s var(--spring-curve),box-shadow .3s ease}
 #liquid-glass-dock{min-height:66px}
 .ai-fab:active{transform:scale(.9)}
@@ -3391,12 +3392,12 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
     <header class="xc-head">
       <div class="xc-brand">
         <div class="xc-avatar" id="xc-piwo" aria-hidden="true"></div>
-        <div class="min-w-0"><h2 id="xia-chatbot-title" class="xc-title">Labz AI</h2><p class="xc-sub"><span class="xc-dot"></span>Asisten XI.2 Creative Lab</p></div>
+        <div class="min-w-0"><h2 id="xia-chatbot-title" class="xc-title">Piwo</h2><p class="xc-sub"><span class="xc-dot"></span>Asisten XI.2 Creative Lab</p></div>
       </div>
-      <button type="button" onclick="closeChatbot()" aria-label="Tutup Labz AI" class="xc-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      <button type="button" onclick="closeChatbot()" aria-label="Tutup Piwo" class="xc-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     </header>
     <div id="xia-chatbot-messages" aria-live="polite">
-      <div class="xc-msg xc-bot">Halo! Aku <strong>Piwo</strong>, maskot Labz AI di XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
+      <div class="xc-msg xc-bot">Halo! Aku <strong>Piwo</strong>, asisten XI.2 Creative Lab. Tanya soal jadwal, piket, tugas, atau pengumuman kelas ya.</div>
     </div>
     <div class="xc-chips" id="xc-chips">
       <button type="button" class="xc-chip" data-q="Jadwal pelajaran hari ini apa aja?">📅 Jadwal hari ini</button>
@@ -3405,7 +3406,7 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
       <button type="button" class="xc-chip" data-q="Ada pengumuman terbaru apa?">📣 Pengumuman</button>
     </div>
     <form id="xia-chatbot-form">
-      <div class="xc-composer"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk Labz AI"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+      <div class="xc-composer"><textarea id="xia-chatbot-input" rows="1" placeholder="Tanya tentang tugas, jadwal, kelas..." aria-label="Pesan untuk Piwo"></textarea><button id="xia-chatbot-send" type="submit" aria-label="Kirim pesan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
       <p id="xia-chat-note">Jawaban AI bisa keliru. Pesan dikirim ke server untuk diproses.</p>
     </form>
   </section>
@@ -3893,7 +3894,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
  var watchCam=function(){var ov=document.querySelector('.dcw-ov');if(!ov||ov.__sfx)return;ov.__sfx=1;var was=ov.classList.contains('is-open');
   new MutationObserver(function(){var now=ov.classList.contains('is-open');if(was&&!now)play('close');if(!was&&now)play('open');was=now}).observe(ov,{attributes:true,attributeFilter:['class']})};
  new MutationObserver(watchCam).observe(document.documentElement,{childList:true,subtree:true});watchCam();
- /* Labz AI: kirim + balasan, dan chip saran */
+ /* Piwo: kirim + balasan, dan chip saran */
  var form=document.getElementById('xia-chatbot-form'),msgs=document.getElementById('xia-chatbot-messages'),win=document.getElementById('xia-chatbot-window'),inp=document.getElementById('xia-chatbot-input');
  if(form)form.addEventListener('submit',function(){if(inp&&inp.value.trim())play('send')},true);
  if(msgs)new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){
