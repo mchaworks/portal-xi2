@@ -19,6 +19,7 @@ html.piwo-intro{overflow:hidden}
 html[data-mode="dark"]{--xm-bubble-bg:rgba(28,42,35,.94);--xm-bubble-fg:#E6F0EA;--xm-bubble-bd:rgba(138,214,181,.3);--xm-bubble-dot:#8AD6B5;--xm-shadow:rgba(0,0,0,.6)}
 #xia-chatbot-window .xc-avatar{width:56px;height:56px;background:transparent!important;box-shadow:none!important;border-radius:0}
 .piwo-ico{display:block;flex:none;object-fit:contain}
+#header-badge-code{transform:none!important;rotate:none!important}
 html .xm-bubble{max-width:min(72vw,232px);padding:10px 14px 11px;border-radius:22px;font:600 13.5px/1.4 var(--xm-font);
  background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(228,247,238,.92));border:1px solid rgba(255,255,255,.75);
  box-shadow:0 14px 30px -12px rgba(15,70,50,.5),inset 0 1px 0 #fff,0 0 0 1px rgba(27,107,81,.14);
@@ -1052,11 +1053,11 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
         </nav>
 
         <!-- Piwo: tombol bulat, terpisah dari dock -->
-        <button type="button" id="labz-ai-fab" data-dock-action="chatbot" aria-label="Buka Piwo"
+        <button type="button" id="labz-ai-fab" data-dock-action="chatbot" aria-label="Buka Piwo AI"
                 onclick="try{triggerHaptic(12)}catch(e){}openChatbot()"
                 class="ai-fab liquid-dock-shell pointer-events-auto rounded-full shrink-0 flex flex-col items-center justify-center gap-0.5 text-m3-primary">
             <svg class="piwo-ico" width="26" height="26" aria-hidden="true"><use href="#piwo-line"/></svg>
-            <span class="text-[10px] font-bold tracking-tight leading-none">Piwo</span>
+            <span class="text-[10px] font-bold tracking-tight leading-none whitespace-nowrap">Piwo AI</span>
         </button>
         </div>
     </div>
@@ -3923,8 +3924,8 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./portal-extra.js?v=5"></script>
 <script src="./theme.js?v=2"></script>
 <script defer src="./piwo/mascot.js?v=7"></script>
-<script defer src="./piwo/piwo.js?v=14"></script>
+<script defer src="./piwo/piwo.js?v=18"></script>
 <script defer src="./piwo/games.js?v=3"></script>
-<script defer src="./piwo/pet.js?v=3"></script>
+<script defer src="./piwo/pet.js?v=5"></script>
 </body>
 </html>
