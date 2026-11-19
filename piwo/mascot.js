@@ -127,6 +127,7 @@ class Sfx {
   tada() { [523.3, 659.3, 784, 1046.5].forEach((f, i) => this.bell(f, .13, i * .075)); [1318.5, 1568, 2093].forEach((f, i) => this.bell(f, .09, .34 + i * .06)); this.vt(523.3, 523.3, .7, { type: 'triangle', v: .05, d: .3, lp: 1500, a: .05 }); }
   fly() { this.vt(420, 1300, .5, { v: .1, a: .06, lp: 3200 }); this.vt(640, 1800, .44, { type: 'triangle', v: .045, d: .05, lp: 3000 }); }
   hello() { this.chirp(900, 1350, .09, .17, 0); this.chirp(1150, 1750, .13, .17, .13); } /* "pi-pyu~" */
+  heart() { this.bell(1568, .08, 0); this.bell(2093, .08, .08); this.bell(2637, .06, .16); }
   peek() { this.vt(380, 640, .14, { v: .12, vib: 18, vd: 14, lp: 2400 }); } /* "mup" */
   huh() { this.chirp(1100, 1500, .1, .13, 0); this.chirp(1500, 1000, .14, .12, .12); } /* "eh?" */
 

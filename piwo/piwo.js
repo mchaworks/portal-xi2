@@ -65,33 +65,36 @@ async function intro(){
  const sp=document.getElementById('piwo-splash'),dark=R.dataset.mode==='dark';
  if(sp){ttl=document.createElement('div');ttl.textContent='XI.2 Creative Lab';
   ttl.style.cssText='position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 13%);transform:translateX(-50%);padding:9px 18px;border-radius:99px;font:800 15px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap;'+(dark?'color:#bfeedd;background:rgba(255,255,255,.08);border:1px solid rgba(191,238,221,.2)':'color:#1B6B51;background:rgba(255,255,255,.7);border:1px solid rgba(27,107,81,.18);box-shadow:0 10px 30px -12px rgba(27,107,81,.5)');
-  sp.appendChild(ttl);ttl.animate([{opacity:0,transform:'translate(-50%,14px) scale(.9)'},{opacity:1,transform:'translate(-50%,0) scale(1)'}],{duration:700,delay:250,easing:'cubic-bezier(.2,1.4,.4,1)',fill:'backwards'})}
- amb=setInterval(()=>{if(!skip)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,20),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2600,4200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?650:360);
+  sp.appendChild(ttl);ttl.animate([{opacity:0,transform:'translate(-50%,14px) scale(.9)'},{opacity:1,transform:'translate(-50%,0) scale(1)'}],{duration:550,delay:120,easing:'cubic-bezier(.2,1.4,.4,1)',fill:'backwards'})}
+ amb=setInterval(()=>{if(!skip)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,20),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2600,4200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?500:240);
  const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(500,800)})},55)},trailOff=()=>clearInterval(trail);
  audioStart();
- await wait(600);
- /* 1. ngintip malu-malu */
- if(!skip){S.peek();await move(peek,500,rise,0);m.flash('shy',1.5)}
- if(!skip)await wait(650);
- /* 2. jongkok, lalu BOING */
- if(!skip){S.squish();m.sy.kick(-3.6);m.sx.kick(2.2);await wait(330)}
- if(!skip){S.boing();S.whoosh();m.sy.kick(2.8);m.flash('happy',.9);trailOn()}
- await move(c,1000,rise,-4);trailOff(); /* melesat, melambat mendekati puncak */
- /* 3. salto di puncak + hati beterbangan */
- if(!skip){S.twinkle();const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,s*.95)}
- await move(c,720,rise,-360);tilt=0;
- /* 4. nyapa sambil melayang miring */
- if(!skip)await hang(c,async()=>{S.hello();m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})});
- /* 5. kaget lalu jatuh "wheee" */
- if(!skip){m.react('surprise');S.huh();m.sy.kick(-2);await wait(280)}
- trailOn();S.slide();await move(below,780,fall,10);trailOff();
- if(!skip){S.thud();PFX.burst(c.x+s/2,H-8,tier2?8:16,Math.min(W*.5,210),true)} /* POOF di dasar layar */
+ await wait(320);
+ /* 1. muncul kaget: mata melotot */
+ if(!skip){S.peek();m.flash('surprised',.75);m.sy.kick(1.8);await move(peek,360,rise,0)}
+ /* 2. malu sebentar, lalu jongkok bertekad */
+ if(!skip){m.flash('shy',.6);S.squeak();m.sx.kick(1.2);await wait(520)}
+ if(!skip){S.squish();m.flash('happy',.6);m.sy.kick(-3.8);m.sx.kick(2.4);await wait(230)}
+ /* 3. BOING: melesat + ledakan bintang di bawah kaki */
+ if(!skip){S.boing();S.whoosh();m.sy.kick(3);const q=ctr();PFX.burst(q.x,q.y+s*.3,tier2?5:10,s*.9,true);trailOn()}
+ await move(c,700,rise,-4);trailOff();
+ /* 4. salto + ketawa, hati beterbangan */
+ if(!skip){S.twinkle();S.giggle();m.flash('giggle',.7);const q=ctr();PFX.burst(q.x,q.y,tier2?6:14,s)}
+ await move(c,540,rise,-360);tilt=0;
+ /* 5. mata hati, lalu nyapa sambil melambai */
+ if(!skip)await hang(c,async()=>{m.react('love');S.heart&&S.heart();await wait(420);if(skip)return;S.hello();m.react('wave');await m.say('Halo, aku Piwo~',{mood:'happy',hold:.4})});
+ /* 6. kaget, jatuh pusing */
+ if(!skip){m.react('surprise');S.huh();m.sy.kick(-2.4);await wait(240)}
+ if(!skip)m.flash('dizzy',1);
+ trailOn();S.slide();await move(below,560,fall,26);trailOff();
+ if(!skip){S.thud();PFX.burst(c.x+s/2,H-8,tier2?10:20,Math.min(W*.55,230),true)} /* POOF */
  tilt=0;put(cur);
- out();if(!skip){S.tada();await wait(650)}
- /* 6. loncat ke pojok */
+ out();if(!skip){S.tada();await wait(480)}
+ /* 7. loncat ke pojok dengan senyum */
  const h=A.home();put({x:h.x,y:H+h.s,s:h.s});
- if(!skip)S.fly();await fly(h,{dur:900,h:.14});
- if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,8,h.s)}
+ if(!skip){S.fly();m.flash('happy',1)}
+ await fly(h,{dur:700,h:.14});
+ if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,10,h.s*1.1)}
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
  setTimeout(PFX.clear,1800);
 }
