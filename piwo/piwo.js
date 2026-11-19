@@ -1,6 +1,6 @@
 /* Piwo: sutradara maskot. Intro loncat ke tengah, tinggal di pojok tiap halaman, ikut masuk ke chat Labz AI. */
 (()=>{
-window.PIWO_BUILD='21-intro-pelan';
+window.PIWO_BUILD='23-intro-simple';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
@@ -103,7 +103,6 @@ async function intro(){
   bkw=document.createElement('div');bkw.className='pi-bkw';stage.appendChild(bkw);
   [[10,14,86,'110,231,183'],[78,10,64,'125,211,252'],[86,46,98,'249,168,212'],[4,52,70,'253,230,138'],[70,80,90,'110,231,183'],[18,84,60,'125,211,252'],[44,92,74,'249,168,212']].forEach(([x,y,z,col],i)=>{if(i>=(tier2?3:tier==='mid'?5:7))return;const e=document.createElement('i');e.className='pi-bk';e.style.cssText='left:'+x+'%;top:'+y+'%;width:'+z+'px;height:'+z+'px;margin:-'+z/2+'px 0 0 -'+z/2+'px;--bk:'+col+';animation-delay:-'+(i*.55).toFixed(2)+'s;animation-duration:'+(2+i*.3).toFixed(1)+'s';bkw.appendChild(e)});
   [['✦',6,24,22],['♥',88,20,18],['⭐',90,60,20],['♥',12,88,16]].forEach(([ch,x,y,z],i)=>{if(tier2&&i>1)return;const e=document.createElement('i');e.className='pi-dd';e.textContent=ch;e.style.cssText='left:'+x+'%;top:'+y+'%;font-size:'+z+'px;animation-delay:-'+(i*.7)+'s;color:'+['#6ee7b7','#f9a8d4','#bae6fd','#fde68a'][i%4];stage.appendChild(e)});
-  const vf=document.createElement('div');vf.className='pi-vf';vf.style.color=ink;vf.innerHTML='<i></i><i></i><i></i><i></i><b class="pi-rec">REC</b>';sp.appendChild(vf);
   ttl=document.createElement('div');ttl.textContent='XI.2 Creative Lab';
   ttl.style.cssText='position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 4.5%);transform:translateX(-50%);padding:9px 18px;border-radius:99px;font:800 15px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap;'+(dark?'color:#bfeedd;background:rgba(255,255,255,.08);border:1px solid rgba(191,238,221,.2)':'color:#1B6B51;background:rgba(255,255,255,.75);border:1px solid rgba(27,107,81,.18);box-shadow:0 10px 30px -12px rgba(27,107,81,.5)');
   sp.appendChild(ttl);ttl.animate([{opacity:0,transform:'translate(-50%,-14px) scale(.9)'},{opacity:1,transform:'translate(-50%,0) scale(1)'}],{duration:420,delay:60,easing:'cubic-bezier(.2,1.4,.4,1)',fill:'backwards'});
@@ -146,20 +145,12 @@ async function intro(){
  await move(c,1150,rise,0);trailOff();tilt=0;hoverOn();
  if(!skip){S.twinkle();m.flash('giggle',1.1);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,s)}
  await nap(800);
- /* 3. nyapa, dua kalimat terpisah biar kebaca */
- if(!skip){S.hello();m.react('wave');m.say('Halo, aku Piwo~',{mood:'happy',speed:70,hold:.4});await nap(1650)}
- if(!skip){S.pop();m.flash('happy',1.4);m.say('Maskot XI.2 Creative Lab!',{mood:'happy',speed:60,hold:.4});const q=ctr();PFX.burst(q.x,q.y,tier2?4:8,s*.9);await nap(1650)}
- /* 4. joget kecil: goyang kiri-kanan, tiap langkah ada nada + hati */
- if(!skip){m.say('Ayo joget dikit~',{mood:'happy',speed:60,hold:.3});await nap(550)}
- const step=async(dx,tl,f)=>{if(skip)return;try{S.bell&&S.bell(f,.1,0)}catch(e){}m.sy.kick(-2.2);m.flash('love',.55);const q=ctr();PFX.spark(q.x,q.y-cur.s*.3,{ch:'♥',col:'#f9a8d4',dx:rnd(-22,22),dy:-56,sz:18,d:900});await move({x:c.x+dx,y:c.y,s},400,io,tl)};
- await step(-s*.5,-11,988);await step(s*.5,11,1175);await step(-s*.28,-8,1319);
- if(!skip){await move(c,420,io,0);S.twinkle();m.flash('giggle',1);const q=ctr();PFX.burst(q.x,q.y,tier2?5:10,s)}
- await nap(350);
- /* 5. foto bareng: ajak, hitung mundur 3-2-1, cekrek, flash, diam sebentar */
- if(!skip){m.say('Foto bareng yuk! Siap ya?',{mood:'happy',speed:60,hold:.3});m.flash('shy',1);await nap(1300)}
- for(const n of ['3','2','1']){if(skip)break;bip();m.say(n,{mood:'happy',speed:200,hold:.2});m.sy.kick(-1.2);focus(false);focus(true);await nap(480)}
- if(!skip){talk('love','Cheese~!');await nap(200);focus(false);shutter();flashEl();m.sy.kick(-3);m.sx.kick(2.2);PFX.burst(ctr().x,ctr().y,tier2?6:14,Math.min(W*.5,200));await nap(550)}
- if(!skip){S.whoosh();dolly(true);out()}else out();
+ /* 3. perkenalan: Piwo = webnya sendiri. Satu kalimat per adegan biar kebaca */
+ if(!skip){S.hello();m.react('wave');m.say('Halo, aku Piwo~',{mood:'happy',speed:70,hold:.4});await nap(1600)}
+ if(!skip){S.pop();m.flash('happy',1.4);m.say('Aku itu web XI.2 Creative Lab, versi imutnya~',{mood:'happy',speed:58,hold:.4});const q=ctr();PFX.burst(q.x,q.y,tier2?4:8,s*.9);await nap(2300)}
+ /* 4. ajakan: Piwo maju mendekat, layar terbuka dari dia, lalu dia jaga di pojok */
+ if(!skip){S.hello();m.react('wave');m.say('Yuk, explore bareng aku~',{mood:'happy',speed:58,hold:.4});await nap(1600)}
+ if(!skip){S.whoosh();m.flash('love',1);dolly(true);const q=ctr();PFX.burst(q.x,q.y,tier2?6:14,Math.min(W*.5,200));out()}else out();
  await move(bc,260,io,-6);tilt=0;
  if(!skip){S.thud()}
  /* 4. loncat ke pojok */

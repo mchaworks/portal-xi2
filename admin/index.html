@@ -1411,7 +1411,9 @@ let igBusy=false;
 async function syncIg(quiet){
   if(igBusy)return;const un=igUserNow()||settingsMap.ig_username||'';if(!un){if(!quiet)notice('Isi username Instagram dulu.',true);return;}
   igBusy=true;const b=$('ig-sync');if(b){b.disabled=true;b.textContent='Mengambil…'}
-  try{await callFn('ig-profile',{username:un});await loadSettings();if(!quiet)notice('Profil Instagram disinkronkan.');else notice('Pengaturan disimpan. Profil Instagram ikut diperbarui otomatis.');}
+  try{const j=await callFn('ig-profile',{username:un});await loadSettings();const g=j.got||{};const got=[g.avatar&&'foto',g.name&&'nama',g.bio&&'bio'].filter(Boolean).join(', ');
+    if(g.bio)notice('Profil Instagram disinkronkan ('+got+').');
+    else{const d=document.querySelector('#settings-form details');if(d)d.open=true;notice((quiet?'Pengaturan disimpan. ':'')+'Instagram hanya mengizinkan '+(got||'sebagian data')+' diambil otomatis. Bio isi manual di bagian "Isi manual" lalu simpan.',false);}}
   catch(e){notice('Sinkron Instagram gagal: '+errText(e)+' Kamu bisa isi nama/bio manual.',true);}
   finally{igBusy=false;if(b){b.disabled=false;b.textContent='Sinkronkan'}}
 }
