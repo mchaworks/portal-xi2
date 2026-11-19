@@ -696,7 +696,7 @@ class Mascot {
     this.scx = this.sx.x + (1 - this.sy.x) * .5 + jig; this.scy = this.sy.x - jig; this.rotNow = this.rot.x;
     const openEff = F.open * (this.blinkF == null ? 1 : this.blinkF);
     // wajah
-    const fs = clamp(this.unit * this.dpr, .35, 1.3), W = Math.ceil(FR[2] * fs), Hh = Math.ceil(FR[3] * fs);
+    const fs = Math.min(1.3, Math.ceil(clamp(this.unit * this.dpr, .35, 1.3) * 4) / 4), W = Math.ceil(FR[2] * fs), Hh = Math.ceil(FR[3] * fs);
     const anim = F.dizzy > .02 || F.love > .02 || F.mWavy > .02 || F.tear > .05 || F.sparkle > .02 || F.sweat > .02;
     const key = [W, openEff, F.lx, F.ly, ...FKEYS.map(k => F[k]), F.mOpen].map(v => typeof v === 'number' ? v.toFixed(2) : v).join(',') + (anim ? '|' + ((t * 30) | 0) : '');
     const dirty = key !== this.faceKey; this.faceKey = key;

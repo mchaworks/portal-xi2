@@ -1,13 +1,15 @@
 /* Piwo: sutradara maskot. Intro loncat ke tengah, tinggal di pojok tiap halaman, ikut masuk ke chat Labz AI. */
 (()=>{
-window.PIWO_BUILD='23-intro-simple';
+window.PIWO_BUILD='25-intro-zoom';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
 let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 let panelOpen=false,tilt=0; /* tilt (derajat) cuma dipakai intro */
-let hv=0,hr=0; /* hv/hr: offset melayang (px/derajat), cuma dipakai intro */
-let lastS=-1;const put=a=>{cur=a;if(a.s!==lastS){lastS=a.s;host.style.width=host.style.height=a.s+'px'}const rr=tilt+hr;host.style.transform='translate('+a.x.toFixed(1)+'px,'+(a.y+hv).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':'')};
+let hv=0,hr=0,bigS=0; /* hv/hr: offset melayang (px/derajat), cuma dipakai intro */
+let lastS=-1;const put=a=>{cur=a;
+ if(bigS){if(lastS!==bigS){lastS=bigS;host.style.width=host.style.height=bigS+'px'}const k=a.s/bigS,o=(a.s-bigS)/2,rr=tilt+hr;host.style.transform='translate('+(a.x+o).toFixed(1)+'px,'+(a.y+hv+o).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':'')+' scale('+k.toFixed(4)+')';return}
+ if(a.s!==lastS){lastS=a.s;host.style.width=host.style.height=a.s+'px'}const rr=tilt+hr;host.style.transform='translate('+a.x.toFixed(1)+'px,'+(a.y+hv).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':'')};
 const setZ=z=>{[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);const w=$('pp-acc-wrap');if(w)w.style.zIndex=z+1};
 const A={
  home(){const s=clamp(innerWidth*.15,52,76),f=$('labz-ai-fab'),d=$('liquid-glass-dock'),fr=f&&f.getBoundingClientRect(),t=fr?fr.top:(d?d.getBoundingClientRect().top:innerHeight-90);return{x:(fr?fr.left+fr.width/2:innerWidth-s)-s/2,y:t-s*.92-4,s}},
@@ -64,8 +66,8 @@ async function intro(){
  lock=true;const W=innerWidth,H=innerHeight,tier2=tier==='lite',s=Math.min(W*.3,H*.16,128),c={x:(W-s)/2,y:(H-s)/2,s},below={x:c.x,y:H+s*.25,s},peek={x:c.x,y:H-s*.72,s},ctr=()=>({x:cur.x+cur.s/2,y:cur.y+cur.s/2});
  const big=Math.min(W*.86,H*.46,330),bc={x:(W-big)/2,y:(H-big)/2-H*.02,s:big};
  const nap=ms=>skip?Promise.resolve():wait(ms);
- const io=t=>t*t*(3-2*t),blurOk=tier==='high';
- put(below);setZ(210);
+ const io=t=>t*t*(3-2*t),blurOk=false;
+ bigS=Math.max(bc.s,s);put(below);setZ(210);
  const sk=()=>{skip=true;m.hush();S.musicStop(.3);rm()};addEventListener('pointerdown',sk,{once:true});
  const sp=document.getElementById('piwo-splash'),dark=R.dataset.mode==='dark',ink=dark?'#bfeedd':'#1B6B51';
  /* ---- suara kamera (dirakit dari sfx yang sudah ada, tanpa file baru) ---- */
@@ -134,30 +136,34 @@ async function intro(){
  await nap(120);
  /* ===== pacing baru: tiap adegan dikasih jeda napas biar sempat dicerna ===== */
  /* 0. layar tenang + judul + bokeh, mata sempat menetap */
- await nap(750);
+ await nap(500);
  /* 1. ngintip malu-malu dari bawah, pelan, lalu kaget sendiri */
- if(!skip){S.peek();m.flash('shy',1.2);await move(peek,800,io,0)}
- await nap(550);
- if(!skip){m.flash('surprised',.7);S.squeak();m.sy.kick(1.4);m.sx.kick(-.8);await nap(650)}
+ if(!skip){S.peek();m.flash('shy',1.2);await move(peek,650,io,0)}
+ await nap(350);
+ if(!skip){m.flash('surprised',.7);S.squeak();m.sy.kick(1.4);m.sx.kick(-.8);await nap(450)}
  /* 2. antisipasi: jongkok... lalu MELAYANG naik pelan ke tengah dengan jejak bintang */
- if(!skip){S.squish();m.sy.kick(-3.4);m.sx.kick(2.2);await nap(380)}
+ if(!skip){S.squish();m.sy.kick(-3.4);m.sx.kick(2.2);await nap(300)}
  if(!skip){S.boing();S.whoosh();m.flash('happy',1.4);m.sy.kick(2.4);const q=ctr();PFX.burst(q.x,q.y+s*.3,tier2?5:9,s*.9,true);trailOn()}
- await move(c,1150,rise,0);trailOff();tilt=0;hoverOn();
+ await move(c,950,rise,0);trailOff();tilt=0;hoverOn();
  if(!skip){S.twinkle();m.flash('giggle',1.1);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,s)}
- await nap(800);
+ await nap(500);
  /* 3. perkenalan: Piwo = webnya sendiri. Satu kalimat per adegan biar kebaca */
- if(!skip){S.hello();m.react('wave');m.say('Halo, aku Piwo~',{mood:'happy',speed:70,hold:.4});await nap(1600)}
- if(!skip){S.pop();m.flash('happy',1.4);m.say('Aku itu web XI.2 Creative Lab, versi imutnya~',{mood:'happy',speed:58,hold:.4});const q=ctr();PFX.burst(q.x,q.y,tier2?4:8,s*.9);await nap(2300)}
+ if(!skip){S.hello();m.react('wave');m.say('Halo, aku Piwo~',{mood:'happy',speed:60,hold:4});await nap(1400)}
+ if(!skip){S.pop();m.flash('happy',1.4);m.say('Aku itu web XI.2 Creative Lab, versi imutnya~',{mood:'happy',speed:52,hold:4});const q=ctr();PFX.burst(q.x,q.y,tier2?4:8,s*.9);await nap(2000)}
  /* 4. ajakan: Piwo maju mendekat, layar terbuka dari dia, lalu dia jaga di pojok */
- if(!skip){S.hello();m.react('wave');m.say('Yuk, explore bareng aku~',{mood:'happy',speed:58,hold:.4});await nap(1600)}
- if(!skip){S.whoosh();m.flash('love',1);dolly(true);const q=ctr();PFX.burst(q.x,q.y,tier2?6:14,Math.min(W*.5,200));out()}else out();
- await move(bc,260,io,-6);tilt=0;
- if(!skip){S.thud()}
+ if(!skip){S.hello();m.react('wave');m.say('Yuk, explore bareng aku~',{mood:'happy',speed:56,hold:2.6});await nap(1250)}
+ /* zoom: Piwo nyosor ke lensa (membesar halus), layar terbuka dari dia, lalu mundur lagi */
+ if(!skip){S.whoosh();m.flash('love',1.2);dolly(true)}
+ await move(bc,560,io,0);
+ if(!skip){S.pop();m.sy.kick(-2.4);m.sx.kick(1.8);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,Math.min(W*.4,170));out()}else out();
+ await nap(520);
+ if(!skip)dolly(false);
  /* 4. loncat ke pojok */
  hoverOff();
  const h=A.home();
  if(!skip){S.fly();m.flash('happy',1)}
- await fly(h,{dur:620,h:.16});
+ await fly(h,{dur:850,h:.09});
+ bigS=0;lastS=-1;put(cur);
  if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,10,h.s*1.1)}
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
  setTimeout(()=>{PFX.clear();focus(false);sp&&sp.querySelectorAll('.pi-stage,.pi-vf,.pi-hint').forEach(e=>e.remove())},1500);
