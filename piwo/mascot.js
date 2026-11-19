@@ -100,6 +100,7 @@ class Sfx {
   growl() { this.tone(110, 70, .5, 'sawtooth', .11); this.tone(95, 60, .45, 'sawtooth', .09, .12); }
   levelup() { [523, 659, 784, 1046].forEach((f, i) => this.tone(f, f, .16, 'triangle', .2, i * .09)); this.tone(1318, 1318, .35, 'sine', .16, .4); }
   snore() { this.tone(150, 90, .6, 'sine', .12); this.tone(140, 85, .6, 'sine', .1, .9); }
+  coin() { this.tone(988, 988, .08, 'square', .1); this.tone(1319, 1319, .26, 'square', .1, .08); }
   bell() { this.tone(1320, 1320, .22, 'sine', .16); this.tone(1760, 1760, .3, 'sine', .12, .08); }
   play() { this.tone(400, 800, .1, 'triangle', .2); this.tone(600, 1200, .1, 'triangle', .2, .1); this.tone(800, 1600, .12, 'triangle', .18, .2); }
 }
