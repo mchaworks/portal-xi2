@@ -278,7 +278,7 @@ async function launch(id){if(!m||gameOn||!window.PiwoGames)return;dq();gameOn=tr
 /* ---------- loop 20 dtk: status turun & Piwo mengeluh ---------- */
 setInterval(()=>{if(!m)return;const n=Date.now();decay(n-pet.t,false);pet.t=n;saveLocal();dirty=true;render();
  if(n-lastWarn<120000||C.lock||C.busy||C.at!=='home'||m.state==='sleep'||document.hidden)return;
- const say=(f,t)=>{lastWarn=n;needT=n+9000;f&&f();m.say(t+' (tap di sini buat ngurus)',{mood:'sad'})};
+ const say=(f,t)=>{lastWarn=n;needT=n+9000;f&&f();m.say(t+' (tap dan tahan aku buat ngurus)',{mood:'sad'})};
  if(pet.hunger<25)say(()=>{m.sfx.growl();m.react('sad')},'Perutku bunyi… laper nih~');
  else if(pet.energy<20)say(()=>m.react('yawn'),'Hoaam… ngantuk…');
  else if(pet.happy<25)say(()=>m.react('sad'),'Main sama aku dong…')},20000);
@@ -301,7 +301,7 @@ async function load(){
  dq();dirty=true;saveLocal();accSync();render(true);
  setTimeout(()=>{if(!m||C.lock||C.at!=='home'||document.hidden)return;
   if(!pet.tip){pet.tip=1;changed();m.say('Tahan aku lama-lama ya, ada status, toko, misi & game~',{mood:'happy'})}
-  else if(pet.hunger<25){needT=Date.now()+9000;m.sfx.growl();m.say('Aku laper… tap di sini buat kasih makan~',{mood:'sad'})}else if(pet.energy<20)m.say('Ngantuk banget hari ini…',{mood:'sad'})},6500)}
+  else if(pet.hunger<25){needT=Date.now()+9000;m.sfx.growl();m.say('Aku laper… tap dan tahan aku buat kasih makan~',{mood:'sad'})}else if(pet.energy<20)m.say('Ngantuk banget hari ini…',{mood:'sad'})},6500)}
 let lp=null;
 addEventListener('pointerdown',e=>{if(!m||C.lock||C.panelOpen||gameOn||C.at!=='home'||e.button>0||!ui)return;if(!m.hit(e.clientX,e.clientY))return;
  lp={id:e.pointerId,x:e.clientX,y:e.clientY,tm:setTimeout(()=>{if(!lp)return;lp=null;m.down=null;m.rub=0;try{navigator.vibrate&&navigator.vibrate(14)}catch(_){}m.squish(1.3);m.sfx.bell();open()},520)}},true);
