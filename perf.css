@@ -9,3 +9,6 @@
 }
 /* layer GPU permanen hanya untuk elemen yang memang bergerak terus; sisanya dilepas */
 :is(#jadwal, #anggota, #papan, #kelompok) * { will-change: auto !important; }
+
+/* tab/PWA di background: hentikan semua animasi CSS (dipasang oleh class xia-page-hidden) */
+html.xia-page-hidden *, html.xia-page-hidden *::before, html.xia-page-hidden *::after { animation-play-state: paused !important; }

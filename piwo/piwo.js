@@ -2,7 +2,16 @@
 (()=>{
 window.PIWO_BUILD='25-intro-zoom';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
-const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
+/* ---- pause total saat tab/PWA di background: timer, jam animasi, suara, dan semua animasi CSS/WAAPI ---- */
+const WQ=new Set();let hid=0,hAt=0,paused=[];
+const vnow=()=>performance.now()-hid;
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){hAt=performance.now();WQ.forEach(h=>h.pause());
+  try{paused=document.getAnimations().filter(a=>a.playState==='running');paused.forEach(a=>a.pause())}catch(e){paused=[]}
+  try{const c=m&&m.sfx&&m.sfx.ctx;if(c&&c.state==='running')c.suspend()}catch(e){}}
+ else{hid+=performance.now()-hAt;WQ.forEach(h=>h.resume());paused.forEach(a=>{try{a.play()}catch(e){}});paused=[];
+  try{const c=m&&m.sfx&&m.sfx.ctx;if(c&&c.state==='suspended'&&!skip)c.resume()}catch(e){}}});
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>{let left=ms,t=0,st=0;const go=()=>{st=performance.now();t=setTimeout(done,Math.max(0,left))},done=()=>{t=0;WQ.delete(h);r()},h={pause(){if(t){clearTimeout(t);t=0;left-=performance.now()-st}},resume(){if(!t)go()}};WQ.add(h);if(!document.hidden)go()}),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
 let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 let panelOpen=false,tilt=0; /* tilt (derajat) cuma dipakai intro */
@@ -19,16 +28,16 @@ const A={
  chat(){const e=$('xc-piwo');if(!e)return A.home();const r=e.getBoundingClientRect(),s=r.width*1.15;return{x:r.left+r.width/2-s/2,y:r.bottom+4-s*.92,s}}
 };
 /* terbang: busur parabola + squash tiap mendarat */
-const fly=(to,o)=>new Promise(res=>{o=Object.assign({dur:900,hops:1,h:.26},o);const a=Object.assign({},cur),t0=performance.now();let k=-1;busy=true;
- const f=n=>{const t=skip?1:Math.min(1,(n-t0)/o.dur),T=typeof to=='function'?to():to,e=(o.lin||o.hops>1)?t:t*t*(3-2*t),ph=t*o.hops,
+const fly=(to,o)=>new Promise(res=>{o=Object.assign({dur:900,hops:1,h:.26},o);const a=Object.assign({},cur),t0=vnow();let k=-1;busy=true;
+ const f=n=>{if(skip&&!o.force){busy=false;res();return}const t=Math.min(1,(n-hid-t0)/o.dur),T=typeof to=='function'?to():to,e=(o.lin||o.hops>1)?t:t*t*(3-2*t),ph=t*o.hops,
   arc=t>=1?0:Math.abs(Math.sin(ph*Math.PI))*o.h*innerHeight*(o.hops>1?1-t*.55:1);
   if(m&&t<1&&Math.floor(ph)!==k){k=Math.floor(ph);m.sy.kick(-2.6);m.flash('happy',.5)}
   put({x:a.x+(T.x-a.x)*e,y:a.y+(T.y-a.y)*e-arc,s:a.s+(T.s-a.s)*e});
-  if(t<1)requestAnimationFrame(f);else{busy=false;if(m&&!skip)m.squish(1.5);res()}};
+  if(t<1)requestAnimationFrame(f);else{busy=false;if(m&&(!skip||o.force))m.squish(1.5);res()}};
  requestAnimationFrame(f)});
 /* gerak lurus dengan easing bebas (dipakai intro); tt = target kemiringan (derajat) */
-const move=(to,dur,ease,tt)=>new Promise(res=>{const a=Object.assign({},cur),t0=performance.now(),k0=tilt;busy=true;
- const f=n=>{const t=skip?1:Math.min(1,(n-t0)/dur),e=ease(t);tilt=tt==null?tilt:k0+(tt-k0)*t;put({x:a.x+(to.x-a.x)*e,y:a.y+(to.y-a.y)*e,s:a.s+(to.s-a.s)*e});if(t<1)requestAnimationFrame(f);else{busy=false;res()}};requestAnimationFrame(f)});
+const move=(to,dur,ease,tt)=>new Promise(res=>{const a=Object.assign({},cur),t0=vnow(),k0=tilt;busy=true;
+ const f=n=>{if(skip){busy=false;res();return}const t=Math.min(1,(n-hid-t0)/dur),e=ease(t);tilt=tt==null?tilt:k0+(tt-k0)*t;put({x:a.x+(to.x-a.x)*e,y:a.y+(to.y-a.y)*e,s:a.s+(to.s-a.s)*e});if(t<1)requestAnimationFrame(f);else{busy=false;res()}};requestAnimationFrame(f)});
 /* gravitasi: naik = melambat sampai puncak (kecepatan 0), jatuh = makin ngebut */
 const rise=t=>1-Math.pow(1-t,1.7),fall=t=>t*t;
 /* melayang di puncak: bobbing pelan + miring, selama fn() berjalan */
@@ -118,7 +127,7 @@ async function intro(){
   bkw&&bkw.animate(on?[{transform:'scale(1)'},{transform:'scale(1.55)'}]:[{transform:'scale(1.55)'},{transform:'scale(1)'}],{duration:340,easing:'ease-out',fill:'forwards'})};
  const focus=(on)=>{if(!sp)return;if(!on){fx&&fx.remove();fx=null;return}const q=ctr(),z=cur.s*1.3;fx=document.createElement('div');fx.className='pi-fx';fx.style.cssText='left:'+(q.x-z/2)+'px;top:'+(q.y-z/2)+'px;width:'+z+'px;height:'+z+'px';sp.appendChild(fx);
   fx.animate([{transform:'scale(1.7)',opacity:0},{transform:'scale(.94)',opacity:1,offset:.6},{transform:'scale(1)',opacity:1}],{duration:260,easing:'ease-out'})};
- amb=setInterval(()=>{if(!skip)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,18),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2000,3200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?900:tier==='mid'?420:300);
+ amb=setInterval(()=>{if(!skip&&!document.hidden)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,18),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2000,3200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?900:tier==='mid'?420:300);
  /* ---- kekuatan melayang (hover): Piwo naik pelan, lalu ngambang bobbing di tengah dengan bayangan + percikan di bawahnya ---- */
  let hovOn=false,hovT=0,hovRaf=0,shadow=null,hovSpark=0;
  const hoverOn=()=>{if(hovOn||calm)return;hovOn=true;hovT=performance.now();
@@ -128,9 +137,9 @@ async function intro(){
    if(shadow){const q=cur,gy=Math.min(H-10,q.y+q.s*.98+30),w=q.s*(.74-hv*.012),op=Math.max(0,(.5+hv*.02)*amp);shadow.style.transform='translate('+(q.x+q.s/2-w/2).toFixed(1)+'px,'+gy.toFixed(1)+'px) scale(1,.22)';shadow.style.width=shadow.style.height=w.toFixed(0)+'px';shadow.style.opacity=op.toFixed(2)}
    hovRaf=requestAnimationFrame(f)};
   hovRaf=requestAnimationFrame(f);
-  hovSpark=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.18,cur.s*.18),q.y+cur.s*.42,{dx:rnd(-10,10),dy:rnd(14,34),sz:rnd(7,12),d:rnd(650,950),op:.8})},tier2?420:230)};
+  hovSpark=setInterval(()=>{if(skip||document.hidden||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.18,cur.s*.18),q.y+cur.s*.42,{dx:rnd(-10,10),dy:rnd(14,34),sz:rnd(7,12),d:rnd(650,950),op:.8})},tier2?420:230)};
  const hoverOff=()=>{hovOn=false;cancelAnimationFrame(hovRaf);clearInterval(hovSpark);hv=0;hr=0;if(shadow){shadow.remove();shadow=null}};
- const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(450,700)})},tier2?110:tier==='mid'?80:55)},trailOff=()=>clearInterval(trail);
+ const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||document.hidden||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(450,700)})},tier2?110:tier==='mid'?80:55)},trailOff=()=>clearInterval(trail);
  const talk=(mood,line)=>{if(line){m.hush();m.react(mood);m.say(line,{mood:'happy',speed:80,hold:.4})}else m.react(mood)};
  audioStart();
  await nap(120);
@@ -162,7 +171,7 @@ async function intro(){
  hoverOff();
  const h=A.home();
  if(!skip){S.fly();m.flash('happy',1)}
- await fly(h,{dur:850,h:.09});
+ await fly(h,{dur:skip?700:850,h:.09,force:true});
  bigS=0;lastS=-1;put(cur);
  if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,10,h.s*1.1)}
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}

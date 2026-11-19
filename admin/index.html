@@ -1416,7 +1416,8 @@ function igRows(){
   /* username berubah: kosongkan data lama, nanti diisi otomatis. Kalau tidak berubah: pakai isian manual */
   const un=igUserNow(),same=un===(settingsMap.ig_username||'');
   if(!un)return [{key:'ig_name',value:''},{key:'ig_bio',value:''},{key:'ig_avatar_url',value:''}];
-  if(!same)return [{key:'ig_name',value:''},{key:'ig_bio',value:''},{key:'ig_avatar_url',value:''}];
+  if(!same){const nm=$('set-ig-name').value.trim(),bio=$('set-ig-bio').value.trim(),editedN=nm&&nm!==(settingsMap.ig_name||''),editedB=bio&&bio!==(settingsMap.ig_bio||'');
+    return [{key:'ig_name',value:editedN?nm:''},{key:'ig_bio',value:editedB?bio:''},{key:'ig_avatar_url',value:''}];}
   return [{key:'ig_name',value:$('set-ig-name').value.trim()},{key:'ig_bio',value:$('set-ig-bio').value.trim()}];
 }
 function renderIgPrev(){
