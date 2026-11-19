@@ -164,14 +164,14 @@ async function intro(){
  /* zoom: Piwo nyosor ke lensa (membesar halus), layar terbuka dari dia, lalu mundur lagi */
  if(!skip){S.whoosh();m.flash('love',1.2);dolly(true)}
  await move(bc,560,io,0);
- if(!skip){S.pop();m.sy.kick(-2.4);m.sx.kick(1.8);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,Math.min(W*.4,170));out()}else out();
+ if(!skip){S.pop();m.sy.kick(-2.4);m.sx.kick(1.8);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,Math.min(W*.4,170));out()}else{S.squish();m.sy.kick(-3.2);m.sx.kick(2.2);await wait(190);out()}
  await nap(520);
  if(!skip)dolly(false);
  /* 4. loncat ke pojok */
  hoverOff();
  const h=A.home();
- if(!skip){S.fly();m.flash('happy',1)}
- await fly(h,{dur:skip?700:850,h:.09,force:true});
+ if(!skip){S.fly();m.flash('happy',1)}else{S.fly();m.sy.kick(2.8);m.sx.kick(-1.6);m.flash('happy',1)}
+ await fly(h,{dur:skip?720:850,h:skip?.15:.09,force:true});
  bigS=0;lastS=-1;put(cur);
  if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,10,h.s*1.1)}
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}

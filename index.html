@@ -3477,7 +3477,8 @@ html[data-perf="lite"] #hero-morph-card .hero-slogan-glass{background:rgba(246,2
    typing.classList.remove('xc-typing');history.push({role:'assistant',text:j.reply});window.Piwo&&(Piwo.think(false),Piwo.talk(true));await typeText(typing,j.reply);window.Piwo&&Piwo.talk(false,j.reply);
   }catch(err){
    history.pop();typing.classList.remove('xc-typing');window.Piwo&&Piwo.fail();
-   typing.textContent=err&&err.name==='AbortError'?'Koneksi terlalu lama. Coba lagi ya.':(err&&err.message)||'Terjadi kesalahan. Coba lagi ya.';
+   const off=navigator.onLine===false||(err&&err.name==='TypeError'&&/fetch|network|load failed/i.test(err.message||''));
+   typing.textContent=off?'Kamu lagi offline nih, jadi aku belum bisa jawab. Nyalain internet dulu, terus coba lagi ya~':err&&err.name==='AbortError'?'Koneksi terlalu lama. Coba lagi ya.':(err&&err.message)||'Terjadi kesalahan. Coba lagi ya.';
   }finally{clearTimeout(to);busy=false;window.Piwo&&Piwo.think(false);if(send)send.disabled=false;messages.scrollTop=messages.scrollHeight}
  });
 })();
@@ -3936,7 +3937,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./install.js?v=1"></script>
 <script src="./theme.js?v=2"></script>
 <script defer src="./piwo/mascot.js?v=9"></script>
-<script defer src="./piwo/piwo.js?v=27"></script>
+<script defer src="./piwo/piwo.js?v=28"></script>
 <script defer src="./piwo/games.js?v=3"></script>
 <script defer src="./piwo/ambient.js?v=3"></script>
 <script defer src="./piwo/pet.js?v=8"></script>
