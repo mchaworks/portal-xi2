@@ -1,12 +1,13 @@
 /* Piwo: sutradara maskot. Intro loncat ke tengah, tinggal di pojok tiap halaman, ikut masuk ke chat Labz AI. */
 (()=>{
-window.PIWO_BUILD='19-intro-ringan';
+window.PIWO_BUILD='20-intro-hover';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
 let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 let panelOpen=false,tilt=0; /* tilt (derajat) cuma dipakai intro */
-let lastS=-1;const put=a=>{cur=a;if(a.s!==lastS){lastS=a.s;host.style.width=host.style.height=a.s+'px'}host.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px)'+(tilt?' rotate('+tilt.toFixed(2)+'deg)':'')};
+let hv=0,hr=0; /* hv/hr: offset melayang (px/derajat), cuma dipakai intro */
+let lastS=-1;const put=a=>{cur=a;if(a.s!==lastS){lastS=a.s;host.style.width=host.style.height=a.s+'px'}const rr=tilt+hr;host.style.transform='translate('+a.x.toFixed(1)+'px,'+(a.y+hv).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':'')};
 const setZ=z=>{[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);const w=$('pp-acc-wrap');if(w)w.style.zIndex=z+1};
 const A={
  home(){const s=clamp(innerWidth*.15,52,76),f=$('labz-ai-fab'),d=$('liquid-glass-dock'),fr=f&&f.getBoundingClientRect(),t=fr?fr.top:(d?d.getBoundingClientRect().top:innerHeight-90);return{x:(fr?fr.left+fr.width/2:innerWidth-s)-s/2,y:t-s*.92-4,s}},
@@ -58,9 +59,9 @@ async function intro(){
   document.body.appendChild(b);requestAnimationFrame(()=>{b.style.opacity=1})};
  const audioStart=()=>{if(!S.on)return;S.init();setTimeout(()=>{if(skip)return;if(!S.ctx||S.ctx.state==='running')S.musicStart();else chip()},180)};
  let amb=0,ttl=null,trail=0;
- const out=()=>{clearInterval(amb);clearInterval(trail);R.classList.add('piwo-out');S.musicStop(.7);rm();if(ttl)ttl.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});setTimeout(()=>{R.classList.remove('piwo-intro','piwo-out');ttl&&ttl.remove()},1050)};
+ const out=()=>{clearInterval(amb);clearInterval(trail);try{hoverOff()}catch(e){}R.classList.add('piwo-out');S.musicStop(.7);rm();if(ttl)ttl.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});setTimeout(()=>{R.classList.remove('piwo-intro','piwo-out');ttl&&ttl.remove()},1050)};
  if(calm){put(A.home());out();return}
- lock=true;const W=innerWidth,H=innerHeight,tier2=tier==='lite',s=Math.min(W*.3,H*.16,128),gh=s+24+Math.min(270,H*.36),c={x:(W-s)/2,y:Math.max(Math.min((H-gh)/2+8,H*.33),88),s},below={x:c.x,y:H+s*.25,s},peek={x:c.x,y:H-s*.72,s},ctr=()=>({x:cur.x+cur.s/2,y:cur.y+cur.s/2});
+ lock=true;const W=innerWidth,H=innerHeight,tier2=tier==='lite',s=Math.min(W*.3,H*.16,128),c={x:(W-s)/2,y:(H-s)/2,s},below={x:c.x,y:H+s*.25,s},peek={x:c.x,y:H-s*.72,s},ctr=()=>({x:cur.x+cur.s/2,y:cur.y+cur.s/2});
  const big=Math.min(W*.86,H*.46,330),bc={x:(W-big)/2,y:(H-big)/2-H*.02,s:big};
  const nap=ms=>skip?Promise.resolve():wait(ms);
  const io=t=>t*t*(3-2*t),blurOk=tier==='high';
@@ -117,6 +118,17 @@ async function intro(){
  const focus=(on)=>{if(!sp)return;if(!on){fx&&fx.remove();fx=null;return}const q=ctr(),z=cur.s*1.3;fx=document.createElement('div');fx.className='pi-fx';fx.style.cssText='left:'+(q.x-z/2)+'px;top:'+(q.y-z/2)+'px;width:'+z+'px;height:'+z+'px';sp.appendChild(fx);
   fx.animate([{transform:'scale(1.7)',opacity:0},{transform:'scale(.94)',opacity:1,offset:.6},{transform:'scale(1)',opacity:1}],{duration:260,easing:'ease-out'})};
  amb=setInterval(()=>{if(!skip)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,18),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2000,3200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?900:tier==='mid'?420:300);
+ /* ---- kekuatan melayang (hover): Piwo naik pelan, lalu ngambang bobbing di tengah dengan bayangan + percikan di bawahnya ---- */
+ let hovOn=false,hovT=0,hovRaf=0,shadow=null,hovSpark=0;
+ const hoverOn=()=>{if(hovOn||calm)return;hovOn=true;hovT=performance.now();
+  if(sp&&!shadow){shadow=document.createElement('i');shadow.style.cssText='position:fixed;left:0;top:0;z-index:209;pointer-events:none;border-radius:50%;background:radial-gradient(closest-side,rgba(15,70,50,.34),rgba(15,70,50,0));opacity:0;will-change:transform,opacity';document.body.appendChild(shadow)}
+  const f=n=>{if(!hovOn)return;const k=(n-hovT)/1000,amp=Math.min(1,k/.7);hv=Math.sin(k*2.3)*7*amp-5*amp;hr=Math.sin(k*1.5)*2.6*amp;
+   if(!busy)put(cur);
+   if(shadow){const q=cur,gy=Math.min(H-10,q.y+q.s*.98+30),w=q.s*(.74-hv*.012),op=Math.max(0,(.5+hv*.02)*amp);shadow.style.transform='translate('+(q.x+q.s/2-w/2).toFixed(1)+'px,'+gy.toFixed(1)+'px) scale(1,.22)';shadow.style.width=shadow.style.height=w.toFixed(0)+'px';shadow.style.opacity=op.toFixed(2)}
+   hovRaf=requestAnimationFrame(f)};
+  hovRaf=requestAnimationFrame(f);
+  hovSpark=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.18,cur.s*.18),q.y+cur.s*.42,{dx:rnd(-10,10),dy:rnd(14,34),sz:rnd(7,12),d:rnd(650,950),op:.8})},tier2?420:230)};
+ const hoverOff=()=>{hovOn=false;cancelAnimationFrame(hovRaf);clearInterval(hovSpark);hv=0;hr=0;if(shadow){shadow.remove();shadow=null}};
  const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(450,700)})},tier2?110:tier==='mid'?80:55)},trailOff=()=>clearInterval(trail);
  const talk=(mood,line)=>{if(line){m.hush();m.react(mood);m.say(line,{mood:'happy',speed:80,hold:.4})}else m.react(mood)};
  audioStart();
@@ -126,7 +138,7 @@ async function intro(){
  if(!skip){m.flash('shy',.4);S.squeak();m.sx.kick(1.2);await nap(160)}
  if(!skip){S.squish();m.sy.kick(-3.8);m.sx.kick(2.4);await nap(110)}
  if(!skip){S.boing();S.whoosh();m.sy.kick(3);const q=ctr();PFX.burst(q.x,q.y+s*.3,tier2?5:9,s*.9,true);trailOn()}
- await move(c,470,rise,-360);trailOff();tilt=0;
+ await move(c,980,rise,0);trailOff();tilt=0;hoverOn();
  if(!skip){S.twinkle();m.flash('giggle',.6);const q=ctr();PFX.burst(q.x,q.y,tier2?5:10,s)}
  /* 2. kamera nge-fokus ke Piwo, Piwo nyosor ke lensa, tok-tok kaca, lalu mundur */
  if(!skip){bip();focus(true);await nap(190);focus(false)}
@@ -143,6 +155,7 @@ async function intro(){
  await move(bc,260,io,-6);tilt=0;
  if(!skip){S.thud()}
  /* 4. loncat ke pojok */
+ hoverOff();
  const h=A.home();
  if(!skip){S.fly();m.flash('happy',1)}
  await fly(h,{dur:620,h:.16});
