@@ -62,21 +62,46 @@ const FKEYS = ['happy', 'love', 'dizzy', 'wide', 'sad', 'lid', 'blush', 'mSmile'
 
 /* ---------------------------------------------------------------- bunyi */
 class Sfx {
-  constructor() { this.on = false; this.ctx = null; }
-  init() { if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; } try { this.ctx = new (global.AudioContext || global.webkitAudioContext)(); } catch (e) { } }
+  constructor() { this.on = false; this.ctx = null; this.out = null; this.vol = 2.6; this.nb = null; }
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    try {
+      const c = this.ctx = new (global.AudioContext || global.webkitAudioContext)();
+      /* master: gain besar + compressor biar nyaring tapi nggak pecah */
+      const m = c.createGain(); m.gain.value = this.vol;
+      const k = c.createDynamicsCompressor(); k.threshold.value = -14; k.knee.value = 12; k.ratio.value = 5; k.attack.value = .003; k.release.value = .15;
+      m.connect(k); k.connect(c.destination); this.out = m;
+    } catch (e) { }
+  }
+  setVol(v) { this.vol = v; if (this.out) this.out.gain.value = v; }
   tone(f0, f1, dur, type, vol, delay) {
     if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (delay || 0);
     const o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine';
     o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur);
-    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .1, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + .03);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .15, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(this.out); o.start(t); o.stop(t + dur + .03);
   }
-  boing() { this.tone(260, 560, .2, 'sine', .14); this.tone(560, 300, .16, 'sine', .07, .1); }
-  squeak() { this.tone(900, 1500, .09, 'triangle', .1); }
-  giggle() { for (let i = 0; i < 4; i++) this.tone(700 + i * 90, 900 + i * 110, .07, 'triangle', .08, i * .09); }
-  blip() { this.tone(rand(520, 760), rand(480, 700), .05, 'square', .035); }
-  pop() { this.tone(520, 190, .1, 'sine', .1); }
-  yawn() { this.tone(420, 220, .7, 'sine', .07); }
+  noise(dur, f, q, vol, delay, type) {
+    if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (delay || 0);
+    if (!this.nb) { const n = c.sampleRate * .3 | 0, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; this.nb = b; }
+    const s = c.createBufferSource(); s.buffer = this.nb; const fl = c.createBiquadFilter(); fl.type = type || 'bandpass'; fl.frequency.value = f; fl.Q.value = q || 1;
+    const g = c.createGain(); g.gain.setValueAtTime(vol || .3, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    s.connect(fl); fl.connect(g); g.connect(this.out); s.start(t, Math.random() * .1, dur);
+  }
+  boing() { this.tone(260, 560, .2, 'sine', .24); this.tone(560, 300, .16, 'sine', .13, .1); }
+  squeak() { this.tone(900, 1500, .09, 'triangle', .2); }
+  giggle() { for (let i = 0; i < 4; i++) this.tone(700 + i * 90, 900 + i * 110, .07, 'triangle', .16, i * .09); }
+  blip() { this.tone(rand(520, 760), rand(480, 700), .05, 'square', .07); }
+  pop() { this.tone(520, 190, .1, 'sine', .2); }
+  yawn() { this.tone(420, 220, .7, 'sine', .14); }
+  /* suara khusus pet */
+  munch() { for (let i = 0; i < 3; i++) { this.noise(.07, 1800 + i * 300, 1.4, .55, i * .16); this.tone(220, 120, .07, 'triangle', .18, i * .16); } }
+  gulp() { this.tone(300, 120, .14, 'sine', .22, .02); }
+  growl() { this.tone(110, 70, .5, 'sawtooth', .11); this.tone(95, 60, .45, 'sawtooth', .09, .12); }
+  levelup() { [523, 659, 784, 1046].forEach((f, i) => this.tone(f, f, .16, 'triangle', .2, i * .09)); this.tone(1318, 1318, .35, 'sine', .16, .4); }
+  snore() { this.tone(150, 90, .6, 'sine', .12); this.tone(140, 85, .6, 'sine', .1, .9); }
+  bell() { this.tone(1320, 1320, .22, 'sine', .16); this.tone(1760, 1760, .3, 'sine', .12, .08); }
+  play() { this.tone(400, 800, .1, 'triangle', .2); this.tone(600, 1200, .1, 'triangle', .2, .1); this.tone(800, 1600, .12, 'triangle', .18, .2); }
 }
 
 /* ---------------------------------------------------------------- shader */
@@ -273,7 +298,7 @@ let cssDone = false;
 function injectCss() { if (cssDone) return; cssDone = true; const s = document.createElement('style'); s.textContent = CSS; document.head.appendChild(s); }
 
 /* ---------------------------------------------------------------- Mascot */
-const DEFAULTS = { bodySrc: 'mascot-body.webp', sleepAfter: 45000, sound: false, greeting: null, chatter: [], returnHome: true, gravity: 3400, z: 60, maxDpr: 2, fps: 0, blockClicks: false };
+const DEFAULTS = { bodySrc: 'mascot-body.webp', sleepAfter: 45000, sound: false, volume: 0, greeting: null, chatter: [], returnHome: true, gravity: 3400, z: 60, maxDpr: 2, fps: 0, blockClicks: false };
 
 class Mascot {
   constructor(host, o) {
@@ -289,7 +314,7 @@ class Mascot {
     this.look = { x: 0, y: 0 }; this.wander = { x: 0, y: 0, next: 0 }; this.blink = { next: 2, p: -1, dbl: false };
     this.rotNow = 0; this.scx = 1; this.scy = 1; this.H = { left: 0, top: 0, width: 1, height: 1 };
     this.unit = 1; this.speech = null; this.talk = 0; this.talkT = 0; this.twitch = 3; this.chat = rand(40, 80);
-    this.lastAct = performance.now(); this.faceKey = ''; this.listeners = {}; this.sfx = new Sfx(); this.sfx.on = !!this.o.sound;
+    this.lastAct = performance.now(); this.faceKey = ''; this.listeners = {}; this.sfx = new Sfx(); this.sfx.on = !!this.o.sound; if (this.o.volume) this.sfx.vol = this.o.volume;
     this.waveSide = 0; this.waveEnd = 0; this.petEnd = 0; this.nextHeart = 0; this.nextZ = 0; this.nextStar = 0; this.throwFast = false; this.homingHop = false;
     this.dead = false; this.frame = this.frame.bind(this);
   }

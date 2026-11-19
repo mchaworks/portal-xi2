@@ -3673,10 +3673,10 @@ const fx=(g,W,H,o)=>{
  const V=g.createRadialGradient(W/2,H/2,Math.min(W,H)*.38,W/2,H/2,Math.max(W,H)*.78);V.addColorStop(0,'rgba(0,0,0,0)');V.addColorStop(1,'rgba(0,0,0,.5)');g.fillStyle=V;g.fillRect(0,0,W,H);
  const fs=Math.max(12,Math.round(W*.04));g.save();g.font='600 '+fs+'px "Space Grotesk",monospace';g.textAlign='right';g.textBaseline='bottom';g.fillStyle='#ff9f1c';g.shadowColor='rgba(255,120,0,.85)';g.shadowBlur=fs*.5;g.fillText(stamp(),W-fs*1.1,H-fs*1.1);g.restore()};
 /* efek suara (WebAudio, tanpa file): shutter, flash, film wind, charge */
-const AC=()=>{if(!snd)return null;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(_){return null}return ac};
+let cOut=null;const AC=()=>{if(!snd)return null;try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();const m=ac.createGain();m.gain.value=2.2;const k=ac.createDynamicsCompressor();k.threshold.value=-12;k.ratio.value=4;m.connect(k);k.connect(ac.destination);cOut=m}if(ac.state==='suspended')ac.resume()}catch(_){return null}return ac};
 let nb=null;const noise=c=>{if(!nb||nb.sampleRate!==c.sampleRate){const n=c.sampleRate*.3|0,b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;nb=b}return nb};
-const burst=(c,t,d,f,q,g,type)=>{const s=c.createBufferSource();s.buffer=noise(c);const fl=c.createBiquadFilter();fl.type=type||'bandpass';fl.frequency.value=f;fl.Q.value=q;const v=c.createGain();v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(fl);fl.connect(v);v.connect(c.destination);s.start(t,Math.random()*.08,d)};
-const tone=(c,t,d,f0,f1,g,type)=>{const o=c.createOscillator(),v=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(g,t+Math.min(.03,d/3));v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+d+.02)};
+const burst=(c,t,d,f,q,g,type)=>{const s=c.createBufferSource();s.buffer=noise(c);const fl=c.createBiquadFilter();fl.type=type||'bandpass';fl.frequency.value=f;fl.Q.value=q;const v=c.createGain();v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(fl);fl.connect(v);v.connect(cOut||c.destination);s.start(t,Math.random()*.08,d)};
+const tone=(c,t,d,f0,f1,g,type)=>{const o=c.createOscillator(),v=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(g,t+Math.min(.03,d/3));v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(cOut||c.destination);o.start(t);o.stop(t+d+.02)};
 const sfx={
  shutter(){const c=AC();if(!c)return;const t=c.currentTime;burst(c,t,.035,2200,1.2,.9);tone(c,t,.06,180,70,.5,'triangle');burst(c,t+.07,.04,1400,1,.7);tone(c,t+.07,.05,140,60,.35,'triangle')},
  flash(){const c=AC();if(!c)return;const t=c.currentTime;burst(c,t,.2,5000,.7,.45,'highpass');tone(c,t,.12,3200,900,.1,'square')},
@@ -3862,26 +3862,27 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 (function(){
  var store=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(_){return null}};
  var on=store('xia_sfx')!=='0',ac=null,last=0,pushed=0,boot=Date.now();
- var AC=function(){if(!on)return null;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(_){return null}return ac};
+ var out=null,VOL=3.2; /* master: bikin semua suara UI jauh lebih keras, compressor jaga biar nggak pecah */
+ var AC=function(){if(!on)return null;try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();var m=ac.createGain();m.gain.value=VOL;var k=ac.createDynamicsCompressor();k.threshold.value=-14;k.knee.value=12;k.ratio.value=5;k.attack.value=.003;k.release.value=.15;m.connect(k);k.connect(ac.destination);out=m}if(ac.state==='suspended')ac.resume()}catch(_){return null}return ac};
  /* satu nada lembut: sine/triangle dengan envelope pendek */
- var tone=function(c,f0,f1,t0,dur,vol,type){var o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();o.type=type||'sine';lp.type='lowpass';lp.frequency.value=3200;
+ var tone=function(c,f0,f1,t0,dur,vol,type){var o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();o.type=type||'sine';lp.type='lowpass';lp.frequency.value=4200;
   o.frequency.setValueAtTime(f0,t0);if(f1&&f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t0+dur);
   g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+.008);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
-  o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+dur+.03)};
+  o.connect(lp);lp.connect(g);g.connect(out||c.destination);o.start(t0);o.stop(t0+dur+.03)};
  var P={
-  tap:function(c,t){tone(c,820,560,t,.07,.07,'triangle')},
-  open:function(c,t){tone(c,420,720,t,.11,.07,'sine');tone(c,630,1080,t+.04,.12,.04,'sine')},
-  close:function(c,t){tone(c,640,380,t,.13,.07,'sine');tone(c,480,300,t+.03,.12,.035,'triangle')},
-  page:function(c,t){tone(c,523,523,t,.11,.06,'sine');tone(c,784,784,t+.07,.16,.06,'sine');tone(c,1046,1046,t+.14,.18,.03,'sine')},
-  send:function(c,t){tone(c,640,1000,t,.1,.07,'triangle')},
-  recv:function(c,t){tone(c,988,988,t,.09,.05,'sine');tone(c,1319,1319,t+.07,.13,.05,'sine')}
+  tap:function(c,t){tone(c,820,560,t,.07,.112,'triangle')},
+  open:function(c,t){tone(c,420,720,t,.11,.112,'sine');tone(c,630,1080,t+.04,.12,.064,'sine')},
+  close:function(c,t){tone(c,640,380,t,.13,.112,'sine');tone(c,480,300,t+.03,.12,.056,'triangle')},
+  page:function(c,t){tone(c,523,523,t,.11,.096,'sine');tone(c,784,784,t+.07,.16,.096,'sine');tone(c,1046,1046,t+.14,.18,.048,'sine')},
+  send:function(c,t){tone(c,640,1000,t,.1,.112,'triangle')},
+  recv:function(c,t){tone(c,988,988,t,.09,.080,'sine');tone(c,1319,1319,t+.07,.13,.080,'sine')}
  };
  var play=function(k){if(!on)return;var c=AC();if(!c)return;var n=Date.now();if(n-last<45)return;last=n;try{P[k](c,c.currentTime+.005)}catch(_){}};
  window.xiaSfx={play:play,enabled:function(){return on}};
  /* buka kunci audio pada gestur pertama (kebijakan autoplay browser) */
  ['pointerdown','keydown','touchstart'].forEach(function(e){addEventListener(e,function(){AC()},{once:true,passive:true,capture:true})});
  /* toggle di Pengaturan */
- var bindToggle=function(){var t=document.getElementById('toggle-sfx');if(!t)return;t.checked=on;t.addEventListener('change',function(){on=t.checked;store('xia_sfx',on?'1':'0');if(on)play('tap')})};
+ var bindToggle=function(){var t=document.getElementById('toggle-sfx');if(!t)return;t.checked=on;t.addEventListener('change',function(){on=t.checked;store('xia_sfx',on?'1':'0');if(window.Piwo&&Piwo.setSound)Piwo.setSound(on);if(on)play('tap')})};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindToggle);else bindToggle();
  /* pindah halaman: setiap pushState baru / back-forward */
  var ps=history.pushState;
@@ -3921,7 +3922,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <link rel="stylesheet" href="./theme.css?v=6">
 <script defer src="./portal-extra.js?v=5"></script>
 <script src="./theme.js?v=2"></script>
-<script defer src="./piwo/mascot.js?v=5"></script>
-<script defer src="./piwo/piwo.js?v=5"></script>
+<script defer src="./piwo/mascot.js?v=6"></script>
+<script defer src="./piwo/piwo.js?v=6"></script>
 </body>
 </html>
