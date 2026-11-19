@@ -103,6 +103,47 @@ class Sfx {
   coin() { this.tone(988, 988, .08, 'square', .1); this.tone(1319, 1319, .26, 'square', .1, .08); }
   bell() { this.tone(1320, 1320, .22, 'sine', .16); this.tone(1760, 1760, .3, 'sine', .12, .08); }
   play() { this.tone(400, 800, .1, 'triangle', .2); this.tone(600, 1200, .1, 'triangle', .2, .1); this.tone(800, 1600, .12, 'triangle', .18, .2); }
+
+  /* ---- efek intro (lucu) ---- */
+  squish() { this.tone(340, 170, .16, 'sine', .22); this.tone(250, 140, .14, 'triangle', .12, .05); }
+  whoosh() { this.noise(.45, 700, .8, .5, 0, 'bandpass'); this.tone(300, 1100, .38, 'sine', .14); this.tone(450, 1500, .3, 'triangle', .08, .05); }
+  twinkle() { [1568, 1976, 2349, 3136].forEach((f, i) => this.tone(f, f, .22, 'sine', .11, i * .07)); }
+  slide() { this.tone(1000, 220, .55, 'sine', .15); this.tone(1500, 330, .5, 'triangle', .06, .02); }
+  thud() { this.tone(150, 55, .22, 'sine', .3); this.noise(.1, 300, .6, .35, 0, 'lowpass'); this.tone(620, 380, .12, 'triangle', .1, .03); }
+  tada() { [523, 659, 784].forEach((f, i) => this.tone(f, f, .14, 'triangle', .16, i * .07)); [1046, 1318, 1568].forEach((f, i) => this.tone(f, f, .4, 'sine', .12, .22 + i * .02)); this.twinkle(); }
+  fly() { this.tone(380, 1200, .5, 'sine', .12); this.tone(560, 1700, .45, 'triangle', .06, .05); }
+
+  /* ---- musik latar: kotak musik + bass petik, nada pentatonik C mayor, loop 4 birama ---- */
+  musicStart() {
+    if (!this.on || !this.ctx || this.mus) return;
+    const c = this.ctx; this.mus = c.createGain();
+    this.mus.gain.setValueAtTime(.0001, c.currentTime); this.mus.gain.exponentialRampToValueAtTime(.55, c.currentTime + .7); this.mus.connect(this.out);
+    this.mT = c.currentTime + .08; this.mI = 0;
+    this.mTimer = setInterval(() => this._mSched(), 100); this._mSched();
+  }
+  _mn(f, dur, type, vol, t) {
+    const c = this.ctx, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(this.mus); o.start(t); o.stop(t + dur + .03);
+  }
+  _mSched() {
+    if (!this.mus || !this.ctx) return; const c = this.ctx, STEP = .23;
+    const M = [659.25, 0, 783.99, 659.25, 523.25, 0, 587.33, 0, 659.25, 0, 783.99, 880, 783.99, 0, 659.25, 0,
+      880, 0, 1046.5, 880, 783.99, 0, 659.25, 0, 587.33, 659.25, 783.99, 659.25, 523.25, 0, 0, 0];
+    const B = [[130.81, 196], [110, 164.81], [174.61, 261.63], [196, 293.66]];
+    while (this.mT < c.currentTime + .5) {
+      const i = this.mI % 32, t = this.mT, f = M[i];
+      if (f) { this._mn(f, .34, 'sine', .15, t); this._mn(f * 2, .18, 'sine', .045, t); this._mn(f * 3, .08, 'sine', .015, t); }
+      if (i % 4 === 0) this._mn(B[(i / 8) | 0][(i % 8) / 4], .22, 'triangle', .15, t);
+      if (i % 2 === 1) this._mn(2400, .03, 'square', .012, t);
+      this.mT += STEP; this.mI++;
+    }
+  }
+  musicStop(fade) {
+    if (!this.mus || !this.ctx) return; const c = this.ctx, g = this.mus, f = fade || .6; clearInterval(this.mTimer); this.mus = null;
+    try { g.gain.cancelScheduledValues(c.currentTime); g.gain.setValueAtTime(Math.max(.0001, g.gain.value), c.currentTime); g.gain.exponentialRampToValueAtTime(.0001, c.currentTime + f); } catch (e) { }
+    setTimeout(() => { try { g.disconnect(); } catch (e) { } }, f * 1000 + 100);
+  }
 }
 
 /* ---------------------------------------------------------------- shader */

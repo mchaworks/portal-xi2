@@ -34,21 +34,31 @@ const hang=async(c,fn)=>{let on=true;const t0=performance.now();busy=true;
  try{await fn()}finally{on=false;busy=false}};
 /* intro ala Duolingo: melesat dari bawah, melambat di puncak (gravitasi), nyapa sambil miring, jatuh lagi, layar utama muncul, Piwo naik ke pojok */
 async function intro(){
- const out=()=>{R.classList.add('piwo-out');setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),900)};
+ const S=m.sfx;
+ const rm=()=>{const b=document.getElementById('piwo-snd');b&&b.remove()};
+ /* browser memblokir suara sebelum ada sentuhan: kalau masih tertahan, tampilkan tombol kecil (tidak ikut melewati intro) */
+ const chip=()=>{if(document.getElementById('piwo-snd')||R.classList.contains('piwo-out'))return;const b=document.createElement('button');b.id='piwo-snd';b.type='button';b.textContent='🔊 Ketuk untuk suara';
+  b.style.cssText='position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:215;padding:12px 20px;border:0;border-radius:99px;font:700 14px Inter,system-ui,sans-serif;background:rgba(27,107,81,.94);color:#fff;box-shadow:0 8px 24px -8px rgba(0,0,0,.45);opacity:0;transition:opacity .4s';
+  b.addEventListener('pointerdown',e=>e.stopPropagation());
+  b.addEventListener('click',()=>{S.init();Promise.resolve(S.ctx&&S.ctx.resume&&S.ctx.resume()).then(()=>{if(!skip){S.musicStart();S.pop()}});b.remove()});
+  document.body.appendChild(b);requestAnimationFrame(()=>{b.style.opacity=1})};
+ const audioStart=()=>{if(!S.on)return;S.init();setTimeout(()=>{if(skip)return;if(!S.ctx||S.ctx.state==='running')S.musicStart();else chip()},180)};
+ const out=()=>{R.classList.add('piwo-out');S.musicStop(.9);rm();setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),900)};
  if(calm){put(A.home());out();return}
  lock=true;const s=Math.min(innerWidth*.26,innerHeight*.17,130),c={x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.05,s},below={x:c.x,y:innerHeight+s*.2,s};put(below);setZ(210);
- const sk=()=>{skip=true;m.hush()};addEventListener('pointerdown',sk,{once:true});
+ const sk=()=>{skip=true;m.hush();S.musicStop(.3);rm()};addEventListener('pointerdown',sk,{once:true});
+ audioStart();
  await wait(500);
- if(!skip){m.sy.kick(-3.4);m.sx.kick(2);await wait(280)} /* jongkok dulu */
- if(!skip){m.sfx.boing&&m.sfx.boing();m.sy.kick(2.6);m.flash('happy',.8)}
+ if(!skip){S.squish();m.sy.kick(-3.4);m.sx.kick(2);await wait(280)} /* jongkok dulu */
+ if(!skip){m.sfx.boing&&m.sfx.boing();S.whoosh();m.sy.kick(2.6);m.flash('happy',.8)}
  await move(c,950,rise,-4); /* melesat, makin lambat mendekati puncak */
- if(!skip)await hang(c,async()=>{m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}); /* melayang, miring, nyapa */
+ if(!skip)await hang(c,async()=>{S.twinkle();m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}); /* melayang, miring, nyapa */
  if(!skip){m.react('surprise');m.sy.kick(-2);await wait(180)}
- await move(below,720,fall,8); /* jatuh, makin cepat */
+ S.slide();await move(below,720,fall,8);S.thud(); /* jatuh, makin cepat */
  tilt=0;put(cur);
- out();if(!skip)await wait(520);
+ out();if(!skip){S.tada();await wait(520)}
  const h=A.home();put({x:h.x,y:innerHeight+h.s,s:h.s}); /* naik ke pojok setelah layar utama tampil */
- await fly(h,{dur:850,h:.12});
+ if(!skip)S.fly();await fly(h,{dur:850,h:.12});
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
 }
 /* ikut ke chat AI */
