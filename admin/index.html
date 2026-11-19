@@ -6,6 +6,13 @@
 <style id="xia-mode-boot">html[data-mode="dark"]{background:#0E1410;color-scheme:dark;--md-sys-color-primary:#8AD6B5;--md-sys-color-on-primary:#00382A;--md-sys-color-primary-container:#00513C;--md-sys-color-on-primary-container:#A6F2D1;--md-sys-color-secondary:#B3CCBE;--md-sys-color-on-secondary:#1F352B;--md-sys-color-secondary-container:#354B41;--md-sys-color-on-secondary-container:#CEE9DA;--md-sys-color-tertiary:#A5CCDF;--md-sys-color-tertiary-container:#264B5C;--md-sys-color-on-tertiary-container:#C1E8FB;--md-sys-color-surface:#0E1410;--md-sys-color-surface-container-low:#151B18;--md-sys-color-surface-container:#1A201D;--md-sys-color-surface-container-high:#242A27;--md-sys-color-surface-container-highest:#2F3532;--md-sys-color-on-surface:#DEE4DF;--md-sys-color-on-surface-variant:#BFC9C2;--md-sys-color-outline:#89938D;--md-sys-color-outline-variant:#3F4944;--glass-rgb:20,27,23!important;--glass-border-rgb:255,255,255!important;--dc-body:#1F7A5C;--dc-body-dk:#0B3A2B;}html[data-mode="dark"] body{background-color:#0E1410;color:#DEE4DF}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F5FBF6">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="XI.2 Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex">
 <title>Admin · XI.2 Creative Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1439,7 +1446,9 @@ addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.
 
 setup();
 </script>
-<link rel="stylesheet" href="../theme.css?v=5">
+<link rel="stylesheet" href="../theme.css?v=6">
 <script src="../theme.js?v=2"></script>
+<script defer src="../install.js?v=1"></script>
+<script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',function(){navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(function(){})})}</script>
 </body>
 </html>

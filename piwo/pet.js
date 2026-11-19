@@ -283,6 +283,10 @@ setInterval(()=>{if(!m)return;const n=Date.now();decay(n-pet.t,false);pet.t=n;sa
  else if(pet.energy<20)say(()=>m.react('yawn'),'Hoaam… ngantuk…');
  else if(pet.happy<25)say(()=>m.react('sad'),'Main sama aku dong…')},20000);
 setInterval(()=>{if(dirty)flush()},120000);
+/* ---------- petunjuk berkala: tahan lama = buka menu peliharaan ---------- */
+(()=>{const L=['Tahan aku lama-lama ya, nanti kebuka menu peliharaan~','Psst, tahan aku sebentar: ada status, toko, misi & game lho!','Mau kasih aku makan? Tahan aku lama-lama dulu~','Kangen main? Tahan aku, kita buka menu peliharaan!'];let i=0,last=Date.now();
+ setInterval(()=>{const n=Date.now();if(!m||n-last<150000||n-lastWarn<60000||C.lock||C.busy||C.panelOpen||gameOn||C.at!=='home'||m.state==='sleep'||document.hidden)return;
+  last=n;m.react('wave');m.say(L[i++%L.length],{mood:'happy'})},30000)})();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){pet.t=Date.now();saveLocal();dirty=true;flush(true)}});
 async function load(){
  let loc=null;try{loc=JSON.parse(localStorage.getItem(PK)||localStorage.getItem('piwo-pet-v2'))}catch(e){}
