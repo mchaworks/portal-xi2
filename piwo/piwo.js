@@ -4,8 +4,8 @@ const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduc
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
 let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
-let panelOpen=false;
-const put=a=>{cur=a;host.style.width=host.style.height=a.s+'px';host.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px)'};
+let panelOpen=false,tilt=0; /* tilt (derajat) cuma dipakai intro */
+const put=a=>{cur=a;host.style.width=host.style.height=a.s+'px';host.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px)'+(tilt?' rotate('+tilt.toFixed(2)+'deg)':'')};
 const setZ=z=>{[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);const w=$('pp-acc-wrap');if(w)w.style.zIndex=z+1};
 const A={
  home(){const s=clamp(innerWidth*.15,52,76),f=$('labz-ai-fab'),d=$('liquid-glass-dock'),fr=f&&f.getBoundingClientRect(),t=fr?fr.top:(d?d.getBoundingClientRect().top:innerHeight-90);return{x:(fr?fr.left+fr.width/2:innerWidth-s)-s/2,y:t-s*.92-4,s}},
@@ -22,27 +22,33 @@ const fly=(to,o)=>new Promise(res=>{o=Object.assign({dur:900,hops:1,h:.26},o);co
   put({x:a.x+(T.x-a.x)*e,y:a.y+(T.y-a.y)*e-arc,s:a.s+(T.s-a.s)*e});
   if(t<1)requestAnimationFrame(f);else{busy=false;if(m&&!skip)m.squish(1.5);res()}};
  requestAnimationFrame(f)});
-/* gerak lurus dengan easing bebas (dipakai intro) */
-const move=(to,dur,ease)=>new Promise(res=>{const a=Object.assign({},cur),t0=performance.now();busy=true;
- const f=n=>{const t=skip?1:Math.min(1,(n-t0)/dur),e=ease(t);put({x:a.x+(to.x-a.x)*e,y:a.y+(to.y-a.y)*e,s:a.s+(to.s-a.s)*e});if(t<1)requestAnimationFrame(f);else{busy=false;res()}};requestAnimationFrame(f)});
-const easeOutBack=t=>{const c=1.9,u=t-1;return 1+(c+1)*u*u*u+c*u*u},easeIn=t=>t*t*t;
-/* intro ala Duolingo: melesat dari bawah layar ke tengah, melambai, jatuh lagi, layar utama muncul, Piwo naik ke pojok */
+/* gerak lurus dengan easing bebas (dipakai intro); tt = target kemiringan (derajat) */
+const move=(to,dur,ease,tt)=>new Promise(res=>{const a=Object.assign({},cur),t0=performance.now(),k0=tilt;busy=true;
+ const f=n=>{const t=skip?1:Math.min(1,(n-t0)/dur),e=ease(t);tilt=tt==null?tilt:k0+(tt-k0)*t;put({x:a.x+(to.x-a.x)*e,y:a.y+(to.y-a.y)*e,s:a.s+(to.s-a.s)*e});if(t<1)requestAnimationFrame(f);else{busy=false;res()}};requestAnimationFrame(f)});
+/* gravitasi: naik = melambat sampai puncak (kecepatan 0), jatuh = makin ngebut */
+const rise=t=>1-(1-t)*(1-t),fall=t=>t*t;
+/* melayang di puncak: bobbing pelan + miring, selama fn() berjalan */
+const hang=async(c,fn)=>{let on=true;const t0=performance.now();busy=true;
+ const f=n=>{if(!on)return;const k=(n-t0)/1000;tilt+=(-9-tilt)*.07;put({x:c.x,y:c.y+Math.sin(k*2.2)*5,s:c.s});requestAnimationFrame(f)};requestAnimationFrame(f);
+ try{await fn()}finally{on=false;busy=false}};
+/* intro ala Duolingo: melesat dari bawah, melambat di puncak (gravitasi), nyapa sambil miring, jatuh lagi, layar utama muncul, Piwo naik ke pojok */
 async function intro(){
  const out=()=>{R.classList.add('piwo-out');setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),900)};
  if(calm){put(A.home());out();return}
- lock=true;const c=A.center(),below={x:c.x,y:innerHeight+c.s*.25,s:c.s};put(below);setZ(210);
+ lock=true;const s=Math.min(innerWidth*.34,innerHeight*.22,170),c={x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.05,s},below={x:c.x,y:innerHeight+s*.2,s};put(below);setZ(210);
  const sk=()=>{skip=true;m.hush()};addEventListener('pointerdown',sk,{once:true});
  await wait(500);
  if(!skip){m.sy.kick(-3.4);m.sx.kick(2);await wait(280)} /* jongkok dulu */
  if(!skip){m.sfx.boing&&m.sfx.boing();m.sy.kick(2.6);m.flash('happy',.8)}
- await move(c,820,easeOutBack); /* kelontar ke tengah, sedikit lewat lalu mengendap */
- if(!skip){m.squish(1.1);m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}
- if(!skip){m.react('surprise');await wait(220);m.rot.kick(3.5)}
- await move(below,640,easeIn); /* jatuh lagi ke bawah layar */
+ await move(c,950,rise,-4); /* melesat, makin lambat mendekati puncak */
+ if(!skip)await hang(c,async()=>{m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}); /* melayang, miring, nyapa */
+ if(!skip){m.react('surprise');m.sy.kick(-2);await wait(180)}
+ await move(below,720,fall,8); /* jatuh, makin cepat */
+ tilt=0;put(cur);
  out();if(!skip)await wait(520);
  const h=A.home();put({x:h.x,y:innerHeight+h.s,s:h.s}); /* naik ke pojok setelah layar utama tampil */
  await fly(h,{dur:850,h:.12});
- setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
+ setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
 }
 /* ikut ke chat AI */
 async function chat(on){
@@ -92,6 +98,27 @@ window.Piwo.buzz=buzz;
    buzz(all?'happy':'nod',all?'Semua tugas beres! Keren banget~':pickL(['Mantap, satu tugas kelar!','Yey, centang lagi~','Terus semangat!']),all?0:7000)},120)});
  const sm=document.getElementById('story-modal');
  if(sm)new MutationObserver(()=>{if(!sm.classList.contains('hidden'))buzz('happy','Wah, momen seru ya!',40000)}).observe(sm,{attributes:true,attributeFilter:['class']});
+})();
+
+/* easter egg: logo Piwo di header bisa diputer kayak fidget spinner. Tap makin sering = makin ngebut, kebanyakan = Piwo ikut jungkir balik */
+(()=>{const box=document.getElementById('header-badge-code'),img=box&&box.querySelector('img');if(!img||calm)return;
+ let ang=0,om=0,run=false,last=0,taps=0,tapT=0,sayAt=0;
+ const can=()=>m&&at==='home'&&!lock&&!busy&&!panelOpen&&!R.classList.contains('piwo-intro');
+ const talk=(mood,l)=>{const n=Date.now();if(n-sayAt<3500||!can())return;sayAt=n;m.hush();m.react(mood);m.say(l,{mood:'happy',speed:42})};
+ const frame=n=>{const dt=Math.min(.05,(n-last)/1e3);last=n;const prev=ang;om*=Math.exp(-1.7*dt);
+  if(om<70){om=70;if(ang+om*dt>=360){ang=0;om=0;run=false;img.style.transform='';return}} /* melambat lalu berhenti pas menghadap depan */
+  ang=(ang+om*dt)%360;if(ang<prev&&om<=70){ang=0;om=0;run=false;img.style.transform='';return}
+  img.style.transform='rotate('+ang.toFixed(1)+'deg)';requestAnimationFrame(frame)};
+ const spinMascot=()=>{if(!can())return;busy=true;const t0=performance.now();m.react('surprise');
+  const f=n=>{const t=Math.min(1,(n-t0)/1100),e=1-Math.pow(1-t,3);tilt=720*e;put(cur);if(t<1)requestAnimationFrame(f);else{tilt=0;put(cur);busy=false;m.react('dizzy');m.say('Pusing~ 🌀 awas ketagihan lho!',{mood:'happy'})}};requestAnimationFrame(f)};
+ box.addEventListener('click',e=>{if(e.detail===0)return; /* keyboard tetap navigasi biasa */
+  e.preventDefault();e.stopPropagation();
+  const n=Date.now();taps=n-tapT<2200?taps+1:1;tapT=n;
+  om=Math.min(3600,Math.max(om,0)+650);if(m&&m.sfx&&m.sfx.pop)try{m.sfx.pop()}catch(_){}
+  if(!run){run=true;last=performance.now();requestAnimationFrame(frame)}
+  if(taps===3)talk('giggle','Eh, aku diputer-puter~');
+  else if(taps===6)talk('dizzy','Pusing pusing… 🌀');
+  else if(taps>=9){taps=0;spinMascot()}},true);
 })();
 /* tiap frame: Piwo ngikutin anchor kalau lagi di chat / panel pet / game */
 (function tick(){if(m&&!busy&&!lock){if(at==='chat')put(A.chat());else if(at==='pet')put(A.pet());else if(at==='game')put(A.game())}requestAnimationFrame(tick)})();
