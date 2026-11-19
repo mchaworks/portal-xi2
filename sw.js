@@ -3,7 +3,7 @@
    - CSS font Google: stale-while-revalidate.
    - File situs sendiri: network-first (konten selalu terbaru), jatuh ke cache kalau jaringan lambat (>4 dtk) atau mati.
    - Supabase / API tidak pernah disentuh. */
-const CACHE = 'xi2-v13';
+const CACHE = 'xi2-v14';
 const STATIC_HOSTS = ['cdn.jsdelivr.net', 'cdn.tailwindcss.com', 'fonts.gstatic.com'];
 const SWR_HOSTS = ['fonts.googleapis.com'];
 const NET_TIMEOUT = 4000;

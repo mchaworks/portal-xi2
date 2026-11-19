@@ -1,6 +1,6 @@
 /* Piwo: sutradara maskot. Intro loncat ke tengah, tinggal di pojok tiap halaman, ikut masuk ke chat Labz AI. */
 (()=>{
-window.PIWO_BUILD='20-intro-hover';
+window.PIWO_BUILD='21-intro-pelan';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),wait=ms=>new Promise(r=>setTimeout(r,ms)),$=id=>document.getElementById(id);
 const host=document.createElement('div');host.id='piwo-host';host.style.cssText='position:fixed;left:0;top:0;pointer-events:none;will-change:transform';document.body.appendChild(host);
@@ -133,24 +133,32 @@ async function intro(){
  const talk=(mood,line)=>{if(line){m.hush();m.react(mood);m.say(line,{mood:'happy',speed:80,hold:.4})}else m.react(mood)};
  audioStart();
  await nap(120);
- /* 1. ngintip kaget, lalu BOING ke tengah sambil muter (jejak bintang) */
- if(!skip){S.peek();m.flash('surprised',.6);m.sy.kick(1.8);await move(peek,230,rise,0)}
- if(!skip){m.flash('shy',.4);S.squeak();m.sx.kick(1.2);await nap(160)}
- if(!skip){S.squish();m.sy.kick(-3.8);m.sx.kick(2.4);await nap(110)}
- if(!skip){S.boing();S.whoosh();m.sy.kick(3);const q=ctr();PFX.burst(q.x,q.y+s*.3,tier2?5:9,s*.9,true);trailOn()}
- await move(c,980,rise,0);trailOff();tilt=0;hoverOn();
- if(!skip){S.twinkle();m.flash('giggle',.6);const q=ctr();PFX.burst(q.x,q.y,tier2?5:10,s)}
- /* 2. kamera nge-fokus ke Piwo, Piwo nyosor ke lensa, tok-tok kaca, lalu mundur */
- if(!skip){bip();focus(true);await nap(190);focus(false)}
- if(!skip){S.whoosh();m.flash('surprised',.5);dolly(true)}
- await move(bc,340,io,5);
- if(!skip){S.pop();ripple();m.flash('giggle',1);m.sy.kick(-2.4);m.sx.kick(1.8);await nap(110);S.pop();ripple();m.sx.kick(-1.6);await nap(190)}
- dolly(false);
- if(!skip){S.hello();m.react('wave')}
- await move(c,360,rise,0);
- if(!skip){m.say('Halo, aku Piwo~ Yuk masuk ke XI.2!',{mood:'happy',speed:48,hold:.5});await nap(1450)}
- /* 3. "Cheese!" (ajakan masuk): fokus, cekrek, flash. Piwo nyosor ke lensa lagi dan loncat ke pojok */
- if(!skip){move(c,260,io,0);talk('love','Cheese~!');bip();focus(true);await nap(240);bip();await nap(180);focus(false);shutter();flashEl();m.sy.kick(-3);m.sx.kick(2.2);PFX.burst(ctr().x,ctr().y,tier2?6:14,Math.min(W*.5,200))}
+ /* ===== pacing baru: tiap adegan dikasih jeda napas biar sempat dicerna ===== */
+ /* 0. layar tenang + judul + bokeh, mata sempat menetap */
+ await nap(750);
+ /* 1. ngintip malu-malu dari bawah, pelan, lalu kaget sendiri */
+ if(!skip){S.peek();m.flash('shy',1.2);await move(peek,800,io,0)}
+ await nap(550);
+ if(!skip){m.flash('surprised',.7);S.squeak();m.sy.kick(1.4);m.sx.kick(-.8);await nap(650)}
+ /* 2. antisipasi: jongkok... lalu MELAYANG naik pelan ke tengah dengan jejak bintang */
+ if(!skip){S.squish();m.sy.kick(-3.4);m.sx.kick(2.2);await nap(380)}
+ if(!skip){S.boing();S.whoosh();m.flash('happy',1.4);m.sy.kick(2.4);const q=ctr();PFX.burst(q.x,q.y+s*.3,tier2?5:9,s*.9,true);trailOn()}
+ await move(c,1150,rise,0);trailOff();tilt=0;hoverOn();
+ if(!skip){S.twinkle();m.flash('giggle',1.1);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,s)}
+ await nap(800);
+ /* 3. nyapa, dua kalimat terpisah biar kebaca */
+ if(!skip){S.hello();m.react('wave');m.say('Halo, aku Piwo~',{mood:'happy',speed:70,hold:.4});await nap(1650)}
+ if(!skip){S.pop();m.flash('happy',1.4);m.say('Maskot XI.2 Creative Lab!',{mood:'happy',speed:60,hold:.4});const q=ctr();PFX.burst(q.x,q.y,tier2?4:8,s*.9);await nap(1650)}
+ /* 4. joget kecil: goyang kiri-kanan, tiap langkah ada nada + hati */
+ if(!skip){m.say('Ayo joget dikit~',{mood:'happy',speed:60,hold:.3});await nap(550)}
+ const step=async(dx,tl,f)=>{if(skip)return;try{S.bell&&S.bell(f,.1,0)}catch(e){}m.sy.kick(-2.2);m.flash('love',.55);const q=ctr();PFX.spark(q.x,q.y-cur.s*.3,{ch:'♥',col:'#f9a8d4',dx:rnd(-22,22),dy:-56,sz:18,d:900});await move({x:c.x+dx,y:c.y,s},400,io,tl)};
+ await step(-s*.5,-11,988);await step(s*.5,11,1175);await step(-s*.28,-8,1319);
+ if(!skip){await move(c,420,io,0);S.twinkle();m.flash('giggle',1);const q=ctr();PFX.burst(q.x,q.y,tier2?5:10,s)}
+ await nap(350);
+ /* 5. foto bareng: ajak, hitung mundur 3-2-1, cekrek, flash, diam sebentar */
+ if(!skip){m.say('Foto bareng yuk! Siap ya?',{mood:'happy',speed:60,hold:.3});m.flash('shy',1);await nap(1300)}
+ for(const n of ['3','2','1']){if(skip)break;bip();m.say(n,{mood:'happy',speed:200,hold:.2});m.sy.kick(-1.2);focus(false);focus(true);await nap(480)}
+ if(!skip){talk('love','Cheese~!');await nap(200);focus(false);shutter();flashEl();m.sy.kick(-3);m.sx.kick(2.2);PFX.burst(ctr().x,ctr().y,tier2?6:14,Math.min(W*.5,200));await nap(550)}
  if(!skip){S.whoosh();dolly(true);out()}else out();
  await move(bc,260,io,-6);tilt=0;
  if(!skip){S.thud()}
