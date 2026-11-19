@@ -11,7 +11,7 @@ const A={
  home(){const s=clamp(innerWidth*.15,52,76),f=$('labz-ai-fab'),d=$('liquid-glass-dock'),fr=f&&f.getBoundingClientRect(),t=fr?fr.top:(d?d.getBoundingClientRect().top:innerHeight-90);return{x:(fr?fr.left+fr.width/2:innerWidth-s)-s/2,y:t-s*.92-4,s}},
  center(){const s=Math.min(innerWidth*.52,innerHeight*.34,280);return{x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.03,s}},
  pet(){const sh=document.querySelector('#piwo-pet .pp-sheet'),top=sh&&panelOpen?sh.getBoundingClientRect().top:innerHeight-340,s=clamp(Math.min(innerWidth*.42,innerHeight*.26),110,190);return{x:(innerWidth-s)/2,y:top+6-s*.92,s}},
- game(){const s=clamp(innerWidth*.3,92,128);return{x:(innerWidth-s)/2,y:innerHeight-s*.92-14,s}},
+ game(){const s=clamp(innerWidth*.17,56,76);return{x:innerWidth-s-8,y:innerHeight-s*.92-18,s}},
  chat(){const e=$('xc-piwo');if(!e)return A.home();const r=e.getBoundingClientRect(),s=r.width*1.15;return{x:r.left+r.width/2-s/2,y:r.bottom+4-s*.92,s}}
 };
 /* terbang: busur parabola + squash tiap mendarat */
@@ -22,17 +22,26 @@ const fly=(to,o)=>new Promise(res=>{o=Object.assign({dur:900,hops:1,h:.26},o);co
   put({x:a.x+(T.x-a.x)*e,y:a.y+(T.y-a.y)*e-arc,s:a.s+(T.s-a.s)*e});
   if(t<1)requestAnimationFrame(f);else{busy=false;if(m&&!skip)m.squish(1.5);res()}};
  requestAnimationFrame(f)});
+/* gerak lurus dengan easing bebas (dipakai intro) */
+const move=(to,dur,ease)=>new Promise(res=>{const a=Object.assign({},cur),t0=performance.now();busy=true;
+ const f=n=>{const t=skip?1:Math.min(1,(n-t0)/dur),e=ease(t);put({x:a.x+(to.x-a.x)*e,y:a.y+(to.y-a.y)*e,s:a.s+(to.s-a.s)*e});if(t<1)requestAnimationFrame(f);else{busy=false;res()}};requestAnimationFrame(f)});
+const easeOutBack=t=>{const c=1.9,u=t-1;return 1+(c+1)*u*u*u+c*u*u},easeIn=t=>t*t*t;
+/* intro ala Duolingo: melesat dari bawah layar ke tengah, melambai, jatuh lagi, layar utama muncul, Piwo naik ke pojok */
 async function intro(){
- const out=()=>{R.classList.add('piwo-out');setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),650)};
+ const out=()=>{R.classList.add('piwo-out');setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),900)};
  if(calm){put(A.home());out();return}
- lock=true;const c=A.center();put({x:-c.s*.55,y:innerHeight+c.s*.3,s:c.s});setZ(210); /* ngumpet di bawah-samping layar */
+ lock=true;const c=A.center(),below={x:c.x,y:innerHeight+c.s*.25,s:c.s};put(below);setZ(210);
  const sk=()=>{skip=true;m.hush()};addEventListener('pointerdown',sk,{once:true});
- await wait(450);
- if(!skip){m.rot.kick(-4);m.sy.kick(-3);await wait(200)} /* jongkok, miring */
- await fly(c,{dur:1250,h:.32,lin:true}); /* lompat besar diagonal ke tengah */
- if(!skip){m.rot.kick(4);await fly(c,{dur:520,hops:2,h:.05})} /* mantul kecil */
- if(!skip){m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.7})}
- out();await fly(A.home,{dur:950,h:.3});
+ await wait(500);
+ if(!skip){m.sy.kick(-3.4);m.sx.kick(2);await wait(280)} /* jongkok dulu */
+ if(!skip){m.sfx.boing&&m.sfx.boing();m.sy.kick(2.6);m.flash('happy',.8)}
+ await move(c,820,easeOutBack); /* kelontar ke tengah, sedikit lewat lalu mengendap */
+ if(!skip){m.squish(1.1);m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}
+ if(!skip){m.react('surprise');await wait(220);m.rot.kick(3.5)}
+ await move(below,640,easeIn); /* jatuh lagi ke bawah layar */
+ out();if(!skip)await wait(520);
+ const h=A.home();put({x:h.x,y:innerHeight+h.s,s:h.s}); /* naik ke pojok setelah layar utama tampil */
+ await fly(h,{dur:850,h:.12});
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
 }
 /* ikut ke chat AI */
@@ -68,6 +77,22 @@ window.Piwo={
  talk(on,t){if(!m)return;clearInterval(tk);if(on)tk=setInterval(()=>m.talkT=Math.random()<.25?.05:.4+Math.random()*.6,90);else{m.talkT=0;m.react(/maaf|belum ada|tidak ada|gagal/i.test(t||'')?'sad':'nod')}},
  fail(){m&&m.react('sad')}
 };
+
+/* reaksi kecil di seluruh web: sengaja jarang (ada jeda) supaya tidak berisik */
+let buzzAt=0;const pickL=a=>a[Math.random()*a.length|0];
+const buzz=(mood,line,cd)=>{const n=Date.now();if(!m||at!=='home'||lock||busy||R.classList.contains('piwo-intro')||n-buzzAt<(cd==null?25000:cd))return;buzzAt=n;m.hush();m.react(mood);if(line)m.say(line,{mood:'happy',speed:42})};
+window.Piwo.buzz=buzz;
+(()=>{const t0=Date.now();let mode=R.dataset.mode;
+ new MutationObserver(()=>{const v=R.dataset.mode;if(v===mode)return;mode=v;if(Date.now()-t0<4000)return;
+  buzz(v==='dark'?'yawn':'happy',v==='dark'?'Mode gelap~ adem di mata ya':'Terang lagi! Semangat~')}).observe(R,{attributes:true,attributeFilter:['data-mode']});
+ const tl=document.getElementById('tasks-list');
+ if(tl)tl.addEventListener('click',e=>{const el=e.target.closest('[data-task-act="toggle"]');if(!el)return;const id=el.dataset.id;
+  setTimeout(()=>{const nw=[...tl.querySelectorAll('[data-task-act="toggle"]')].find(x=>x.dataset.id===id);if(!nw||!nw.querySelector('.material-symbols-rounded'))return;
+   const c=(document.getElementById('task-counter')||{}).textContent||'',mm=c.match(/(\d+)\/(\d+)/),all=mm&&mm[1]===mm[2];
+   buzz(all?'happy':'nod',all?'Semua tugas beres! Keren banget~':pickL(['Mantap, satu tugas kelar!','Yey, centang lagi~','Terus semangat!']),all?0:7000)},120)});
+ const sm=document.getElementById('story-modal');
+ if(sm)new MutationObserver(()=>{if(!sm.classList.contains('hidden'))buzz('happy','Wah, momen seru ya!',40000)}).observe(sm,{attributes:true,attributeFilter:['class']});
+})();
 /* tiap frame: Piwo ngikutin anchor kalau lagi di chat / panel pet / game */
 (function tick(){if(m&&!busy&&!lock){if(at==='chat')put(A.chat());else if(at==='pet')put(A.pet());else if(at==='game')put(A.game())}requestAnimationFrame(tick)})();
 const refit=()=>{if(m&&!busy&&!lock&&at==='home')put(A.home())};setInterval(refit,700);addEventListener('resize',refit);

@@ -115,7 +115,7 @@ const loadImg=u=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin='anon
 const deliver=async(cv,name,link)=>{
  const blob=await new Promise(r=>cv.toBlob(r,'image/png'));if(!blob)throw new Error('blob');
  const f=new File([blob],name,{type:'image/png'});
- if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:BRAND});toast('Pilih Story Instagram. Link sudah disalin untuk stiker Link.');return}catch(e){if(e&&e.name==='AbortError')return}}
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:BRAND});toast('Pilih Story Instagram. Link sudah disalin untuk stiker Link.');window.PiwoMini&&PiwoMini.say('Keren! Jangan lupa tag temen-temenmu~');return}catch(e){if(e&&e.name==='AbortError')return}}
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
  toast('Gambar tersimpan. Buka Instagram, buat Story, pilih gambar ini, lalu tempel link di stiker Link.')};
 const copyQuiet=t=>{try{navigator.clipboard&&navigator.clipboard.writeText(t).catch(()=>{})}catch(_){}};
@@ -128,7 +128,7 @@ const viewer=src=>{const v=h('div','viewer');v.setAttribute('role','dialog');v.s
  const i=h('img');i.src=src;i.alt='Momen kelas';v.appendChild(i);const off=()=>{v.remove();document.removeEventListener('keydown',k)},k=e=>{if(e.key==='Escape')off()};v.onclick=off;document.addEventListener('keydown',k);document.body.appendChild(v)};
 
 /* template Story IG 1080x1920: polaroid di tengah, nama web di atas & bawah */
-const story=async(x,u,b)=>{b.disabled=true;copyQuiet(LINK);
+const story=async(x,u,b)=>{b.disabled=true;copyQuiet(LINK);window.PiwoMini&&PiwoMini.say('Bentar, aku siapin template Story-nya~');
  try{await fontsReady();const img=await loadImg(u);
   const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
   const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#0D3F2E');bg.addColorStop(.6,'#1B6B51');bg.addColorStop(1,'#2fa57d');g.fillStyle=bg;g.fillRect(0,0,W,H);
@@ -147,6 +147,8 @@ const story=async(x,u,b)=>{b.disabled=true;copyQuiet(LINK);
   g.textAlign='left';g.fillStyle='#2B2615';g.font='800 52px "Bricolage Grotesque",Inter,sans-serif';g.textBaseline='alphabetic';g.fillText('Momen Kelas',PX+PADp,PY+PADp+IH+84);
   g.textAlign='right';g.fillStyle='#e8742a';g.font='700 38px "Space Grotesk",Inter,sans-serif';g.fillText(stampOf(x.created_at),PX+PW-PADp,PY+PADp+IH+82);
   g.restore();
+  /* stiker Piwo mengintip dari pojok polaroid */
+  try{const pw=await loadImg(new URL('../icons/piwo.png',location.href).href);g.save();g.translate(PX+PW-60,PY-5);g.rotate(10*Math.PI/180);g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=30;g.shadowOffsetY=12;g.drawImage(pw,-120,-120,240,240);g.restore()}catch(_){}
   /* link bawah */
   const lt=HOST+'/kamera';g.textAlign='center';g.textBaseline='middle';g.font='700 44px "Space Grotesk",Inter,sans-serif';const lw=g.measureText(lt).width+110,ly=H-330;
   g.fillStyle='#111';rr(g,(W-lw)/2,ly,lw,96,48);g.fill();g.fillStyle='#fff';g.fillText(lt,W/2,ly+48+2);
@@ -181,5 +183,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <link rel="stylesheet" href="../theme.css?v=3">
 <script defer src="../portal-extra.js?v=5"></script>
 <script src="../theme.js?v=2"></script>
+<script defer src="../piwo/mini.js?v=1"></script>
+<script>(function(){var go=function(){var P=window.PiwoMini;if(!P)return setTimeout(go,200);P.hello="Ini momen-momen seru kelas kita~";P.lines=["Bagus-bagus ya fotonya!","Pilih satu, bikin Story-nya yuk~","Jangan lupa tag temen-temenmu!"]};go()})()</script>
 </body>
 </html>

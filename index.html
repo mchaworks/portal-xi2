@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://amfuylvtdkdahsfpdkol.supabase.co" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="manifest" href="./manifest.webmanifest">
-<script>(function(){try{if(!sessionStorage.getItem("piwo-intro"))document.documentElement.classList.add("piwo-intro")}catch(e){document.documentElement.classList.add("piwo-intro")}setTimeout(function(){document.documentElement.classList.remove("piwo-intro","piwo-out")},9000)})();</script>
+<script>(function(){try{if(!sessionStorage.getItem("piwo-intro"))document.documentElement.classList.add("piwo-intro")}catch(e){document.documentElement.classList.add("piwo-intro")}setTimeout(function(){document.documentElement.classList.remove("piwo-intro","piwo-out")},13000)})();</script>
 <style id="piwo-css">
 #piwo-splash{display:none}
-html.piwo-intro #piwo-splash{display:block;position:fixed;inset:0;z-index:200;background:radial-gradient(70% 55% at 50% 42%,#DDF1E6,#F1F8F3 75%);transition:opacity .55s ease}
+html.piwo-intro #piwo-splash{display:block;position:fixed;inset:0;z-index:200;background:radial-gradient(70% 55% at 50% 42%,#DDF1E6,#F1F8F3 75%);transition:opacity .75s ease,transform .75s cubic-bezier(.22,.8,.3,1),filter .75s ease}
 html.piwo-intro[data-mode="dark"] #piwo-splash{background:radial-gradient(70% 55% at 50% 42%,#13211B,#0D1410 75%)}
-html.piwo-intro.piwo-out #piwo-splash{opacity:0;pointer-events:none}
+html.piwo-intro.piwo-out #piwo-splash{opacity:0;transform:scale(1.08);filter:blur(8px);pointer-events:none}
 html.piwo-intro{overflow:hidden}
 :root{--xm-font:Inter,system-ui,sans-serif}
 html[data-mode="dark"]{--xm-bubble-bg:rgba(28,42,35,.94);--xm-bubble-fg:#E6F0EA;--xm-bubble-bd:rgba(138,214,181,.3);--xm-bubble-dot:#8AD6B5;--xm-shadow:rgba(0,0,0,.6)}
@@ -3629,7 +3629,7 @@ const dev=(()=>{try{let d=localStorage.getItem('xia_dev');if(!d){d=((crypto.rand
 const dk=()=>new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
 const used=()=>{try{const o=JSON.parse(localStorage.getItem('xia_cam')||'{}');return o.d===dk()?o.n:0}catch(_){return 0}};
 const setUsed=n=>{try{localStorage.setItem('xia_cam',JSON.stringify({d:dk(),n:n}))}catch(_){}};
-const msg=(t,bad)=>{const m=$('cam-msg');if(m){m.textContent=t;m.style.color=bad?'#b3261e':'';m.classList.remove('hidden')}const st=$('dcw-status');if(st){st.textContent=t;st.dataset.bad=bad?'1':'0'}};
+const msg=(t,bad)=>{if(!bad&&/terkirim/i.test(t))try{window.Piwo&&Piwo.buzz&&Piwo.buzz('happy','Cekrek! Fotonya terkirim, tunggu admin setujui ya~',0)}catch(_){}const m=$('cam-msg');if(m){m.textContent=t;m.style.color=bad?'#b3261e':'';m.classList.remove('hidden')}const st=$('dcw-status');if(st){st.textContent=t;st.dataset.bad=bad?'1':'0'}};
 let pend=0;const left=()=>Math.max(0,MAX-used()-pend);
 const refresh=()=>{const n=left(),pad=String(n).padStart(2,'0'),l=$('cam-left'),b=$('cam-open'),cap=$('cam-left-cap'),t=$('cam-open-txt'),body=$('dc-body'),c=$('dcw-cnt');
  if(l)l.textContent=pad;if(c)c.textContent=pad;if(cap)cap.textContent=n?'foto tersisa hari ini':'film habis, besok lagi';if(t)t.textContent=n?'Buka kamera':'Film habis';if(body)body.dataset.empty=n?'0':'1';
@@ -3923,8 +3923,8 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./portal-extra.js?v=5"></script>
 <script src="./theme.js?v=2"></script>
 <script defer src="./piwo/mascot.js?v=7"></script>
-<script defer src="./piwo/piwo.js?v=8"></script>
-<script defer src="./piwo/games.js?v=1"></script>
-<script defer src="./piwo/pet.js?v=1"></script>
+<script defer src="./piwo/piwo.js?v=11"></script>
+<script defer src="./piwo/games.js?v=3"></script>
+<script defer src="./piwo/pet.js?v=3"></script>
 </body>
 </html>

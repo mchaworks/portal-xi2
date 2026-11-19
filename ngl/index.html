@@ -276,7 +276,7 @@ const submit=async()=>{if(sending)return;const t=ta.value.trim();
   go.disabled=!!remain();return}
  setEnd(Date.now()+CD*1000);ta.value='';count();
  ov.querySelector('.nl-sheet').classList.add('sent');confetti();try{navigator.vibrate&&navigator.vibrate([20,40,20])}catch(_){}
- closeT=setTimeout(()=>{close();setTimeout(popup,380)},1100)};
+ closeT=setTimeout(()=>{close();window.PiwoMini&&PiwoMini.say('Terkirim! Namamu nggak ikut, tenang aja~',4200);setTimeout(popup,380)},1100)};
 const build=()=>{ov=h('div','nl-ov');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Kirim pesan anonim');
  ov.innerHTML='<div class="nl-back"></div><div class="nl-sheet"><div class="nl-grab"></div><div class="nl-form"><div class="nl-sh"><h3>Pesan anonim</h3><button type="button" class="nl-x" aria-label="Tutup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
  '<div class="nl-lbl">Untuk siapa?</div><div class="nl-chips" data-k="to"><button type="button" class="nl-chip on" data-id="">Seluruh kelas</button></div>'+
@@ -290,7 +290,7 @@ const build=()=>{ov=h('div','nl-ov');ov.setAttribute('role','dialog');ov.setAttr
  ov.querySelector('.nl-chips[data-k="to"] .nl-chip').onclick=()=>pick(null);
  ov.querySelector('.nl-chips[data-k="seed"]').addEventListener('click',e=>{const b=e.target.closest('.nl-chip');if(!b)return;const s=SEEDS[+b.dataset.s];if(!ta.value.trim())ta.value=s;else if(ta.value.length+s.length<=MAXL)ta.value+=(/\s$/.test(ta.value)?'':' ')+s;count();ta.focus()})};
 const open=()=>{if(!client()){msg('Belum bisa dipakai sekarang.',1);return}
- if(remain()){retrig($('nl-card'),'nl-nope');msg('Sabar ya, bisa kirim lagi dalam '+fmt(remain())+'.',1);try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}return}
+ if(remain()){retrig($('nl-card'),'nl-nope');msg('Sabar ya, bisa kirim lagi dalam '+fmt(remain())+'.',1);window.PiwoMini&&PiwoMini.say('Sabar dulu ya, nanti kirim lagi~');try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}return}
  msg('');if(!ov)build();ov.querySelector('.nl-sheet').classList.remove('sent');err('');go.classList.remove('fly');tick();loadMembers();
  ov.style.display='block';void ov.offsetWidth;ov.classList.add('is-open');document.body.style.overflow='hidden';document.addEventListener('keydown',key);setTimeout(()=>{try{ta.focus({preventScroll:true})}catch(_){}},420)};
 
@@ -323,9 +323,12 @@ const story=async(x,b)=>{b.disabled=true;copyQuiet(LINK);
    g.fillStyle='#fff';g.font='600 42px Inter,sans-serif';rl.forEach((l,i)=>g.fillText(l,CX+PAD+30,cy+34+44+i*56))}
   y+=cardH+G2;
   /* ajakan + link */
+  const cardTop=y-cardH-G2;
   g.fillStyle='#fff';g.textAlign='center';g.textBaseline='top';g.font='800 76px "Bricolage Grotesque",Inter,sans-serif';g.shadowColor='rgba(80,0,30,.25)';g.shadowBlur=18;g.fillText('kirim pesan anonim',W/2,y);g.fillText('juga ke kami!',W/2,y+84);g.shadowBlur=0;y+=ctaH+G3;
   const lt=HOST+'/ngl';g.font='700 44px "Space Grotesk",Inter,sans-serif';const lw=g.measureText(lt).width+110;
   g.fillStyle='#111';rr(g,(W-lw)/2,y,lw,pillH,48);g.fill();g.fillStyle='#fff';g.textBaseline='middle';g.fillText(lt,W/2,y+pillH/2+2);
+  /* stiker Piwo di pojok kartu */
+  try{const pw=await loadImg(new URL('../icons/piwo.png',location.href).href);g.save();g.translate(CX+CW-110,cardTop-10);g.rotate(10*Math.PI/180);g.shadowColor='rgba(0,0,0,.3)';g.shadowBlur=30;g.shadowOffsetY=12;g.drawImage(pw,-100,-100,200,200);g.restore()}catch(_){}
   await deliver(cv,'pesan-anonim-xi2.png',LINK)
  }catch(_){toast('Gagal membuat gambar. Coba lagi ya.')}finally{b.disabled=false}};
 const card=(x,i)=>{const b=h('article','nl-b');b.style.setProperty('--i',Math.min(i,8));
@@ -380,5 +383,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <link rel="stylesheet" href="../theme.css?v=3">
 <script defer src="../portal-extra.js?v=5"></script>
 <script src="../theme.js?v=2"></script>
+<script defer src="../piwo/mini.js?v=1"></script>
+<script>(function(){var go=function(){var P=window.PiwoMini;if(!P)return setTimeout(go,200);P.hello="Mau kirim pesan rahasia? Namamu nggak ikut terkirim kok~";P.lines=["Tulis yang sopan ya, admin menyaring dulu~","Rahasiamu aman sama aku!","Cek juga pesan dari temen-temenmu~"]};go()})()</script>
 </body>
 </html>

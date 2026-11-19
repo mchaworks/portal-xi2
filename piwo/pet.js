@@ -44,9 +44,7 @@ function accSync(){if(!accWrap)return;['head','eyes','neck'].forEach(sl=>{const 
  if(!accEl[sl]){const e=document.createElement('div');e.className='pp-acc';accWrap.appendChild(e);accEl[sl]=e}accEl[sl].textContent=a.e})}
 (function accTick(){requestAnimationFrame(accTick);if(!m||!accWrap)return;const cur=C.cur;accWrap.style.display=gameOn?'none':'';
  for(const sl in accEl){const d=AS[sl],p=m.scr(d.x,d.y),e=accEl[sl];e.style.fontSize=(cur.s*d.k*((m.scx+m.scy)/2)).toFixed(1)+'px';e.style.transform='translate('+p.x.toFixed(1)+'px,'+p.y.toFixed(1)+'px) translate(-50%,-50%) rotate('+m.rotNow.toFixed(3)+'rad)'}
- /* badge ikut Piwo */
- if(ui){const ok=C.at==='home'&&!C.lock&&!C.busy&&!gameOn&&!C.panelOpen;ui.badge.classList.toggle('show',ok);
-  if(ok){ui.badge.style.transform='translate('+clamp(cur.x-14,6,innerWidth-44)+'px,'+clamp(cur.y+cur.s*.12,60,innerHeight-120)+'px)';ui.badge.classList.toggle('dot',needs())}}})();
+})();
 function emoji(ch,rise){if(!m)return;const cur=C.cur,s=cur.s,e=document.createElement('div');e.textContent=ch;
  e.style.cssText='position:fixed;left:'+(cur.x+s/2-s*.14)+'px;top:0;font-size:'+Math.round(s*.28)+'px;z-index:1560;pointer-events:none;will-change:transform,opacity';document.body.appendChild(e);
  const y0=cur.y-s*(rise?-.05:.12),y1=rise?cur.y-s*.3:cur.y+s*.4;
@@ -174,10 +172,6 @@ html[data-perf=lite] #piwo-pet .pp-sheet{-webkit-backdrop-filter:none;backdrop-f
 #pp-toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));z-index:1700;transform:translate(-50%,-160%);padding:11px 18px;border-radius:99px;max-width:88vw;font:700 13px/1.3 Inter,sans-serif;background:var(--md-sys-color-on-surface);color:var(--md-sys-color-surface);box-shadow:0 10px 28px rgba(0,0,0,.3);transition:transform .38s cubic-bezier(.22,1.2,.36,1);pointer-events:none;text-align:center}#pp-toast.on{transform:translate(-50%,0)}
 #pp-acc-wrap{position:fixed;inset:0;z-index:61;pointer-events:none}
 .pp-acc{position:absolute;left:0;top:0;line-height:1;pointer-events:none;will-change:transform;filter:drop-shadow(0 2px 2px rgba(0,0,0,.28))}
-#pp-badge{position:fixed;left:0;top:0;z-index:62;width:36px;height:36px;border-radius:50%;border:1px solid var(--md-sys-color-outline-variant);display:grid;place-items:center;cursor:pointer;padding:0;
- background:rgba(var(--glass-rgb,245,251,246),.95);color:var(--md-sys-color-primary);box-shadow:0 6px 16px -6px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s}
-#pp-badge.show{opacity:1;pointer-events:auto}
-#pp-badge.dot::after{content:'';position:absolute;top:1px;right:1px;width:10px;height:10px;border-radius:50%;background:#ef4444;border:2px solid var(--md-sys-color-surface)}
 `;
 function build(){
  const st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
@@ -192,11 +186,10 @@ function build(){
  '<nav class="pp-nav"><button type="button" data-tab="rawat">'+IC.heart+'Rawat</button><button type="button" data-tab="toko">'+IC.bag+'Toko</button><button type="button" data-tab="misi">'+IC.list+'Misi</button><button type="button" data-tab="game">'+IC.pad+'Game</button></nav></section>';
  document.body.appendChild(root);
  const tt=document.createElement('div');tt.id='pp-toast';tt.setAttribute('role','status');document.body.appendChild(tt);
- const bd=document.createElement('button');bd.type='button';bd.id='pp-badge';bd.setAttribute('aria-label','Buka peliharaan Piwo');bd.innerHTML=IC.paw;document.body.appendChild(bd);
  const q=x=>root.querySelector(x),ms={};['hunger','happy','energy'].forEach(k=>{const r=q('[data-k='+k+']');ms[k]={root:r,bar:r.querySelector('.pp-bar i'),num:r.querySelector('em')}});
- ui={root,toast:tt,badge:bd,name:q('.pp-name'),lv:q('.pp-lv'),coins:q('.pp-coins'),xp:q('.pp-xpw i'),xpt:q('.pp-xpt'),stE:q('.se'),stT:q('.st'),fav:q('.pp-fav'),ms,acts:[...root.querySelectorAll('.pp-act button')],
+ ui={root,toast:tt,name:q('.pp-name'),lv:q('.pp-lv'),coins:q('.pp-coins'),xp:q('.pp-xpw i'),xpt:q('.pp-xpt'),stE:q('.se'),stT:q('.st'),fav:q('.pp-fav'),ms,acts:[...root.querySelectorAll('.pp-act button')],
   shop:q('[data-pane=toko]'),quest:q('[data-pane=misi]'),game:q('[data-pane=game]'),tabs:[...root.querySelectorAll('[data-tab]')],panes:[...root.querySelectorAll('[data-pane]')]};
- ui.name.addEventListener('click',rename);q('.pp-x').addEventListener('click',()=>close());q('.pp-scrim').addEventListener('click',()=>close());bd.addEventListener('click',()=>open());
+ ui.name.addEventListener('click',rename);q('.pp-x').addEventListener('click',()=>close());q('.pp-scrim').addEventListener('click',()=>close());
  ui.tabs.forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;if(tab==='game')refreshLB();render(true)}));
  root.addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-food],[data-acc],[data-claim],[data-game]');if(!t)return;
   if(t.dataset.a)ACT[t.dataset.a]();else if(t.dataset.food)ACT.feed(FOODS.find(f=>f.id===t.dataset.food));else if(t.dataset.acc)ACT.acc(t.dataset.acc);else if(t.dataset.claim)ACT.claim();else if(t.dataset.game)launch(t.dataset.game)});
@@ -217,11 +210,12 @@ function submit(id,score){dq();score=Math.max(0,Math.round(score));const g=GM[id
  const rank=sb('piwo_score_submit',{p_device:DEV,p_game:id,p_name:pet.name,p_score:score}).then(r=>{if(r){LB[id]=Object.assign(LB[id]||{},{best:r.best,rank:r.rank})}return r});
  return {coins,xp,rewarded,newBest,left:Math.max(0,g.rw-n-1),rank}}
 async function launch(id){if(!m||gameOn||!window.PiwoGames)return;dq();gameOn=true;C.panelOpen=false;ui.root.classList.remove('on');C.at='game';m.sfx.init();hush();
- if(calm)put(A.game());else fly(A.game,{dur:520,h:.15});
+ const own=!!(PiwoGames.meta.find(x=>x.id===id)||{}).own; /* game yang karakternya Piwo sendiri: maskot pojok disembunyikan */
+ if(own)C.host.style.visibility='hidden';else if(calm)put(A.game());else fly(A.game,{dur:520,h:.15});
  PiwoGames.start(id,{m,sfx:m.sfx,calm,name:()=>pet.name,
   info:g=>({best:pet.gp.best[g]||0,left:Math.max(0,GM[g].rw-(pet.gp.n[g]||0)),rw:GM[g].rw,max:GM[g].max}),
   top:g=>sb('piwo_score_top',{p_game:g,p_limit:5,p_device:DEV}).then(r=>{if(r)LB[g]=r;return r}),submit,
-  done:async()=>{gameOn=false;tab='game';C.at='pet';C.panelOpen=true;ui.root.classList.add('on');ui.root.setAttribute('aria-hidden','false');render(true);await wait(60);if(calm)put(A.pet());else await fly(A.pet,{dur:560,h:.18})}})}
+  done:async()=>{C.host.style.visibility='';gameOn=false;tab='game';C.at='pet';C.panelOpen=true;ui.root.classList.add('on');ui.root.setAttribute('aria-hidden','false');render(true);await wait(60);if(calm)put(A.pet());else await fly(A.pet,{dur:560,h:.18})}})}
 
 /* ---------- loop 20 dtk: status turun & Piwo mengeluh ---------- */
 setInterval(()=>{if(!m)return;const n=Date.now();decay(n-pet.t,false);pet.t=n;saveLocal();dirty=true;render();
@@ -244,7 +238,7 @@ async function load(){
   else if(r.xp>pet.xp)pet.xp=r.xp}
  dq();dirty=true;saveLocal();accSync();render(true);
  setTimeout(()=>{if(!m||C.lock||C.at!=='home'||document.hidden)return;
-  if(!pet.tip){pet.tip=1;changed();m.say('Tap ikon 🐾 di dekatku atau tahan aku lama-lama, ada status, toko, misi & game~',{mood:'happy'})}
+  if(!pet.tip){pet.tip=1;changed();m.say('Tahan aku lama-lama ya, ada status, toko, misi & game~',{mood:'happy'})}
   else if(pet.hunger<25){needT=Date.now()+9000;m.sfx.growl();m.say('Aku laper… tap di sini buat kasih makan~',{mood:'sad'})}else if(pet.energy<20)m.say('Ngantuk banget hari ini…',{mood:'sad'})},6500)}
 let lp=null;
 addEventListener('pointerdown',e=>{if(!m||C.lock||C.panelOpen||gameOn||C.at!=='home'||e.button>0||!ui)return;if(!m.hit(e.clientX,e.clientY))return;

@@ -5,7 +5,7 @@ const META=[
  {id:'catch',n:'Tangkap Makanan',e:'🍎',ref:40,d:'Tap makanan yang jatuh. Hindari 🌶️ (−3), ⭐ = 5 poin, ⏱️ nambah waktu. Combo bikin bonus!'},
  {id:'memory',n:'Pasangkan Kartu',e:'🧠',ref:100,d:'Buka dua kartu dan cocokkan 8 pasang. Makin sedikit langkah & makin cepat, makin tinggi skornya.'},
  {id:'whack',n:'Usir Tikus',e:'🐭',ref:30,d:'Tap 🐭 yang muncul dari lubang (+1), 🧀 emas (+3). Jangan tap 🐱 (−2)! 30 detik.'},
- {id:'jump',n:'Piwo Lompat',e:'🏃',ref:25,d:'Tap untuk lompat, tahan buat lompat lebih tinggi. Lewati rintangan, ambil ⭐ (+2). Makin lama makin ngebut!'},
+ {id:'jump',own:1,n:'Piwo Lompat',e:'🏃',ref:25,d:'Tap untuk lompat, tahan buat lompat lebih tinggi. Lewati rintangan, ambil ⭐ (+2). Makin lama makin ngebut!'},
  {id:'quiz',n:'Kuis Kelas',e:'💡',ref:80,d:'10 soal pengetahuan umum, 12 detik per soal. Benar = 10 poin.'}];
 const QB=[['Ibu kota Sumatera Selatan?','Palembang','Jambi','Bengkulu','Lampung'],['Hasil dari 12 × 12?','144','121','124','132'],['Rumus kimia air?','H₂O','CO₂','O₂','NaCl'],['Planet terdekat dari Matahari?','Merkurius','Venus','Mars','Bumi'],
 ['Proklamasi kemerdekaan Indonesia dibacakan tanggal?','17 Agustus 1945','17 Agustus 1950','1 Juni 1945','28 Oktober 1945'],['Penulis novel “Laskar Pelangi”?','Andrea Hirata','Tere Liye','Habiburrahman El Shirazy','Pramoedya Ananta Toer'],['Gas terbanyak di atmosfer Bumi?','Nitrogen','Oksigen','Karbon dioksida','Argon'],
@@ -31,8 +31,8 @@ const CSS=`
 .pg-chip{padding:7px 13px;border-radius:99px;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--md-sys-color-primary-container);color:var(--md-sys-color-on-primary-container);min-width:58px;text-align:center}
 .pg-chip.b{background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container)}
 .pg-stage{flex:1;min-height:0;position:relative;overflow:hidden}
-.pg-foot{flex:none;height:calc(128px + env(safe-area-inset-bottom,0px))}
-.pg-card{position:absolute;left:50%;top:50%;width:min(92%,380px);max-height:96%;overflow:auto;transform:translate(-50%,-50%);padding:20px 18px 18px;border-radius:40px 14px 40px 14px;text-align:center;
+.pg-foot{display:none}
+.pg-card{position:absolute;left:50%;top:50%;width:min(92%,380px);max-height:96%;overflow:auto;touch-action:pan-y;transform:translate(-50%,-50%);padding:20px 18px 18px;border-radius:40px 14px 40px 14px;text-align:center;
  background:rgba(var(--glass-rgb,245,251,246),.96);border:1px solid var(--md-sys-color-outline-variant);box-shadow:0 24px 60px -24px rgba(0,0,0,.45);animation:pgPop .45s cubic-bezier(.22,1.3,.36,1) both;z-index:5}
 @keyframes pgPop{from{opacity:0;transform:translate(-50%,-46%) scale(.9)}}
 .pg-blob{width:68px;height:68px;margin:0 auto 8px;display:grid;place-items:center;font-size:36px;background:var(--md-sys-color-primary-container);border-radius:38% 62% 55% 45%/48% 40% 60% 52%}
@@ -66,11 +66,11 @@ const CSS=`
 .pg-h{position:relative;aspect-ratio:1;overflow:hidden;border-radius:0 0 50% 50%/0 0 30% 30%;cursor:pointer;touch-action:none}
 .pg-h::after{content:'';position:absolute;left:0;right:0;bottom:0;height:34%;border-radius:50%;background:var(--md-sys-color-tertiary-container);box-shadow:inset 0 8px 14px rgba(0,0,0,.28);z-index:2}
 .pg-h::before{content:'';position:absolute;left:8%;right:8%;bottom:6%;height:22%;border-radius:50%;background:rgba(0,0,0,.35);z-index:0}
-.pg-cr{position:absolute;left:0;right:0;bottom:12%;text-align:center;font-size:clamp(34px,11vw,52px);line-height:1;transform:translateY(105%);transition:transform .14s ease-out;z-index:1}.pg-h.up .pg-cr{transform:none}.pg-h.hit .pg-cr{transform:translateY(40%) scale(.8);opacity:.6}
+.pg-cr{position:absolute;left:0;right:0;bottom:16%;text-align:center;font-size:calc(var(--cell,100px)*.52);line-height:1;transform:translateY(105%);transition:transform .14s ease-out;z-index:1}.pg-h.up .pg-cr{transform:none}.pg-h.hit .pg-cr{transform:translateY(60%) scale(.8);opacity:.6}
 /* jump */
 .pg-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 /* quiz */
-.pg-qz{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:0 16px;max-width:460px;margin:0 auto}
+.pg-qz{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:0 16px 84px;max-width:460px;margin:0 auto}
 .pg-qn{font-size:12px;font-weight:800;color:var(--md-sys-color-on-surface-variant)}.pg-qt{height:6px;border-radius:6px;background:var(--md-sys-color-surface-container-highest);overflow:hidden}.pg-qt i{display:block;height:100%;width:100%;background:var(--md-sys-color-primary);border-radius:6px}
 .pg-qq{padding:16px;border-radius:30px 12px 30px 12px;background:var(--md-sys-color-surface-container-high);border:1px solid var(--md-sys-color-outline-variant);font:800 17px/1.3 'Bricolage Grotesque',Inter,sans-serif;text-align:center}
 .pg-qa{display:grid;gap:8px}.pg-qa button{padding:13px 14px;border-radius:18px;border:2px solid transparent;background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);font:700 14px/1.25 Inter,sans-serif;text-align:left;cursor:pointer;transition:transform .12s}
@@ -98,7 +98,7 @@ function gCatch(S,H,end,env){let score=0,time=30,combo=0,t=0,sp=0,over=false;con
 
 /* ---------- 2. Pasangkan Kartu ---------- */
 function gMemory(S,H,end,env){const em=shuf(['🍎','🍓','🍩','🍕','🍙','🍪','🧋','🍜']),deck=shuf(em.concat(em));let first=null,lock=false,moves=0,matched=0,secs=0,over=false;
- const g=document.createElement('div');g.className='pg-mg';const sz=Math.max(150,Math.min(S.clientWidth-24,S.clientHeight-16,400));g.style.width=sz+'px';g.style.height=sz+'px';S.appendChild(g);
+ const g=document.createElement('div');g.className='pg-mg';const sz=Math.max(150,Math.min(S.clientWidth-24,S.clientHeight-96,400));g.style.width=sz+'px';g.style.height=sz+'px';S.appendChild(g);
  const hud=()=>{H.a.textContent='👣 '+moves;H.b.textContent='⏱ '+Math.floor(secs)};hud();
  const cards=deck.map(e=>{const b=document.createElement('button');b.type='button';b.className='pg-mc';b.innerHTML='<div class="in"><div class="bk">?</div><div class="f">'+e+'</div></div>';g.appendChild(b);const c={b,e,open:0};
   b.addEventListener('pointerdown',ev=>{ev.preventDefault();if(lock||over||c.open)return;c.open=1;b.classList.add('up');env.sfx.blip();
@@ -108,25 +108,25 @@ function gMemory(S,H,end,env){const em=shuf(['🍎','🍓','🍩','🍕','🍙',
  const stop=loop(dt=>{if(over)return;secs+=dt;H.b.textContent='⏱ '+Math.floor(secs);if(secs>=90){over=true;end(matched*6)}});return{stop}}
 
 /* ---------- 3. Usir Tikus ---------- */
-function gWhack(S,H,end,env){let score=0,time=30,t=0,sp=.5,over=false;const w=document.createElement('div');w.className='pg-wg';const sz=Math.min(S.clientWidth-24,S.clientHeight-20,380);w.style.width=sz+'px';S.appendChild(w);
+function gWhack(S,H,end,env){let score=0,time=30,t=0,sp=.5,over=false;const w=document.createElement('div');w.className='pg-wg';const sz=Math.min(S.clientWidth-24,S.clientHeight-20,380);w.style.width=sz+'px';w.style.setProperty('--cell',Math.floor((sz-28)/3)+'px');S.appendChild(w);
  const hud=()=>{H.a.textContent='⭐ '+score;H.b.textContent='⏱ '+Math.ceil(time)};hud();
- const hs=Array.from({length:9},()=>{const el=document.createElement('div');el.className='pg-h';el.innerHTML='<div class="pg-cr"></div>';w.appendChild(el);const h={el,cr:el.firstChild,life:0,type:null};
-  el.addEventListener('pointerdown',ev=>{ev.preventDefault();if(over||!h.type||h.life<=0)return;const ty=h.type;h.life=0;h.type=null;el.classList.add('hit');setTimeout(()=>el.classList.remove('up','hit'),160);
+ const hs=Array.from({length:9},()=>{const el=document.createElement('div');el.className='pg-h';el.innerHTML='<div class="pg-cr"></div>';w.appendChild(el);const h={el,cr:el.firstChild,life:0,type:null,lock:0};
+  el.addEventListener('pointerdown',ev=>{ev.preventDefault();if(over||!h.type||h.life<=0)return;const ty=h.type;h.life=0;h.type=null;h.lock=1;el.classList.add('hit');setTimeout(()=>{el.classList.remove('up','hit');h.lock=0},180);
    const r=el.getBoundingClientRect(),sr=S.getBoundingClientRect(),px=r.left-sr.left+r.width/2-10,py=r.top-sr.top;
    if(ty.p<0){score=Math.max(0,score+ty.p);env.sfx.growl();env.m.react('surprise');popAt(S,px,py,String(ty.p),'n')}else{score+=ty.p;env.sfx.pop();env.m.squish(.5);popAt(S,px,py,'+'+ty.p,'p')}hud()});return h});
  const T=[{e:'🐭',p:1,w:70},{e:'🧀',p:3,w:10},{e:'🐱',p:-2,w:20}];
  const stop=loop(dt=>{if(over)return;t+=dt;time-=dt;sp-=dt;
-  if(sp<=0){sp=Math.max(.36,.85-t*.014);const free=hs.filter(h=>!h.type);if(free.length){const h=pick(free);let r=Math.random()*100,ty=T[0];for(const x of T){if(r<x.w){ty=x;break}r-=x.w}h.type=ty;h.life=Math.max(.6,1.15-t*.016);h.cr.textContent=ty.e;h.el.classList.add('up')}}
+  if(sp<=0){sp=Math.max(.36,.85-t*.014);const free=hs.filter(h=>!h.type&&!h.lock);if(free.length){const h=pick(free);let r=Math.random()*100,ty=T[0];for(const x of T){if(r<x.w){ty=x;break}r-=x.w}h.type=ty;h.life=Math.max(.6,1.15-t*.016);h.cr.textContent=ty.e;h.el.classList.add('up')}}
   hs.forEach(h=>{if(h.type){h.life-=dt;if(h.life<=0){h.type=null;h.el.classList.remove('up')}}});
   H.b.textContent='⏱ '+Math.max(0,Math.ceil(time));if(time<=0){over=true;end(score)}});return{stop}}
 
 /* ---------- 4. Piwo Lompat (canvas) ---------- */
 function gJump(S,H,end,env){const cv=document.createElement('canvas');cv.className='pg-cv';S.appendChild(cv);const dpr=Math.min(2,devicePixelRatio||1),W=S.clientWidth,Hh=S.clientHeight;cv.width=W*dpr;cv.height=Hh*dpr;const c=cv.getContext('2d');c.scale(dpr,dpr);
  const cs=getComputedStyle(document.documentElement),col=n=>cs.getPropertyValue(n).trim()||'#1B6B51',P=col('--md-sys-color-primary'),PC=col('--md-sys-color-primary-container'),OV=col('--md-sys-color-outline-variant'),TC=col('--md-sys-color-tertiary-container');
- const img=new Image();img.src='./icons/piwo.png';const gy=Hh*.78,S0=46,px=W*.2,G=2300;let y=gy-S0,vy=0,hold=false,buf=0,score=0,t=0,speed=290,nextObs=.8,over=false,dist=0,rot=0;const obs=[],stars=[],clouds=Array.from({length:4},()=>({x:rnd(0,W),y:rnd(20,gy*.45),s:rnd(.5,1)}));
+ const img=new Image();img.src='./icons/piwo.png';const gy=Hh*.8,S0=46,px=W*.2,G=2300;let y=gy-S0,vy=0,hold=false,buf=0,score=0,t=0,speed=290,nextObs=.8,over=false,dist=0,rot=0;const obs=[],stars=[],clouds=Array.from({length:4},()=>({x:rnd(0,W),y:rnd(20,gy*.45),s:rnd(.5,1)}));
  const hud=()=>{H.a.textContent='🏃 '+score;H.b.textContent=Math.floor(dist/60)+' m'};hud();
  const jump=()=>{if(over)return;buf=.12};
- cv.addEventListener('pointerdown',e=>{e.preventDefault();hold=true;jump()});const up=()=>{hold=false};cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('pointerleave',up);
+ cv.addEventListener('pointerdown',e=>{e.preventDefault();hold=true;jump()});const up=()=>{hold=false};const kd=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(!e.repeat){hold=true;jump()}}},ku=e=>{if(e.code==='Space'||e.code==='ArrowUp')hold=false};addEventListener('keydown',kd);addEventListener('keyup',ku);cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('pointerleave',up);
  const stop=loop(dt=>{t+=dt;if(!over){speed=290+Math.min(300,t*8);dist+=speed*dt;rot=0;
    if(buf>0){buf-=dt;if(y>=gy-S0-1){vy=-780;buf=0;env.sfx.boing&&env.sfx.boing()}}
    vy+=G*(hold&&vy<0?.5:1)*dt;y+=vy*dt;if(y>gy-S0){y=gy-S0;vy=0}else rot=vy*.0006;
@@ -141,7 +141,7 @@ function gJump(S,H,end,env){const cv=document.createElement('canvas');cv.classNa
   c.font='34px serif';c.textBaseline='bottom';c.textAlign='left';obs.forEach(o=>{c.font=Math.round(o.h*1.05)+'px serif';c.fillText(o.e,o.x-2,gy+4)});
   c.font='30px serif';c.textBaseline='middle';c.textAlign='center';stars.forEach(s=>c.fillText('⭐',s.x,s.y+Math.sin(t*5+s.x)*3));
   c.save();c.translate(px+S0/2,y+S0/2);c.rotate(rot);if(over)c.rotate(.5);if(img.complete&&img.naturalWidth)c.drawImage(img,-S0/2-4,-S0/2-4,S0+8,S0+8);else{c.fillStyle=P;c.beginPath();c.arc(0,0,S0/2,0,7);c.fill()}c.restore();c.fillStyle='rgba(0,0,0,.18)';c.beginPath();c.ellipse(px+S0/2,gy+3,S0*.4*(1-(gy-S0-y)/400),5,0,0,7);c.fill()});
- return{stop}}
+ return{stop(){stop();removeEventListener('keydown',kd);removeEventListener('keyup',ku)}}}
 
 /* ---------- 5. Kuis Kelas ---------- */
 function gQuiz(S,H,end,env){const qs=shuf(QB).slice(0,10);let i=0,score=0,tm=12,lock=false,over=false;const box=document.createElement('div');box.className='pg-qz';S.appendChild(box);
