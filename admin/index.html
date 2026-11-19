@@ -2,6 +2,7 @@
 <html lang="id" class="scroll-smooth" data-theme="sage" data-shape="organic" data-sheen="off">
 <head>
 <meta charset="utf-8">
+<script>document.documentElement.classList.add("auth-boot");setTimeout(function(){document.documentElement.classList.remove("auth-boot")},8000)</script>
 <script>(function(){try{var v=localStorage.getItem("xia-mode");if(v!=="dark"&&v!=="light")v="light";document.documentElement.setAttribute("data-mode",v)}catch(e){}})();</script>
 <style id="xia-mode-boot">html[data-mode="dark"]{background:#0E1410;color-scheme:dark;--md-sys-color-primary:#8AD6B5;--md-sys-color-on-primary:#00382A;--md-sys-color-primary-container:#00513C;--md-sys-color-on-primary-container:#A6F2D1;--md-sys-color-secondary:#B3CCBE;--md-sys-color-on-secondary:#1F352B;--md-sys-color-secondary-container:#354B41;--md-sys-color-on-secondary-container:#CEE9DA;--md-sys-color-tertiary:#A5CCDF;--md-sys-color-tertiary-container:#264B5C;--md-sys-color-on-tertiary-container:#C1E8FB;--md-sys-color-surface:#0E1410;--md-sys-color-surface-container-low:#151B18;--md-sys-color-surface-container:#1A201D;--md-sys-color-surface-container-high:#242A27;--md-sys-color-surface-container-highest:#2F3532;--md-sys-color-on-surface:#DEE4DF;--md-sys-color-on-surface-variant:#BFC9C2;--md-sys-color-outline:#89938D;--md-sys-color-outline-variant:#3F4944;--glass-rgb:20,27,23!important;--glass-border-rgb:255,255,255!important;--dc-body:#1F7A5C;--dc-body-dk:#0B3A2B;}html[data-mode="dark"] body{background-color:#0E1410;color:#DEE4DF}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -740,6 +741,7 @@ html input:focus,html textarea:focus,html select:focus{border-color:var(--md-sys
 <body>
 <div id="scroll-progress" aria-hidden="true"></div>
 
+<div id="boot" aria-hidden="true"><img src="../icons/piwo.png" alt="" width="64" height="64"></div>
 <div id="login" class="multi-layer-glass m3-card-surface">
   <div class="flex items-center gap-3 mb-5">
     <div class="w-12 h-12 m3-shape-cookie bg-m3-primary text-m3-onPrimary flex items-center justify-center font-mono font-bold text-sm shrink-0">XI.2</div>
@@ -794,7 +796,7 @@ html input:focus,html textarea:focus,html select:focus{border-color:var(--md-sys
     <div id="notice" class="notice hidden" role="status"></div>
 
     <section id="tab-dashboard">
-      <button type="button" id="pai-open" class="btn secondary" style="margin-bottom:.9rem;gap:.55rem"><img src="../icons/piwo.png" alt="" width="22" height="22" style="width:22px;height:22px;object-fit:contain"> Minta Piwo AI memeriksa antrean</button>
+      <button type="button" id="mib-open" class="btn secondary" style="margin:0 .5rem .9rem 0">🕶️ Pindai keamanan</button><button type="button" id="pai-open" class="btn secondary" style="margin-bottom:.9rem;gap:.55rem"><img src="../icons/piwo.png" alt="" width="22" height="22" style="width:22px;height:22px;object-fit:contain"> Minta Piwo AI memeriksa antrean</button>
       <div class="stats grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         <button type="button" class="stat" data-tab="news"><span class="stat-ico material-symbols-rounded">campaign</span><span class="stat-l">Berita terpublikasi</span><strong id="count-news">—</strong></button>
         <button type="button" class="stat" data-tab="tasks"><span class="stat-ico material-symbols-rounded">task_alt</span><span class="stat-l">Tugas aktif (belum lewat deadline)</span><strong id="count-tasks">—</strong></button>
@@ -826,8 +828,25 @@ html input:focus,html textarea:focus,html select:focus{border-color:var(--md-sys
   </main>
 </div>
 
+<div id="mib" role="dialog" aria-modal="true" aria-label="Pindai keamanan"><div class="mib-card"><div class="mib-pw"><img src="../icons/piwo.png" alt="" width="120" height="120"><svg class="mib-gl" viewBox="0 0 192 192" aria-hidden="true"><path d="M46 70h44c2 0 3 2 3 4-1 14-8 24-24 24-14 0-23-8-25-22-.4-3 .5-6 2-6zM102 74c0-2 1-4 3-4h44c1.500 0 2.400 3 2 6-2 14-11 22-25 22-16 0-23-10-24-24z" fill="#0b0f0d"/><path d="M88 74q6-5 14 0" stroke="#0b0f0d" stroke-width="5" fill="none"/><path d="M54 76l18 0M110 76l18 0" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/></svg><i class="mib-ln"></i></div><h3 id="mib-t">Agen Piwo: pindai keamanan…</h3><div id="mib-l"></div><button type="button" class="btn" id="mib-x" style="display:none;width:100%;margin-top:.8rem">Oke, lanjut</button></div><i id="mib-fl"></i></div>
+<style>
+#mib{position:fixed;inset:0;z-index:320;display:none;align-items:center;justify-content:center;background:radial-gradient(70% 60% at 50% 40%,#16211b,#050806);color:#d8f5e6;padding:1rem}
+#mib.on{display:flex}.mib-card{width:min(420px,100%);text-align:center}
+.mib-pw{position:relative;width:120px;height:120px;margin:0 auto .6rem;animation:paiHov 2.4s ease-in-out infinite}
+.mib-gl{position:absolute;inset:0;width:100%;height:100%;animation:mibDrop .5s .3s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes mibDrop{from{transform:translateY(-70px);opacity:0}}
+.mib-ln{position:absolute;left:-30%;right:-30%;height:3px;top:0;background:linear-gradient(90deg,transparent,#6ee7b7,transparent);box-shadow:0 0 14px #6ee7b7;animation:mibScan 1.4s ease-in-out infinite alternate}
+@keyframes mibScan{to{top:100%}}
+#mib h3{font:800 1rem/1.3 "Space Grotesk",monospace;letter-spacing:.03em;margin:.2rem 0 .8rem;color:#6ee7b7}
+#mib-l{text-align:left;font:600 .82rem/1.4 "Space Grotesk",monospace}
+.mib-r{display:flex;gap:.55rem;padding:.45rem .2rem;border-bottom:1px dashed rgba(110,231,183,.2);animation:mibIn .3s both}
+@keyframes mibIn{from{opacity:0;transform:translateX(-10px)}}
+.mib-r b{flex:none;width:1.2rem}.mib-r.ok b{color:#6ee7b7}.mib-r.warn b{color:#fbbf24}.mib-r.bad b{color:#fb7185}
+#mib-fl{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none}
+</style>
 <div id="pai" role="dialog" aria-modal="true" aria-labelledby="pai-title"><div class="pai-card"><div class="pai-top"><img src="../icons/piwo.png" alt="" width="46" height="46"><div style="flex:1;min-width:0"><h3 id="pai-title">Piwo AI sudah memeriksa</h3><div class="small" id="pai-sum"></div></div><button type="button" id="pai-x" aria-label="Tutup">✕</button></div><div id="pai-list"></div><div class="pai-foot"><button type="button" class="btn secondary" id="pai-later">Nanti saja</button><button type="button" class="btn" id="pai-apply">Terapkan</button></div><p class="small" style="margin:.6rem .2rem 0;text-align:center">Piwo cuma memberi saran. Tidak ada yang berubah sampai kamu menekan tombol.</p></div></div>
 <style>
+#boot{display:none}html.auth-boot #boot{display:flex;position:fixed;inset:0;z-index:250;align-items:center;justify-content:center;background:var(--md-sys-color-surface,#F5FBF6)}#boot img{object-fit:contain;animation:paiHov 1.6s ease-in-out infinite}html.auth-boot #login,html.auth-boot #app{visibility:hidden}
 #pai{position:fixed;inset:0;z-index:300;display:none;align-items:flex-end;justify-content:center;background:rgba(10,20,15,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 #pai.on{display:flex}
 .pai-card{width:min(560px,100%);max-height:88vh;display:flex;flex-direction:column;background:var(--md-sys-color-surface);color:var(--md-sys-color-on-surface);border-radius:28px 28px 0 0;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px -20px rgba(0,0,0,.5);animation:paiUp .35s cubic-bezier(.2,.9,.3,1.1)}
@@ -862,7 +881,7 @@ function loginMsg(msg){const m=$('login-msg');if(!msg){m.classList.add('hidden')
 const errText=e=>(e&&e.message)||String(e||'Terjadi kesalahan.');
 
 function setup(){
-  if(!configured||!window.supabase){loginMsg('Isi config.js dengan URL dan anon/publishable key Supabase, lalu muat ulang.');$('login-form').querySelector('button').disabled=true;return;}
+  if(!configured||!window.supabase){bootDone();loginMsg('Isi config.js dengan URL dan anon/publishable key Supabase, lalu muat ulang.');$('login-form').querySelector('button').disabled=true;return;}
   db=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
   db.auth.onAuthStateChange((event,session)=>{
     if(event==='TOKEN_REFRESHED'||event==='USER_UPDATED')return;
@@ -870,7 +889,8 @@ function setup(){
   });
   db.auth.getSession().then(({data})=>{if(data.session&&!user)enter(data.session.user);}).catch(()=>{});
 }
-function leave(){user=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');document.body.classList.remove('is-in');}
+const bootDone=()=>document.documentElement.classList.remove('auth-boot');
+function leave(){bootDone();user=null;$('app').classList.add('hidden');$('login').classList.remove('hidden');document.body.classList.remove('is-in');}
 async function enter(u){
   if(entering||(user&&user.id===u.id))return;
   entering=true;
@@ -880,9 +900,9 @@ async function enter(u){
     user=u;loginMsg('');
     $('login').classList.add('hidden');$('app').classList.remove('hidden');document.body.classList.add('is-in');
     $('who').textContent=u.email||'Administrator';
-    await refreshAll();showTab((location.hash||'').slice(1)||'dashboard');startLive();igAuto();piwoAI(false);
+    await refreshAll();showTab((location.hash||'').slice(1)||'dashboard');startLive();igAuto();mibScan(true).then(()=>piwoAI(false));
   }catch(e){loginMsg(errText(e));}
-  finally{entering=false;}
+  finally{entering=false;bootDone();}
 }
 $('login-form').addEventListener('submit',async e=>{
   e.preventDefault();if(!db)return;
@@ -1477,6 +1497,40 @@ $('pai-list').addEventListener('click',e=>{const b=e.target.closest('[data-pai]'
 $('pai-apply').onclick=aiApply;$('pai-later').onclick=aiClose;$('pai-x').onclick=aiClose;
 $('pai').addEventListener('click',e=>{if(e.target===$('pai'))aiClose()});
 $('pai-open').onclick=()=>piwoAI(true);
+
+/* ---------- Agen Piwo: pindai keamanan (cek nyata dari sisi browser) ---------- */
+async function mibChecks(){
+  const R=[],add=(lv,t)=>R.push({lv,t});
+  add(location.protocol==='https:'||location.hostname==='localhost'?'ok':'bad',location.protocol==='https:'||location.hostname==='localhost'?'Koneksi terenkripsi (HTTPS)':'Koneksi TIDAK terenkripsi');
+  add(user?'ok':'bad',user?'Akses admin terverifikasi: '+(user.email||'admin'):'Sesi admin tidak valid');
+  try{const k=String(C.SUPABASE_ANON_KEY||'');let role='';if(k.split('.').length===3)role=JSON.parse(atob(k.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).role||'';
+    add(role==='service_role'||/secret/i.test(k)?'bad':'ok',role==='service_role'||/secret/i.test(k)?'BAHAYA: config.js berisi kunci rahasia!':'Kunci di config.js hanya kunci publik');}catch(_){add('warn','Kunci publik tidak bisa diperiksa')}
+  try{
+    const pr=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY,{auth:{persistSession:false,autoRefreshToken:false,storageKey:'xi2-probe'}});
+    const leak=[];
+    for(const [tb,col,f] of [['admin_users','user_id'],['ngl_messages','device_id'],['class_moments','device_id'],['task_suggestions','sender_name']]){
+      try{const {data,error}=await pr.from(tb).select(col).limit(1);if(!error&&data&&data.length)leak.push(tb)}catch(_){}}
+    add(leak.length?'bad':'ok',leak.length?'Data bocor ke publik: '+leak.join(', '):'Pengunjung anonim tidak bisa membaca data sensitif');
+  }catch(_){add('warn','Uji akses publik gagal dijalankan')}
+  const pend=momRows.filter(x=>x.status==='pending').length+nglRows.filter(x=>x.status==='pending').length+suggestRows.length;
+  add(pend>20?'warn':'ok',pend?pend+' kiriman menunggu persetujuan':'Antrean persetujuan bersih');
+  if(String(settingsMap.maintenance||'').toLowerCase()==='on')add('warn','Mode pemeliharaan sedang AKTIF');
+  return R;
+}
+function mibScan(auto){
+  return new Promise(async res=>{
+    const o=$('mib'),L=$('mib-l'),x=$('mib-x'),t=$('mib-t');L.innerHTML='';x.style.display='none';t.textContent='Agen Piwo: pindai keamanan…';o.classList.add('on');document.body.style.overflow='hidden';
+    const done=()=>{o.classList.remove('on');document.body.style.overflow='';x.onclick=null;res()};
+    let R;try{R=await mibChecks()}catch(_){R=[{lv:'warn',t:'Pemindaian gagal dijalankan'}]}
+    for(const r of R){await new Promise(z=>setTimeout(z,420));L.insertAdjacentHTML('beforeend',`<div class="mib-r ${r.lv}"><b>${r.lv==='ok'?'✓':r.lv==='warn'?'!':'✕'}</b><span>${esc(r.t)}</span></div>`)}
+    await new Promise(z=>setTimeout(z,500));
+    const bad=R.filter(r=>r.lv==='bad').length,warn=R.filter(r=>r.lv==='warn').length;
+    t.textContent=bad?'Ancaman terdeteksi! Cek yang bertanda ✕':warn?'Aman, tapi ada catatan':'Semua aman. Wilayah terkendali.';
+    if(!bad&&!warn&&auto){const f=$('mib-fl');f.animate([{opacity:0},{opacity:.95,offset:.2},{opacity:0}],{duration:700});setTimeout(done,420);return}
+    x.style.display='';x.onclick=done;
+  });
+}
+$('mib-open').onclick=()=>mibScan(false);
 
 async function loadSettings(){
   const {data,error}=await db.from('site_settings').select('key,value');
