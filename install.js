@@ -77,6 +77,7 @@
     if (root || document.getElementById('xia-pwa')) return;
     var canPrompt = !!deferred;
     if (!canPrompt && !IOS && !ANDROID) return;   /* desktop tanpa dukungan install: diam saja */
+    if (!canPrompt && ADMIN && !IOS) return;       /* admin: tanpa prompt resmi Chrome (mis. bentrok scope app utama) jangan tampilkan panduan manual yang menyesatkan */
     css();
     root = document.createElement('div'); root.id = 'xia-pwa';
     root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', TXT.t);
