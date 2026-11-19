@@ -88,12 +88,25 @@ class Sfx {
     const g = c.createGain(); g.gain.setValueAtTime(vol || .3, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
     s.connect(fl); fl.connect(g); g.connect(this.out); s.start(t, Math.random() * .1, dur);
   }
-  boing() { this.tone(260, 560, .2, 'sine', .24); this.tone(560, 300, .16, 'sine', .13, .1); }
-  squeak() { this.tone(900, 1500, .09, 'triangle', .2); }
-  giggle() { for (let i = 0; i < 4; i++) this.tone(700 + i * 90, 900 + i * 110, .07, 'triangle', .16, i * .09); }
-  blip() { this.tone(rand(520, 760), rand(480, 700), .05, 'square', .07); }
-  pop() { this.tone(520, 190, .1, 'sine', .2); }
-  yawn() { this.tone(420, 220, .7, 'sine', .14); }
+  /* ---- mesin suara imut: nada + vibrato + lowpass + attack halus ---- */
+  vt(f0, f1, dur, o) {
+    o = o || {}; if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (o.d || 0);
+    const osc = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(f0, t); osc.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur * (o.glide || 1));
+    if (o.vib) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = o.vib; lg.gain.value = o.vd || 18; l.connect(lg); lg.connect(osc.frequency); l.start(t); l.stop(t + dur + .05); }
+    lp.type = 'lowpass'; lp.frequency.value = o.lp || 5200; lp.Q.value = .5;
+    const a = o.a || .012, v = o.v || .15;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    osc.connect(lp); lp.connect(g); g.connect(this.out); osc.start(t); osc.stop(t + dur + .03);
+  }
+  chirp(f0, f1, dur, v, d) { this.vt(f0, f1, dur, { type: 'triangle', v, d, vib: 30, vd: 32, lp: 4200, a: .015 }); } /* "pyu~" */
+  bell(f, v, d) { this.vt(f, f, .55, { v, d, a: .004, lp: 7000 }); this.vt(f * 2.76, f * 2.76, .22, { v: v * .22, d, a: .003, lp: 7000 }); } /* kotak musik */
+  boing() { this.vt(230, 620, .16, { v: .24, vib: 22, vd: 20 }); this.vt(620, 300, .2, { v: .15, d: .12, vib: 26, vd: 22 }); this.vt(300, 420, .16, { v: .08, d: .3 }); }
+  squeak() { this.chirp(950, 1600, .1, .17); }
+  giggle() { for (let i = 0; i < 4; i++) this.chirp(760 + i * 80, 980 + i * 95, .075, .14, i * .095); }
+  blip() { this.vt(rand(620, 820), rand(560, 760), .06, { v: .07, lp: 3000 }); }
+  pop() { this.vt(720, 260, .09, { v: .22, a: .004 }); this.noise(.03, 2400, .8, .08, 0, 'highpass'); }
+  yawn() { this.vt(430, 210, .75, { v: .12, vib: 5, vd: 8, lp: 1800, a: .15 }); }
   /* suara khusus pet */
   munch() { for (let i = 0; i < 3; i++) { this.noise(.07, 1800 + i * 300, 1.4, .55, i * .16); this.tone(220, 120, .07, 'triangle', .18, i * .16); } }
   gulp() { this.tone(300, 120, .14, 'sine', .22, .02); }
@@ -104,14 +117,18 @@ class Sfx {
   bell() { this.tone(1320, 1320, .22, 'sine', .16); this.tone(1760, 1760, .3, 'sine', .12, .08); }
   play() { this.tone(400, 800, .1, 'triangle', .2); this.tone(600, 1200, .1, 'triangle', .2, .1); this.tone(800, 1600, .12, 'triangle', .18, .2); }
 
-  /* ---- efek intro (lucu) ---- */
-  squish() { this.tone(340, 170, .16, 'sine', .22); this.tone(250, 140, .14, 'triangle', .12, .05); }
-  whoosh() { this.noise(.45, 700, .8, .5, 0, 'bandpass'); this.tone(300, 1100, .38, 'sine', .14); this.tone(450, 1500, .3, 'triangle', .08, .05); }
-  twinkle() { [1568, 1976, 2349, 3136].forEach((f, i) => this.tone(f, f, .22, 'sine', .11, i * .07)); }
-  slide() { this.tone(1000, 220, .55, 'sine', .15); this.tone(1500, 330, .5, 'triangle', .06, .02); }
-  thud() { this.tone(150, 55, .22, 'sine', .3); this.noise(.1, 300, .6, .35, 0, 'lowpass'); this.tone(620, 380, .12, 'triangle', .1, .03); }
-  tada() { [523, 659, 784].forEach((f, i) => this.tone(f, f, .14, 'triangle', .16, i * .07)); [1046, 1318, 1568].forEach((f, i) => this.tone(f, f, .4, 'sine', .12, .22 + i * .02)); this.twinkle(); }
-  fly() { this.tone(380, 1200, .5, 'sine', .12); this.tone(560, 1700, .45, 'triangle', .06, .05); }
+  /* ---- efek intro (imut) ---- */
+  squish() { this.vt(360, 150, .18, { v: .2, vib: 30, vd: 14, lp: 1600 }); this.vt(250, 330, .12, { type: 'triangle', v: .08, d: .12, lp: 1500 }); }
+  whoosh() { this.noise(.5, 900, .7, .28, 0, 'bandpass'); this.vt(300, 1400, .42, { v: .1, lp: 3200, a: .08 }); this.vt(450, 1800, .34, { type: 'triangle', v: .045, d: .05, lp: 3000 }); }
+  twinkle() { [1318.5, 1568, 1976, 2637].forEach((f, i) => this.bell(f, .1, i * .075)); }
+  sparkle() { this.bell([1046.5, 1174.7, 1318.5, 1568, 1760][Math.random() * 5 | 0], .08, 0); }
+  slide() { this.vt(1250, 260, .6, { v: .14, vib: 9, vd: 40, lp: 3400 }); this.vt(1900, 400, .55, { type: 'triangle', v: .045, d: .02, vib: 9, vd: 50, lp: 3000 }); }
+  thud() { this.vt(140, 50, .24, { v: .32, a: .004, lp: 500 }); this.noise(.12, 380, .5, .3, 0, 'lowpass'); this.vt(520, 330, .12, { type: 'triangle', v: .07, d: .04, lp: 2000 }); }
+  tada() { [523.3, 659.3, 784, 1046.5].forEach((f, i) => this.bell(f, .13, i * .075)); [1318.5, 1568, 2093].forEach((f, i) => this.bell(f, .09, .34 + i * .06)); this.vt(523.3, 523.3, .7, { type: 'triangle', v: .05, d: .3, lp: 1500, a: .05 }); }
+  fly() { this.vt(420, 1300, .5, { v: .1, a: .06, lp: 3200 }); this.vt(640, 1800, .44, { type: 'triangle', v: .045, d: .05, lp: 3000 }); }
+  hello() { this.chirp(900, 1350, .09, .17, 0); this.chirp(1150, 1750, .13, .17, .13); } /* "pi-pyu~" */
+  peek() { this.vt(380, 640, .14, { v: .12, vib: 18, vd: 14, lp: 2400 }); } /* "mup" */
+  huh() { this.chirp(1100, 1500, .1, .13, 0); this.chirp(1500, 1000, .14, .12, .12); } /* "eh?" */
 
   /* ---- musik latar: kotak musik + bass petik, nada pentatonik C mayor, loop 4 birama ---- */
   musicStart() {

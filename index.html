@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://amfuylvtdkdahsfpdkol.supabase.co" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="manifest" href="./manifest.webmanifest">
-<script>(function(){try{if(!sessionStorage.getItem("piwo-intro"))document.documentElement.classList.add("piwo-intro")}catch(e){document.documentElement.classList.add("piwo-intro")}setTimeout(function(){document.documentElement.classList.remove("piwo-intro","piwo-out")},13000)})();</script>
+<script>(function(){try{if(!sessionStorage.getItem("piwo-intro"))document.documentElement.classList.add("piwo-intro")}catch(e){document.documentElement.classList.add("piwo-intro")}setTimeout(function(){document.documentElement.classList.remove("piwo-intro","piwo-out")},16000)})();</script>
 <style id="piwo-css">
 #piwo-splash{display:none}
-html.piwo-intro #piwo-splash{display:block;position:fixed;inset:0;z-index:200;background:radial-gradient(70% 55% at 50% 42%,#DDF1E6,#F1F8F3 75%);transition:opacity .75s ease,transform .75s cubic-bezier(.22,.8,.3,1),filter .75s ease}
-html.piwo-intro[data-mode="dark"] #piwo-splash{background:radial-gradient(70% 55% at 50% 42%,#13211B,#0D1410 75%)}
-html.piwo-intro.piwo-out #piwo-splash{opacity:0;transform:scale(1.08);filter:blur(8px);pointer-events:none}
+html.piwo-intro #piwo-splash{display:block;position:fixed;inset:0;z-index:200;background:radial-gradient(40% 30% at 18% 18%,rgba(125,211,252,.38),transparent),radial-gradient(45% 35% at 86% 78%,rgba(110,231,183,.42),transparent),radial-gradient(70% 55% at 50% 42%,#DDF1E6,#F1F8F3 75%);clip-path:circle(150% at 50% 100%);transition:clip-path 1.05s cubic-bezier(.65,0,.25,1)}
+html.piwo-intro[data-mode="dark"] #piwo-splash{background:radial-gradient(40% 30% at 18% 18%,rgba(56,189,248,.14),transparent),radial-gradient(45% 35% at 86% 78%,rgba(52,211,153,.16),transparent),radial-gradient(70% 55% at 50% 42%,#13211B,#0D1410 75%)}
+html.piwo-intro.piwo-out #piwo-splash{clip-path:circle(0% at 50% 100%);pointer-events:none}
 html.piwo-intro{overflow:hidden}
 :root{--xm-font:Inter,system-ui,sans-serif}
 html[data-mode="dark"]{--xm-bubble-bg:rgba(28,42,35,.94);--xm-bubble-fg:#E6F0EA;--xm-bubble-bd:rgba(138,214,181,.3);--xm-bubble-dot:#8AD6B5;--xm-shadow:rgba(0,0,0,.6)}
@@ -3935,9 +3935,9 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./install.js?v=1"></script>
 <script src="./theme.js?v=2"></script>
 <script defer src="./piwo/mascot.js?v=8"></script>
-<script defer src="./piwo/piwo.js?v=20"></script>
+<script defer src="./piwo/piwo.js?v=21"></script>
 <script defer src="./piwo/games.js?v=3"></script>
-<script defer src="./piwo/ambient.js?v=1"></script>
+<script defer src="./piwo/ambient.js?v=2"></script>
 <script defer src="./piwo/pet.js?v=8"></script>
 </body>
 </html>

@@ -32,7 +32,19 @@ const rise=t=>1-Math.pow(1-t,1.7),fall=t=>t*t;
 const hang=async(c,fn)=>{let on=true;const t0=performance.now();busy=true;
  const f=n=>{if(!on)return;const k=(n-t0)/1000;tilt+=(-11-tilt)*.06;put({x:c.x+Math.sin(k*1.3)*3,y:c.y-Math.min(k,1.6)*9+Math.sin(k*2.2)*3,s:c.s});requestAnimationFrame(f)};requestAnimationFrame(f);
  try{await fn()}finally{on=false;busy=false}};
-/* intro ala Duolingo: melesat dari bawah, melambat di puncak (gravitasi), nyapa sambil miring, jatuh lagi, layar utama muncul, Piwo naik ke pojok */
+/* ================= INTRO v3 "Pop-in" =================
+   Piwo ngintip malu-malu dari bawah, jongkok, BOING melesat (jejak bintang), salto di puncak sambil hati beterbangan,
+   nyapa, kaget, jatuh "wheee", POOF di dasar layar, layar utama terbuka melingkar dari titik jatuh, Piwo loncat ke pojok. */
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const PFX=(()=>{let box;const COL=['#6ee7b7','#7dd3fc','#f9a8d4','#fde68a','#ffffff'];
+ const mk=()=>{if(!box||!box.isConnected){box=document.createElement('div');box.id='piwo-fx';box.style.cssText='position:fixed;inset:0;z-index:220;pointer-events:none;overflow:hidden';document.body.appendChild(box)}return box};
+ const spark=(x,y,o)=>{if(calm||!document.body)return;o=o||{};const e=document.createElement('i'),sz=o.sz||rnd(10,20),col=o.col||COL[Math.random()*COL.length|0],dx=o.dx!=null?o.dx:rnd(-40,40),dy=o.dy!=null?o.dy:rnd(-50,-10),op=o.op||1;
+  e.textContent=o.ch||'✦';e.style.cssText='position:absolute;left:'+x.toFixed(0)+'px;top:'+y.toFixed(0)+'px;font:'+sz.toFixed(0)+'px/1 system-ui,sans-serif;font-style:normal;color:'+col+';text-shadow:0 0 8px '+col+';will-change:transform,opacity;margin:-'+(sz/2).toFixed(0)+'px 0 0 -'+(sz/2).toFixed(0)+'px';
+  mk().appendChild(e);
+  const a=e.animate([{transform:'translate(0,0) scale(.2) rotate(0deg)',opacity:0},{transform:'translate('+dx*.5+'px,'+dy*.5+'px) scale(1) rotate(90deg)',opacity:op,offset:.25},{transform:'translate('+dx+'px,'+dy+'px) scale(.3) rotate(220deg)',opacity:0}],{duration:o.d||rnd(700,1100),easing:'cubic-bezier(.2,.7,.3,1)'});a.onfinish=()=>e.remove()};
+ const burst=(x,y,n,spd,up)=>{for(let i=0;i<n;i++){const ang=up?-Math.PI*(.1+.8*i/Math.max(1,n-1)):Math.PI*2*i/n+rnd(-.2,.2),r=rnd(.6,1)*spd,h=Math.random()<.35;
+  spark(x,y,{dx:Math.cos(ang)*r,dy:Math.sin(ang)*r,ch:h?'♥':'✦',col:h?'#f9a8d4':null,sz:h?rnd(14,22):rnd(10,18)})}};
+ return{spark,burst,clear:()=>{box&&box.remove();box=null}}})();
 async function intro(){
  const S=m.sfx;
  const rm=()=>{const b=document.getElementById('piwo-snd');b&&b.remove()};
@@ -43,23 +55,45 @@ async function intro(){
   b.addEventListener('click',()=>{S.init();Promise.resolve(S.ctx&&S.ctx.resume&&S.ctx.resume()).then(()=>{if(!skip){S.musicStart();S.pop()}});b.remove()});
   document.body.appendChild(b);requestAnimationFrame(()=>{b.style.opacity=1})};
  const audioStart=()=>{if(!S.on)return;S.init();setTimeout(()=>{if(skip)return;if(!S.ctx||S.ctx.state==='running')S.musicStart();else chip()},180)};
- const out=()=>{R.classList.add('piwo-out');S.musicStop(.9);rm();setTimeout(()=>R.classList.remove('piwo-intro','piwo-out'),900)};
+ let amb=0,ttl=null,trail=0;
+ const out=()=>{clearInterval(amb);clearInterval(trail);R.classList.add('piwo-out');S.musicStop(.9);rm();if(ttl)ttl.animate([{opacity:1},{opacity:0}],{duration:350,fill:'forwards'});setTimeout(()=>{R.classList.remove('piwo-intro','piwo-out');ttl&&ttl.remove()},1150)};
  if(calm){put(A.home());out();return}
- lock=true;const s=Math.min(innerWidth*.26,innerHeight*.17,130),c={x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.05,s},below={x:c.x,y:innerHeight+s*.2,s};put(below);setZ(210);
+ lock=true;const W=innerWidth,H=innerHeight,tier2=tier==='lite',s=Math.min(W*.26,H*.17,130),c={x:(W-s)/2,y:(H-s)/2-H*.05,s},below={x:c.x,y:H+s*.25,s},peek={x:c.x,y:H-s*.72,s},ctr=()=>({x:cur.x+cur.s/2,y:cur.y+cur.s/2});
+ put(below);setZ(210);
  const sk=()=>{skip=true;m.hush();S.musicStop(.3);rm()};addEventListener('pointerdown',sk,{once:true});
+ /* judul kecil + gelembung pastel naik pelan */
+ const sp=document.getElementById('piwo-splash'),dark=R.dataset.mode==='dark';
+ if(sp){ttl=document.createElement('div');ttl.textContent='XI.2 Creative Lab';
+  ttl.style.cssText='position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 13%);transform:translateX(-50%);padding:9px 18px;border-radius:99px;font:800 15px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap;'+(dark?'color:#bfeedd;background:rgba(255,255,255,.08);border:1px solid rgba(191,238,221,.2)':'color:#1B6B51;background:rgba(255,255,255,.7);border:1px solid rgba(27,107,81,.18);box-shadow:0 10px 30px -12px rgba(27,107,81,.5)');
+  sp.appendChild(ttl);ttl.animate([{opacity:0,transform:'translate(-50%,14px) scale(.9)'},{opacity:1,transform:'translate(-50%,0) scale(1)'}],{duration:700,delay:250,easing:'cubic-bezier(.2,1.4,.4,1)',fill:'backwards'})}
+ amb=setInterval(()=>{if(!skip)PFX.spark(rnd(0,W),H+10,{ch:'●',sz:rnd(8,20),dx:rnd(-30,30),dy:-rnd(H*.25,H*.6),d:rnd(2600,4200),col:['#a7f3d0','#bae6fd','#fbcfe8'][Math.random()*3|0],op:.4})},tier2?650:360);
+ const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(500,800)})},55)},trailOff=()=>clearInterval(trail);
  audioStart();
- await wait(500);
- if(!skip){S.squish();m.sy.kick(-3.4);m.sx.kick(2);await wait(280)} /* jongkok dulu */
- if(!skip){m.sfx.boing&&m.sfx.boing();S.whoosh();m.sy.kick(2.6);m.flash('happy',.8)}
- await move(c,950,rise,-4); /* melesat, makin lambat mendekati puncak */
- if(!skip)await hang(c,async()=>{S.twinkle();m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})}); /* melayang, miring, nyapa */
- if(!skip){m.react('surprise');m.sy.kick(-2);await wait(180)}
- S.slide();await move(below,720,fall,8);S.thud(); /* jatuh, makin cepat */
+ await wait(600);
+ /* 1. ngintip malu-malu */
+ if(!skip){S.peek();await move(peek,500,rise,0);m.flash('shy',1.5)}
+ if(!skip)await wait(650);
+ /* 2. jongkok, lalu BOING */
+ if(!skip){S.squish();m.sy.kick(-3.6);m.sx.kick(2.2);await wait(330)}
+ if(!skip){S.boing();S.whoosh();m.sy.kick(2.8);m.flash('happy',.9);trailOn()}
+ await move(c,1000,rise,-4);trailOff(); /* melesat, melambat mendekati puncak */
+ /* 3. salto di puncak + hati beterbangan */
+ if(!skip){S.twinkle();const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,s*.95)}
+ await move(c,720,rise,-360);tilt=0;
+ /* 4. nyapa sambil melayang miring */
+ if(!skip)await hang(c,async()=>{S.hello();m.react('wave');await m.say('Halo, aku Piwo! Yuk masuk~',{mood:'happy',hold:.9})});
+ /* 5. kaget lalu jatuh "wheee" */
+ if(!skip){m.react('surprise');S.huh();m.sy.kick(-2);await wait(280)}
+ trailOn();S.slide();await move(below,780,fall,10);trailOff();
+ if(!skip){S.thud();PFX.burst(c.x+s/2,H-8,tier2?8:16,Math.min(W*.5,210),true)} /* POOF di dasar layar */
  tilt=0;put(cur);
- out();if(!skip){S.tada();await wait(520)}
- const h=A.home();put({x:h.x,y:innerHeight+h.s,s:h.s}); /* naik ke pojok setelah layar utama tampil */
- if(!skip)S.fly();await fly(h,{dur:850,h:.12});
+ out();if(!skip){S.tada();await wait(650)}
+ /* 6. loncat ke pojok */
+ const h=A.home();put({x:h.x,y:H+h.s,s:h.s});
+ if(!skip)S.fly();await fly(h,{dur:900,h:.14});
+ if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,8,h.s)}
  setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
+ setTimeout(PFX.clear,1800);
 }
 /* ikut ke chat AI */
 async function chat(on){
