@@ -1,4 +1,4 @@
-/* Ambient ala menu PS5: pad dalam yang pelan "bernapas", kilau tinggi samar, dan sesekali denting lembut.
+/* Ambient playful: pad cerah tipis + petikan kotak musik iseng (pentatonik C).
    Disintesis langsung lewat WebAudio (tanpa file audio). Mulai setelah intro selesai & ada sentuhan pertama.
    Dikontrol toggle "Musik Latar" di Pengaturan (localStorage: xia_amb). */
 (()=>{
@@ -6,39 +6,42 @@
 const KEY='xia_amb',R=document.documentElement;
 const store=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
 let on=store(KEY)!=='0',ctx=null,master=null,bus=null,started=false,timer=0,hidden=false;
-const LEVEL=.34,FADE_IN=6,rnd=(a,b)=>a+Math.random()*(b-a);
+const LEVEL=.3,FADE_IN=3,rnd=(a,b)=>a+Math.random()*(b-a);
+/* v3 "playful": pad terang (C - Am - F - G) + petikan kotak musik pentatonik C yang iseng, jeda acak. Tanpa drone rendah. */
+const CH=[[261.63,329.63,392],[220,261.63,329.63],[174.61,261.63,349.23],[196,246.94,392]],SC=[523.25,587.33,659.25,783.99,880,1046.5,1174.66,1318.51];
+let pad=[],ci=0,padT=0,gap=0;
 
 function build(){
  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
- /* latencyHint 'playback' = buffer lebih besar, jauh lebih tahan glitch/kresek di HP */
  try{ctx=new AC({latencyHint:'playback'})}catch(e){ctx=new AC()}
  const lite=(R.dataset.perf||'mid')==='lite';
  master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
  bus=ctx.createGain();bus.gain.value=1;
- const dry=ctx.createGain();dry.gain.value=.7;bus.connect(dry);dry.connect(master);
- /* "reverb" murah: dua delay berumpan balik + lowpass (jauh lebih ringan daripada convolver) */
- if(!lite)[[.37,.42,-1],[.53,.38,1]].forEach(([d,fb,pan])=>{
-  const dl=ctx.createDelay(1);dl.delayTime.value=d;const f=ctx.createGain();f.gain.value=fb;
-  const tone=ctx.createBiquadFilter();tone.type='lowpass';tone.frequency.value=1800;
-  const wet=ctx.createGain();wet.gain.value=.35;
-  bus.connect(dl);dl.connect(tone);tone.connect(f);f.connect(dl);tone.connect(wet);
-  if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=pan*.5;wet.connect(p);p.connect(master)}else wet.connect(master)});
- const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=900;lp.Q.value=.3;lp.connect(bus);
- const lfo=(rate,depth,target)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=rate;g.gain.value=depth;o.connect(g);g.connect(target);o.start();return g};
- lfo(.045,350,lp.frequency);
- /* pad: akor D mayor lapang. Satu LFO per nada (dipakai bersama), bukan per oscillator */
- const chord=lite?[[73.42,.3],[110,.24],[220,.14]]:[[73.42,.28],[110,.22],[146.83,.18],[185,.12],[220,.12]];
- chord.forEach(([f,v])=>{
-  const g=ctx.createGain();g.gain.value=v*.55;g.connect(lp);
-  const l=lfo(rnd(.03,.09),v*.3,g.gain);
-  [lite?0:-5,5].slice(lite?1:0).forEach((det,k)=>{const o=ctx.createOscillator();o.type=k?'triangle':'sine';o.frequency.value=f;o.detune.value=det;o.connect(g);o.start()})});
+ const dry=ctx.createGain();dry.gain.value=.85;bus.connect(dry);dry.connect(master);
+ /* gema imut: satu delay pendek berumpan balik (ringan) */
+ if(!lite){const dl=ctx.createDelay(1);dl.delayTime.value=.3;const f=ctx.createGain();f.gain.value=.3;
+  const tone=ctx.createBiquadFilter();tone.type='lowpass';tone.frequency.value=2600;const wet=ctx.createGain();wet.gain.value=.25;
+  bus.connect(dl);dl.connect(tone);tone.connect(f);f.connect(dl);tone.connect(wet);wet.connect(master)}
+ const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1700;lp.Q.value=.3;lp.connect(bus);
+ /* pad tipis dan cerah (oktaf tengah), bergeser ke akor berikutnya pelan-pelan */
+ const n=lite?2:3;
+ for(let i=0;i<n;i++){const o=ctx.createOscillator(),g=ctx.createGain();o.type=i?'triangle':'sine';o.frequency.value=CH[0][i];g.gain.value=i?.05:.085;o.connect(g);g.connect(lp);o.start();pad.push(o)}
  return true}
-function sparkle(){ /* denting lembut acak dari pentatonik D mayor */
+function nextChord(){ci=(ci+1)%CH.length;if(!ctx)return;pad.forEach((o,i)=>o.frequency.setTargetAtTime(CH[ci][i],ctx.currentTime,.5))}
+function pluck(f,t,v){ /* nada kotak musik: sine + sedikit oktaf, hilang cepat */
+ const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+.7);g.connect(bus);
+ [[f,'sine',1],[f*2,'triangle',.14]].forEach(([fr,ty,k])=>{const o=ctx.createOscillator(),h=ctx.createGain();o.type=ty;o.frequency.value=fr;h.gain.value=k;o.connect(h);h.connect(g);o.start(t);o.stop(t+.75)})}
+function bloop(t){ /* "bloop" kecil yang lucu, sesekali */
+ const o=ctx.createOscillator(),g=ctx.createGain(),f=rnd(500,780);o.type='sine';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.9,t+.09);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.16);o.connect(g);g.connect(bus);o.start(t);o.stop(t+.2)}
+function sparkle(){ /* frasa pendek 2-4 nada naik/turun, kadang bloop atau diam */
  if(!ctx||!on||hidden||ctx.state!=='running'||!bus)return;
- const f=[587.33,659.25,739.99,880,987.77,1174.66,1318.51][Math.random()*7|0],t=ctx.currentTime;
- const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+3.2);g.connect(bus);
- [[f,1],[f*2.001,.18]].forEach(([fr,v])=>{const o=ctx.createOscillator(),h=ctx.createGain();o.type='sine';o.frequency.value=fr;h.gain.value=v;o.connect(h);h.connect(g);o.start(t);o.stop(t+3.4)})}
-function schedule(){clearTimeout(timer);timer=setTimeout(()=>{sparkle();schedule()},rnd(7000,15000))}
+ const r=Math.random(),t=ctx.currentTime+.02;
+ if(r<.25)return;
+ if(r<.38){bloop(t);return}
+ let i=Math.random()*5|0;const n=2+(Math.random()*3|0),dir=Math.random()<.6?1:-1,st=rnd(.11,.17);
+ for(let k=0;k<n;k++){pluck(SC[Math.max(0,Math.min(SC.length-1,i))],t+k*st,.05-k*.004);i+=dir*(Math.random()<.7?1:2)}}
+function schedule(){clearTimeout(timer);timer=setTimeout(()=>{sparkle();if(++gap%5===0)nextChord();schedule()},rnd(1300,2600))}
 
 function fade(to,sec){if(!master)return;const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setValueAtTime(master.gain.value,t);master.gain.linearRampToValueAtTime(to,t+sec)}
 async function play(){
