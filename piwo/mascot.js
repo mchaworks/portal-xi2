@@ -471,7 +471,7 @@ class Mascot {
     o = o || {}; this.hush(true); this.activity();
     const sp = this.speech = { text: String(text), i: 0, acc: 0, speed: o.speed || 32, mood: o.mood || null, st: 'type', hold: 0, hmax: (o.hold != null ? o.hold : 1.4 + String(text).length * .055), res: null };
     const pr = new Promise(r => { sp.res = r; });
-    this.dots(false); this.bA.textContent = ''; this.bB.textContent = sp.text; this.bub.classList.add('on'); this.emitEv('say', text);
+    this.dots(false); this.bA.textContent = ''; this.bB.textContent = sp.text; if (this.bub.classList.contains('on')) { this.bub.classList.remove('on'); void this.bub.offsetWidth; } this.bub.classList.add('on'); this.emitEv('say', text);
     return pr;
   }
   hush(silent) {

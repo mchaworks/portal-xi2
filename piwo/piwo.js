@@ -7,7 +7,7 @@ let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 const put=a=>{cur=a;host.style.width=host.style.height=a.s+'px';host.style.transform='translate('+a.x.toFixed(1)+'px,'+a.y.toFixed(1)+'px)'};
 const setZ=z=>[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);
 const A={
- home(){const s=clamp(innerWidth*.15,52,76),d=$('liquid-glass-dock'),t=d?d.getBoundingClientRect().top:innerHeight-90;return{x:innerWidth-s-Math.max(28,innerWidth*.08),y:t-s*.92-4,s}},
+ home(){const s=clamp(innerWidth*.15,52,76),f=$('labz-ai-fab'),d=$('liquid-glass-dock'),fr=f&&f.getBoundingClientRect(),t=fr?fr.top:(d?d.getBoundingClientRect().top:innerHeight-90);return{x:(fr?fr.left+fr.width/2:innerWidth-s)-s/2,y:t-s*.92-4,s}},
  center(){const s=Math.min(innerWidth*.52,innerHeight*.34,280);return{x:(innerWidth-s)/2,y:(innerHeight-s)/2-innerHeight*.03,s}},
  chat(){const e=$('xc-piwo');if(!e)return A.home();const r=e.getBoundingClientRect(),s=r.width*1.15;return{x:r.left+r.width/2-s/2,y:r.bottom+4-s*.92,s}}
 };
@@ -38,11 +38,17 @@ async function chat(on){
  if(on&&at!=='chat'){at='chat';setZ(160);m.hush();await fly(A.chat,{dur:650,h:.2});if(at==='chat')m.react('wave')}
  else if(!on&&at==='chat'){at='home';await fly(A.home,{dur:700,h:.22});if(at==='home')setZ(60)}
 }
-/* nyapa tiap halaman/section, sekali per kunjungan */
-const SEC={momen:['happy','Ini sorotan kegiatan kelas kita!'],jadwal:['nod','Cek jadwal dulu biar nggak salah mapel~'],anggota:['love','Ini temen-temen sekelas, keren semua!'],papan:['surprise','Tugasnya jangan ditunda ya!']};
-function watch(){const seen=new Set(),io=new IntersectionObserver(es=>es.forEach(e=>{const id=e.target.id;
- if(!e.isIntersecting||seen.has(id)||at!=='home'||busy||m.speech)return;seen.add(id);m.react(SEC[id][0]);m.say(SEC[id][1],{mood:'happy'})}),{rootMargin:'-45% 0px -45% 0px'});
- Object.keys(SEC).forEach(id=>{const e=$(id);e&&io.observe(e)})}
+/* komentar tiap pindah halaman: komentar lama langsung hilang, yang baru langsung muncul */
+const PG={
+ beranda:['wave',['Halo! Selamat datang di XI.2~','Hai hai, balik ke beranda!','Mau lihat apa hari ini?']],
+ momen:['happy',['Ini sorotan kegiatan kelas kita!','Wah, momen seru nih~','Geser-geser aja fotonya!']],
+ jadwal:['nod',['Cek jadwal dulu biar nggak salah mapel~','Hari ini pelajaran apa ya?','Jangan lupa bawa bukunya!']],
+ anggota:['love',['Ini temen-temen sekelas, keren semua!','Banyak banget temennya~','Jangan lupa nyapa temen ya!']],
+ papan:['surprise',['Tugasnya jangan ditunda ya!','Yuk centang yang udah kelar~','Deadline mengintai, semangat!']]};
+let lastPg,lastLine='',pgT=0;
+setInterval(()=>{const p=window.__page;if(!m||!p||p===lastPg)return;const first=lastPg===undefined;lastPg=p;
+ if(first)return;m.hush();clearTimeout(pgT);const c=PG[p];if(!c||at!=='home'||lock)return;
+ pgT=setTimeout(()=>{if(at!=='home'||lock)return;const ls=c[1].filter(x=>x!==lastLine),l=ls[Math.random()*ls.length|0];lastLine=l;m.react(c[0]);m.say(l,{mood:'happy',speed:42})},230)},90);
 window.Piwo={
  say:(t,o)=>m&&m.say(t,o),react:n=>m&&m.react(n),chat,
  think(on){if(!m)return;if(on){m.state='thinking';m.lastAct=performance.now()}else if(m.state==='thinking')m.state='idle'},
@@ -60,6 +66,5 @@ if(inp){inp.addEventListener('input',()=>{if(m&&m.state==='idle'){m.state='liste
  m=await XiaMascot.mount(host,{bodySrc:'piwo/mascot-body.webp',sleepAfter:60000,sound:false,z:60,maxDpr:{lite:1.25,mid:1.5,high:2}[tier]||1.5,fps:tier==='lite'?30:0,blockClicks:true,
   chatter:['Colek aku dong~','Bingung? Tanya aku aja ya!','Ada tugas yang belum dikerjain?']});
  put(A.home());if(R.classList.contains('piwo-intro'))await intro();
- watch();
 }catch(e){R.classList.remove('piwo-intro','piwo-out');console.warn('Piwo gagal dimuat',e)}})();
 })();
