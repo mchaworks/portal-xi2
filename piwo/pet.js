@@ -256,7 +256,9 @@ function build(){
 function refreshLB(){if(Date.now()-lbAt<60000)return;lbAt=Date.now();GIDS.forEach(g=>sb('piwo_score_top',{p_game:g,p_limit:1,p_device:DEV}).then(r=>{if(r){LB[g]=r;if(r.best>(pet.gp.best[g]||0)){pet.gp.best[g]=r.best}render(true)}}))}
 
 /* ---------- buka / tutup panel ---------- */
-async function open(t){if(!m||C.panelOpen||C.lock||C.at!=='home'||C.busy||gameOn)return;if(t)tab=t;C.panelOpen=true;C.at='pet';ui.root.classList.add('on');ui.root.setAttribute('aria-hidden','false');setZ(1510);hush();dq();if(tab==='game')refreshLB();render(true);
+/* mascot.js menganggap tahan >0,45 dtk = Piwo diangkat (mode 'held': badan memanjang, kaki menggantung). Kalau panel pet terbuka dari tahan lama, mode itu tidak pernah dilepas -> Piwo tetap memanjang. */
+function unhold(){if(m&&m.mode==='held'){m.mode='rest';m.pos.x=0;m.pos.y=0;m.vel.x=0;m.vel.y=0;m.rub=0}if(m)m.down=null}
+async function open(t){if(!m||C.panelOpen||C.lock||C.at!=='home'||C.busy||gameOn)return;unhold();if(t)tab=t;C.panelOpen=true;C.at='pet';ui.root.classList.add('on');ui.root.setAttribute('aria-hidden','false');setZ(1510);hush();dq();if(tab==='game')refreshLB();render(true);
  m.sfx.init();ui.dockLay&&ui.dockLay();await wait(60);if(calm)put(A.pet());else await fly(A.pet,{dur:620,h:.2});if(C.at==='pet')m.react('wave')}
 async function close(quiet){if(!C.panelOpen)return;C.panelOpen=false;ui.root.classList.remove('on');ui.root.setAttribute('aria-hidden','true');
  if(C.at==='pet')C.at='home';if(quiet)return;if(calm)put(A.home());else await fly(A.home,{dur:650,h:.22});if(C.at==='home')setZ(60)}
@@ -304,7 +306,7 @@ async function load(){
   else if(pet.hunger<25){needT=Date.now()+9000;m.sfx.growl();m.say('Aku laper… tap dan tahan aku buat kasih makan~',{mood:'sad'})}else if(pet.energy<20)m.say('Ngantuk banget hari ini…',{mood:'sad'})},6500)}
 let lp=null;
 addEventListener('pointerdown',e=>{if(!m||C.lock||C.panelOpen||gameOn||C.at!=='home'||e.button>0||!ui)return;if(!m.hit(e.clientX,e.clientY))return;
- lp={id:e.pointerId,x:e.clientX,y:e.clientY,tm:setTimeout(()=>{if(!lp)return;lp=null;m.down=null;m.rub=0;try{navigator.vibrate&&navigator.vibrate(14)}catch(_){}m.squish(1.3);m.sfx.bell();open()},520)}},true);
+ lp={id:e.pointerId,x:e.clientX,y:e.clientY,tm:setTimeout(()=>{if(!lp)return;lp=null;m.down=null;m.rub=0;try{navigator.vibrate&&navigator.vibrate(14)}catch(_){}m.squish(1.3);m.sfx.bell();open()},420)}},true);
 ['pointermove','pointerup','pointercancel'].forEach(t=>addEventListener(t,e=>{if(!lp||e.pointerId!==lp.id)return;if(t!=='pointermove'||Math.hypot(e.clientX-lp.x,e.clientY-lp.y)>10){clearTimeout(lp.tm);lp=null}},true));
 function mountEntries(){
  const chips=document.getElementById('xc-chips');
