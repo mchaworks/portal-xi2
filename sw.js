@@ -3,7 +3,7 @@
    - CSS font Google: stale-while-revalidate.
    - File situs sendiri: network-first (konten selalu terbaru), jatuh ke cache kalau jaringan lambat (>4 dtk) atau mati.
    - Supabase / API tidak pernah disentuh. */
-const CACHE = 'xi2-v3';
+const CACHE = 'xi2-v4';
 const STATIC_HOSTS = ['cdn.jsdelivr.net', 'cdn.tailwindcss.com', 'fonts.gstatic.com'];
 const SWR_HOSTS = ['fonts.googleapis.com'];
 const NET_TIMEOUT = 4000;
@@ -39,7 +39,7 @@ self.addEventListener('fetch', e => {
     let done = false;
     const fallback = () => caches.match(req).then(r => r || (req.mode === 'navigate' ? caches.match('./') : undefined));
     const t = setTimeout(() => { fallback().then(r => { if (r && !done) { done = true; resolve(r); } }); }, NET_TIMEOUT);
-    fetch(req).then(res => { clearTimeout(t); put(req, res); if (!done) { done = true; resolve(res); } })
+    fetch(req, { cache: 'no-cache' }).then(res => { clearTimeout(t); put(req, res); if (!done) { done = true; resolve(res); } })
       .catch(() => { clearTimeout(t); if (!done) fallback().then(r => { done = true; resolve(r || Response.error()); }); });
   }));
 });
