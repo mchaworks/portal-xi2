@@ -432,7 +432,8 @@ class Mascot {
     if (!force && this.vw && Math.abs(iw - this.vw) <= 2 && ih <= this.vh && ih >= this.vh - 220) return;
     const vw = iw, vh = this.vh && Math.abs(iw - this.vw) <= 2 ? Math.max(ih, this.vh > ih + 220 ? 0 : this.vh) : ih; this.vw = vw; this.vh = vh;
     let dpr = Math.min(devicePixelRatio || 1, this.o.maxDpr || 2); dpr = Math.min(dpr, Math.sqrt(4.2e6 / (vw * vh))); this.dpr = dpr;
-    for (const c of [this.gl, this.fx]) { c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); c.style.width = vw + 'px'; c.style.height = vh + 'px'; }
+    for (const c of [this.gl, this.fx]) { if (c === this.gl && this.glc) continue; c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); c.style.width = vw + 'px'; c.style.height = vh + 'px'; }
+    this.winCap = 0; /* paksa alokasi ulang canvas GL kecil di frame berikutnya */
     this.faceKey = ''; this.fxDirty = true;
   }
 
@@ -695,6 +696,18 @@ class Mascot {
     for (const s of [this.sx, this.sy, this.rot, this.sway, this.lag, ...this.ear, ...this.arm, ...this.foot]) s.step(dt);
     this.draw(dt); this.hudUpdate();
   }
+  /* Canvas GL dulu selebar layar -> tiap frame GPU harus menggambar ulang seluruh layar (termasuk header/dock yang berblur),
+     itu yang bikin Piwo macet saat scroll. Sekarang cuma ~3x ukuran Piwo dan digeser lewat transform (compositor), blur tetap utuh. */
+  placeGL() {
+    const H = this.H, W = Math.max(H.width, H.height); let need = Math.max(96, Math.ceil(W * 3.2 / 32) * 32);
+    if (!this.winCap || need > this.winCap || need < this.winCap * .6) {
+      const cap = need > (this.winCap || 0) ? Math.ceil(need * 1.25 / 32) * 32 : need, c = this.gl, d = this.dpr;
+      this.winCap = cap; c.width = c.height = Math.max(1, Math.round(cap * d)); c.style.width = c.style.height = cap + 'px';
+    }
+    const cap = this.winCap;
+    this.winX = Math.round(H.left + H.width / 2 + this.pos.x - cap / 2); this.winY = Math.round(H.top + H.height / 2 + this.pos.y - cap / 2);
+    const tr = 'translate(' + this.winX + 'px,' + this.winY + 'px)'; if (tr !== this.winTr) { this.winTr = tr; this.gl.style.transform = tr; }
+  }
   draw(dt) {
     const F = this.F, t = this.t, p = this.pose(), awake = this.state !== 'sleep';
     const amp = (awake ? .011 : .02) * (this.calm ? .5 : 1), rate = awake ? 2.1 : 1.3, breath = Math.sin(t * rate) * amp * p.breath;
@@ -709,9 +722,9 @@ class Mascot {
     if (dirty) { if (this.faceCv.width !== W) { this.faceCv.width = W; this.faceCv.height = Hh; } drawFace(this.fcx, fs, F, t, openEff); }
     const sh = [F.lx * 16, F.ly * 10];
     if (this.glc) {
-      const gl = this.glc, U = this.U, H = this.H;
+      const gl = this.glc, U = this.U, H = this.H; this.placeGL();
       gl.viewport(0, 0, this.gl.width, this.gl.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.useProgram(this.pr);
-      gl.uniform2f(U.uHost, H.left, H.top); gl.uniform1f(U.uUnit, this.unit); gl.uniform2f(U.uView, this.vw, this.vh); gl.uniform2f(U.uRoot, this.pos.x, this.pos.y);
+      gl.uniform2f(U.uHost, H.left - this.winX, H.top - this.winY); gl.uniform1f(U.uUnit, this.unit); gl.uniform2f(U.uView, this.winCap, this.winCap); gl.uniform2f(U.uRoot, this.pos.x, this.pos.y);
       gl.uniform1f(U.uRot, this.rotNow); gl.uniform2f(U.uScale, this.scx, this.scy); gl.uniform1f(U.uSway, this.sway.x); gl.uniform1f(U.uLag, this.lag.x); gl.uniform1f(U.uBreath, breath);
       gl.uniform2f(U.uEar, this.ear[0].x, this.ear[1].x); gl.uniform2f(U.uArm, this.arm[0].x, this.arm[1].x); gl.uniform2f(U.uFoot, this.foot[0].x, this.foot[1].x);
       gl.uniform4f(U.uFR, FR[0], FR[1], FR[2], FR[3]); gl.uniform1i(U.uTex, 0); gl.activeTexture(gl.TEXTURE0);
