@@ -510,6 +510,7 @@ html .morph-blob{filter:none!important;border-radius:50%;background:radial-gradi
 @supports not (color: color-mix(in srgb,red,blue)){html .morph-blob{background:var(--md-sys-color-primary-container);opacity:.5}}
 .morphing{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html:not([data-perf="high"]) body::before{animation:none;inset:0}
+html.xia-page-hidden *,html.xia-page-hidden *::before,html.xia-page-hidden *::after{animation-play-state:paused!important}
 @media(hover:none){.m3-card-surface:hover,.m3-expressive-asymmetric:hover{transform:none}}
 /* mid: blur dibatasi */
 html[data-perf="mid"] .multi-layer-glass{-webkit-backdrop-filter:blur(min(var(--glass-blur),12px)) saturate(140%);backdrop-filter:blur(min(var(--glass-blur),12px)) saturate(140%)}
@@ -970,7 +971,7 @@ function startLive(){
       const m2=momRows.filter(x=>x.status==='pending').length,n2=nglRows.filter(x=>x.status==='pending').length;
       if(m2>pm)notice('Foto baru masuk, menunggu persetujuan.');else if(n2>pn)notice('Pesan anonim baru masuk, menunggu persetujuan.');
     },10000);
-    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user){startLive();Promise.all([loadMoments(),loadNgl()]).then(renderStats).catch(()=>{});}});
+    document.addEventListener('visibilitychange',()=>{document.documentElement.classList.toggle('xia-page-hidden',document.hidden);if(!document.hidden&&user){startLive();Promise.all([loadMoments(),loadNgl()]).then(renderStats).catch(()=>{});}});
   }
 }
 async function refreshAll(){
