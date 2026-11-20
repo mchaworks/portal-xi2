@@ -169,16 +169,6 @@
     });
   }
 
-  /* ---------- Tunda blur kaca saat scroll (lihat perf.css) ---------- */
-  (function () {
-    var root = document.documentElement, on = false, tmr = 0;
-    function off() { on = false; root.classList.remove('xia-scrolling'); }
-    window.addEventListener('scroll', function () {
-      if (!on) { on = true; root.classList.add('xia-scrolling'); }
-      clearTimeout(tmr); tmr = setTimeout(off, 180);
-    }, { passive: true });
-  })();
-
   function boot() { setupDebug(); checkMaint(); loadGroups(); track(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
   setInterval(function () { if (!document.hidden) { checkMaint(); loadGroups(); } }, 60000);
