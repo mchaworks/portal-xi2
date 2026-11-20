@@ -339,7 +339,7 @@ function drawFace(c, fs, F, t, openEff) {
 const CSS = `
 .xm-shadow{position:absolute;left:17%;top:87.5%;width:66%;height:7%;border-radius:50%;pointer-events:none;
   background:radial-gradient(closest-side,var(--xm-shadow,rgba(18,80,60,.5)),transparent);filter:blur(3px)}
-.xm-fx,.xm-gl{position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none}
+.xm-fx,.xm-gl{position:fixed;left:0;top:0;width:100vw;height:100vh;max-width:none;max-height:none;pointer-events:none}
 .xm-bubble{position:fixed;left:0;top:0;z-index:var(--xm-z,60);max-width:min(78vw,270px);padding:10px 14px;border-radius:22px;
   font:600 14px/1.38 var(--xm-font,system-ui,sans-serif);color:var(--xm-bubble-fg,#16241d);background:var(--xm-bubble-bg,rgba(255,255,255,.92));
   border:1px solid var(--xm-bubble-bd,rgba(27,107,81,.22));box-shadow:0 10px 28px -14px rgba(10,40,30,.45),inset 0 1px 0 rgba(255,255,255,.7);
@@ -384,7 +384,7 @@ class Mascot {
   async init() {
     injectCss(); const h = this.host; if (getComputedStyle(h).position === 'static') h.style.position = 'relative';
     this.shadow = document.createElement('div'); this.shadow.className = 'xm-shadow'; h.appendChild(this.shadow);
-    this.gl = document.createElement('canvas'); this.gl.className = 'xm-gl'; this.gl.style.zIndex = this.o.z; document.body.appendChild(this.gl);
+    this.gl = document.createElement('canvas'); this.gl.className = 'xm-gl'; this.gl.style.maxWidth = this.gl.style.maxHeight = 'none'; this.gl.style.zIndex = this.o.z; document.body.appendChild(this.gl);
     this.fx = document.createElement('canvas'); this.fx.className = 'xm-fx'; this.fx.style.zIndex = this.o.z + 1; document.body.appendChild(this.fx);
     this.fxc = this.fx.getContext('2d');
     this.bub = document.createElement('div'); this.bub.className = 'xm-bubble'; this.bub.style.zIndex = this.o.z + 2;
