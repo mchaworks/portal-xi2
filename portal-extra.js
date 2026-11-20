@@ -116,23 +116,57 @@
     rest('class_groups?select=title,group_name,members,sort_order,created_at&order=sort_order.asc,created_at.asc&limit=200').then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) { if (rows) renderGroups(rows); }).catch(function () {});
   }
 
-  /* ---------- Lencana debug (?debug=1): tier perangkat + waktu frame saat scroll ---------- */
-  function setupDebug() {
-    if (!/[?&]debug=1/.test(location.search)) return;
+  /* ---------- Lencana debug: tier perangkat + waktu frame saat scroll ----------
+     Nyala lewat ?debug=1 atau ketuk teks hak cipta di footer 7x cepat (ketuk 7x lagi = mati).
+     Sengaja tidak disimpan: muat ulang halaman = kembali ke mode biasa. */
+  var dbg = null;
+  function debugOff() {
+    if (!dbg) return;
+    dbg.off = true; clearInterval(dbg.iv); cancelAnimationFrame(dbg.raf);
+    window.removeEventListener('scroll', dbg.sc);
+    if (dbg.el.parentNode) dbg.el.parentNode.removeChild(dbg.el);
+    dbg = null;
+  }
+  function debugOn() {
+    if (dbg || !document.body) return;
     var el = document.createElement('div');
     el.style.cssText = 'position:fixed;left:6px;bottom:96px;z-index:2147482000;background:rgba(0,0,0,.78);color:#fff;font:11px/1.35 monospace;padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre';
     document.body.appendChild(el);
-    var last = 0, worst = 0, sum = 0, n = 0, long50 = 0, scrolling = 0, tmr = 0;
+    var st = { el: el, off: false, raf: 0, iv: 0, sc: null };
+    var last = 0, worst = 0, sum = 0, n = 0, long50 = 0, scrolling = 0, tmr = 0, tick = 0, blurN = 0;
     function loop(t) {
+      if (st.off) return;
       if (last && scrolling) { var d = t - last; sum += d; n++; if (d > worst) worst = d; if (d > 50) long50++; }
-      last = t; requestAnimationFrame(loop);
+      last = t; st.raf = requestAnimationFrame(loop);
     }
-    requestAnimationFrame(loop);
-    window.addEventListener('scroll', function () { scrolling = 1; clearTimeout(tmr); tmr = setTimeout(function () { scrolling = 0; last = 0; }, 200); }, { passive: true });
+    st.raf = requestAnimationFrame(loop);
+    st.sc = function () { scrolling = 1; clearTimeout(tmr); tmr = setTimeout(function () { scrolling = 0; last = 0; }, 200); };
+    window.addEventListener('scroll', st.sc, { passive: true });
+    /* hitung elemen berblur itu mahal (getComputedStyle semua elemen), jadi cukup tiap 5 dtk agar tidak mengganggu ukuran fps */
     function bd() { var c = 0; document.querySelectorAll('*').forEach(function (e) { var cs = getComputedStyle(e); if ((cs.backdropFilter && cs.backdropFilter !== 'none') || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) c++; }); return c; }
-    setInterval(function () {
-      el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\nblur aktif: ' + bd() + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?');
+    st.iv = setInterval(function () {
+      if (tick++ % 5 === 0) blurN = bd();
+      el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\nblur aktif: ' + blurN + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?') + '\n(ketuk hak cipta footer 7x = tutup)';
     }, 1000);
+    dbg = st;
+  }
+  function setupDebug() {
+    if (/[?&]debug=1/.test(location.search)) debugOn();
+    /* pemicu tersembunyi: 7 ketukan beruntun (jeda maks 700 ms) pada teks hak cipta di footer */
+    var taps = 0, lastTap = 0;
+    var css = document.createElement('style');
+    css.textContent = '#footer-copyright{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}';
+    document.head.appendChild(css);
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest || !t.closest('#footer-copyright')) return;
+      var now = Date.now();
+      taps = (now - lastTap < 700) ? taps + 1 : 1; lastTap = now;
+      if (taps < 7) return;
+      taps = 0;
+      if (dbg) debugOff(); else debugOn();
+      try { if (navigator.vibrate) navigator.vibrate(dbg ? [25, 40, 25] : 30); } catch (_) { }
+    });
   }
 
   function boot() { setupDebug(); checkMaint(); loadGroups(); track(); }
