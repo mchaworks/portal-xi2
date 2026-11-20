@@ -142,8 +142,8 @@
     st.raf = requestAnimationFrame(loop);
     st.sc = function () { scrolling = 1; clearTimeout(tmr); tmr = setTimeout(function () { scrolling = 0; last = 0; }, 200); };
     window.addEventListener('scroll', st.sc, { passive: true });
-    /* hitung elemen berblur itu mahal (getComputedStyle semua elemen), jadi cukup tiap 5 dtk agar tidak mengganggu ukuran fps */
-    function bd() { var c = 0; document.querySelectorAll('*').forEach(function (e) { var cs = getComputedStyle(e); if ((cs.backdropFilter && cs.backdropFilter !== 'none') || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) c++; }); return c; }
+    /* hitung elemen berblur itu mahal (getComputedStyle semua elemen), jadi cukup tiap 5 dtk agar tidak mengganggu ukuran fps; elemen yang tidak dirender (halaman lain / display:none) tidak dihitung */
+    function bd() { var c = 0; document.querySelectorAll('*').forEach(function (e) { if (!e.getClientRects().length) return; var cs = getComputedStyle(e); if ((cs.backdropFilter && cs.backdropFilter !== 'none') || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) c++; }); return c; }
     st.iv = setInterval(function () {
       if (tick++ % 5 === 0) blurN = bd();
       el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\nblur aktif: ' + blurN + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?') + '\n(ketuk hak cipta footer 7x = tutup)';
