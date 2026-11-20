@@ -1081,25 +1081,24 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
                         <span id="hero-pill-tag">Ruang Kolaborasi & Kreasi Digital • XI.2 Creative Lab</span>
                     </div>
 
-                    <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08]">
-                        Belajar bareng, <br class="hidden sm:inline">
-                        <span class="text-m3-primary">tumbuh solid,</span> dan <br class="hidden sm:inline">
-                        penuh cerita seru.
+                    <h1 id="hero-title" class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08]">
+                        <span id="hero-t1">Belajar bareng,</span> <br class="hidden sm:inline">
+                        <span id="hero-th" class="text-m3-primary">tumbuh solid,</span> <span id="hero-t2">dan <br class="hidden sm:inline"> penuh cerita seru.</span>
                     </h1>
 
-                    <p class="text-base sm:text-lg text-m3-onSurfaceVariant max-w-2xl leading-relaxed">
+                    <p id="hero-desc" class="text-base sm:text-lg text-m3-onSurfaceVariant max-w-2xl leading-relaxed">
                         Portal resmi <strong id="hero-inline-classname" class="text-m3-onSurface">XI.2 Creative Lab</strong>. Cek jadwal pelajaran, regu piket, sorotan kegiatan, dan tugas terbaru kelas dalam satu tempat.
                     </p>
 
                     <!-- Expressive CTA Pills -->
                     <div class="flex flex-wrap items-center gap-3 pt-1">
                         <a href="#momen" class="m3-spring-btn inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-m3-primary text-m3-onPrimary font-bold text-sm sm:text-base shadow-md hover:shadow-lg">
-                            <span>Jelajahi Momen Kelas</span>
+                            <span id="hero-btn1-text">Jelajahi Momen Kelas</span>
                             <span class="material-symbols-rounded text-[20px]">arrow_forward</span>
                         </a>
                         <button onclick="openChatbot()" class="m3-spring-btn inline-flex items-center gap-2 px-6 py-4 rounded-full bg-m3-secondaryContainer text-m3-onSecondaryContainer font-bold text-sm sm:text-base hover:brightness-95">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 14Z"/><path d="M8 9h8M8 12.5h5"/></svg>
-                            <span>Tanya Piwo</span>
+                            <span id="hero-btn2-text">Tanya Piwo</span>
                         </button>
                     </div>
 
@@ -1641,6 +1640,46 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
         /* ----------------------------------------------------------------------
            1. STATE & SETTINGS MANAGEMENT (PERSISTED IN LOCALSTORAGE)
            ---------------------------------------------------------------------- */
+        /* ===== Teks hero Beranda (bisa diedit dari panel admin → site_settings) ===== */
+        const HERO_DEFAULTS = {
+            hero_badge: 'Ruang Kolaborasi & Kreasi Digital • {class_name}',
+            hero_title_1: 'Belajar bareng,',
+            hero_title_highlight: 'tumbuh solid,',
+            hero_title_2: 'dan | penuh cerita seru.',
+            hero_description: 'Portal resmi {class_name}. Cek jadwal pelajaran, regu piket, sorotan kegiatan, dan tugas terbaru kelas dalam satu tempat.',
+            hero_btn_primary: 'Jelajahi Momen Kelas',
+            hero_btn_secondary: 'Tanya Piwo'
+        };
+        const HERO_COPY = { ...HERO_DEFAULTS };
+        function heroSetLines(el, text) {
+            /* "|" = pindah baris (hanya tampil di layar lebar) */
+            if (!el) return;
+            el.textContent = '';
+            String(text).split('|').map(t => t.trim()).filter(Boolean).forEach((part, i) => {
+                if (i) { const br = document.createElement('br'); br.className = 'hidden sm:inline'; el.appendChild(br); }
+                el.appendChild(document.createTextNode(part));
+            });
+        }
+        function applyHeroCopy(className) {
+            const $h = id => document.getElementById(id);
+            const cn = className || 'XI.2 Creative Lab';
+            const b = $h('hero-pill-tag');
+            if (b) b.textContent = HERO_COPY.hero_badge.replace(/\{class_name\}/g, cn);
+            heroSetLines($h('hero-t1'), HERO_COPY.hero_title_1);
+            const th = $h('hero-th'); if (th) th.textContent = HERO_COPY.hero_title_highlight;
+            heroSetLines($h('hero-t2'), HERO_COPY.hero_title_2);
+            const d = $h('hero-desc');
+            if (d) {
+                d.textContent = '';
+                HERO_COPY.hero_description.split(/\{class_name\}/g).forEach((part, i) => {
+                    if (i) { const st = document.createElement('strong'); st.id = i === 1 ? 'hero-inline-classname' : ''; st.className = 'text-m3-onSurface'; st.textContent = cn; d.appendChild(st); }
+                    d.appendChild(document.createTextNode(part));
+                });
+            }
+            const b1 = $h('hero-btn1-text'); if (b1) b1.textContent = HERO_COPY.hero_btn_primary;
+            const b2 = $h('hero-btn2-text'); if (b2) b2.textContent = HERO_COPY.hero_btn_secondary;
+        }
+
         const DEFAULT_SETTINGS = {
             preset: 'integrated',
             theme: 'sage',
@@ -1726,8 +1765,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
             document.getElementById('header-class-title').textContent = cleanName;
             document.getElementById('header-class-subtitle').textContent = cleanYear;
             /* logo kelas = PNG Piwo, tidak lagi teks */
-            document.getElementById('hero-inline-classname').textContent = cleanName;
-            document.getElementById('hero-pill-tag').textContent = `Ruang Kolaborasi & Kreasi Digital • ${cleanName}`;
+            applyHeroCopy(cleanName);
             const schoolName = cleanYear.split('•')[0].trim() || 'SMA Negeri 10 Palembang';
             document.getElementById('footer-copyright').textContent = `© ${new Date().getFullYear()} ${cleanName} — ${schoolName}.`;
             document.title = `${cleanName} — Portal Kelas ${schoolName}`;
@@ -2647,7 +2685,9 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
    const cn=(S.class_name||'').trim(),sy=(S.school_year||'').trim();
    if(cn){DEFAULT_SETTINGS.className=cn;uiSettings.className=cn;}
    if(sy){DEFAULT_SETTINGS.schoolYear=sy;uiSettings.schoolYear=sy;}
-   if(cn||sy)applyAllSettingsToDOM();
+   let heroChanged=false;
+   Object.keys(HERO_DEFAULTS).forEach(k=>{const v=String(S[k]==null?'':S[k]).trim()||HERO_DEFAULTS[k];if(HERO_COPY[k]!==v){HERO_COPY[k]=v;heroChanged=true;}});
+   if(cn||sy||heroChanged)applyAllSettingsToDOM();
    const hr=document.getElementById('hero-homeroom'),chip=document.getElementById('hero-homeroom-chip');
    if('homeroom_teacher' in S&&hr&&chip){const v=String(S.homeroom_teacher||'').trim();chip.style.display=v?'':'none';hr.textContent='Wali Kelas: '+v;}
    if('student_count' in S){const el=document.getElementById('stat-students'),v=String(S.student_count||'').trim();if(el&&v)el.textContent=v;}
