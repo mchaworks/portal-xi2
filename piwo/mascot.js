@@ -29,7 +29,7 @@ const FR = [192, 352, 640, 256];               // kotak tekstur wajah
 /* ---------------------------------------------------------------- pose */
 const D = {
   ear: 0, earL: null, earR: null, arm: 0, armL: null, armR: null, foot: 0,
-  open: 1, happy: 0, love: 0, dizzy: 0, wide: 0, sad: 0, lid: 0, blush: .15,
+  open: 1, happy: 0, love: 0, dizzy: 0, wide: 0, sad: 0, lid: 0, blush: .15, wink: 0,
   mOpen: 0, mSmile: .35, mW: 1, mCat: 1, mWavy: 0, tear: 0, sweat: 0, sparkle: 0,
   lookX: null, lookY: null, tilt: 0, sy: 1, fast: 0, breath: 1
 };
@@ -41,6 +41,7 @@ const P = {
   happy: { happy: 1, mOpen: .65, mW: 1.3, mCat: 0, mSmile: 1, blush: .75, arm: .3, ear: -.08, sparkle: 1 },
   giggle: { happy: 1, mOpen: .5, mCat: 0, mSmile: 1, blush: .85 },
   petted: { happy: 1, blush: 1, mCat: 1, mSmile: 1, ear: .12, fast: 1 },
+  wink: { wink: 1, mOpen: 0, mCat: 1, mW: 1.2, mSmile: 1, blush: .85, arm: .3, ear: -.08, sparkle: 0 },
   love: { love: 1, mOpen: .3, mCat: 0, mSmile: 1, blush: 1, arm: .3 },
   shy: { happy: .7, blush: 1.25, mCat: 0, mWavy: .7, lookX: -.9, lookY: .5, arm: .5, tilt: -.06, ear: .2 },
   wave: { mOpen: .45, mCat: 0, mSmile: 1, blush: .4, ear: -.12 },
@@ -58,7 +59,7 @@ const MOODS = {
   love: { blush: .95, mSmile: 1, sparkle: 1 },
   shy: { blush: 1, lookX: -.7, lookY: .4 }
 };
-const FKEYS = ['happy', 'love', 'dizzy', 'wide', 'sad', 'lid', 'blush', 'mSmile', 'mW', 'mCat', 'mWavy', 'tear', 'sweat', 'sparkle'];
+const FKEYS = ['happy', 'love', 'wink', 'dizzy', 'wide', 'sad', 'lid', 'blush', 'mSmile', 'mW', 'mCat', 'mWavy', 'tear', 'sweat', 'sparkle'];
 
 /* ---------------------------------------------------------------- bunyi */
 class Sfx {
@@ -227,8 +228,8 @@ function drawEye(c, i, F, t, openEff) {
   const side = i ? 1 : -1, k = 1 + F.wide * .13;
   const rx = 30.4 * k, ryB = 38.5 * k;
   const cx = EYE[i][0] + F.lx * 5, cy = EYE[i][1] + F.ly * 4;
-  const hH = smooth(.45, .75, F.happy), hL = smooth(.45, .75, F.love), hD = smooth(.45, .75, F.dizzy);
-  const aBase = (1 - hH) * (1 - hL) * (1 - hD);
+  const hW = i === 1 ? smooth(.45, .75, F.wink) : 0, hH = smooth(.45, .75, F.happy), hL = smooth(.45, .75, F.love), hD = smooth(.45, .75, F.dizzy);
+  const aBase = (1 - hH) * (1 - hL) * (1 - hD) * (1 - hW);
   const aOpen = smooth(.1, .45, openEff), aNormal = aBase * aOpen, aClosed = aBase * (1 - aOpen);
   // bayangan lembut di sekitar mata
   const hy = cy + ryB * .25, g = c.createRadialGradient(cx, hy, rx * .3, cx, hy, rx * 1.75);
@@ -264,8 +265,8 @@ function drawEye(c, i, F, t, openEff) {
     c.save(); c.globalAlpha = aClosed; c.strokeStyle = '#1b1112'; c.lineWidth = 6; c.lineCap = 'round';
     c.beginPath(); c.moveTo(cx - rx * .95, cy + 2); c.quadraticCurveTo(cx, cy + ryB * .5, cx + rx * .95, cy + 2); c.stroke(); c.restore();
   }
-  if (hH > .01) {
-    c.save(); c.globalAlpha = hH * (1 - hL) * (1 - hD); c.strokeStyle = '#1b1112'; c.lineWidth = 7.5; c.lineCap = 'round';
+  if (Math.max(hH, hW) > .01) {
+    c.save(); c.globalAlpha = Math.max(hH, hW) * (1 - hL) * (1 - hD); c.strokeStyle = '#1b1112'; c.lineWidth = 7.5; c.lineCap = 'round';
     c.beginPath(); c.moveTo(cx - rx * 1.02, cy + ryB * .28); c.quadraticCurveTo(cx, cy - ryB * .78, cx + rx * 1.02, cy + ryB * .28); c.stroke(); c.restore();
   }
   if (hL > .01) {
@@ -367,7 +368,7 @@ class Mascot {
     const S = (k, c, v) => new Spring(v || 0, k, c);
     this.sx = S(260, 12, 1); this.sy = S(260, 12, 1); this.rot = S(110, 7); this.sway = S(80, 5.5); this.lag = S(150, 9);
     this.ear = [S(170, 9), S(170, 9)]; this.arm = [S(140, 8), S(140, 8)]; this.foot = [S(220, 14), S(220, 14)];
-    this.F = { open: 1, happy: 0, love: 0, dizzy: 0, wide: 0, sad: 0, lid: 0, blush: .15, mOpen: 0, mSmile: .35, mW: 1, mCat: 1, mWavy: 0, tear: 0, sweat: 0, sparkle: 0, lx: 0, ly: 0 };
+    this.F = { open: 1, happy: 0, love: 0, wink: 0, dizzy: 0, wide: 0, sad: 0, lid: 0, blush: .15, mOpen: 0, mSmile: .35, mW: 1, mCat: 1, mWavy: 0, tear: 0, sweat: 0, sparkle: 0, lx: 0, ly: 0 };
     this.t = 0; this.last = 0; this.mBase = 0; this.yawning = false; this.state = 'idle'; this.ov = null; this.timers = []; this.parts = []; this.G = this.o.gravity;
     this.pos = { x: 0, y: 0 }; this.vel = { x: 0, y: 0 }; this.mode = 'rest'; this.holdT = { x: 0, y: 0 }; this.homeT = 0;
     this.ptr = { x: -999, y: -999, t: -99 }; this.hover = false; this.down = null; this.rub = 0; this.pokes = [];

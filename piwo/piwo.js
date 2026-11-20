@@ -162,7 +162,7 @@ async function intro(){
  /* 4. ajakan: Piwo maju mendekat, layar terbuka dari dia, lalu dia jaga di pojok */
  if(!skip){S.hello();m.react('wave');m.say('Yuk, explore bareng aku~',{mood:'happy',speed:56,hold:2.6});await nap(1250)}
  /* zoom: Piwo nyosor ke lensa (membesar halus), layar terbuka dari dia, lalu mundur lagi */
- if(!skip){S.whoosh();m.flash('love',1.2);dolly(true)}
+ if(!skip){S.whoosh();m.flash('wink',1.6);dolly(true)}
  await move(bc,560,io,0);
  if(!skip){S.pop();m.sy.kick(-2.4);m.sx.kick(1.8);const q=ctr();PFX.burst(q.x,q.y,tier2?6:12,Math.min(W*.4,170));out()}else{S.squish();m.sy.kick(-3.2);m.sx.kick(2.2);await wait(190);out()}
  await nap(520);
