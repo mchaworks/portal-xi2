@@ -7,6 +7,7 @@ const CACHE = 'xi2-v23';
 const STATIC_HOSTS = ['cdn.jsdelivr.net', 'cdn.tailwindcss.com', 'fonts.gstatic.com'];
 const SWR_HOSTS = ['fonts.googleapis.com'];
 const NET_TIMEOUT = 4000;
+const NAV_TIMEOUT = 2500; /* halaman utama: jaringan lambat >2,5 dtk langsung pakai salinan cache (cache tetap diperbarui di belakang untuk buka berikutnya) */
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
@@ -38,7 +39,7 @@ self.addEventListener('fetch', e => {
   e.respondWith(new Promise(resolve => {
     let done = false;
     const fallback = () => caches.match(req).then(r => r || (req.mode === 'navigate' ? caches.match(url.pathname.indexOf('/admin/') === 0 ? './admin/' : './') : undefined));
-    const t = setTimeout(() => { fallback().then(r => { if (r && !done) { done = true; resolve(r); } }); }, NET_TIMEOUT);
+    const t = setTimeout(() => { fallback().then(r => { if (r && !done) { done = true; resolve(r); } }); }, req.mode === 'navigate' ? NAV_TIMEOUT : NET_TIMEOUT);
     fetch(req, { cache: 'no-cache' }).then(res => { clearTimeout(t); put(req, res); if (!done) { done = true; resolve(res); } })
       .catch(() => { clearTimeout(t); if (!done) fallback().then(r => { done = true; resolve(r || Response.error()); }); });
   }));
