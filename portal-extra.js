@@ -133,10 +133,10 @@
     el.style.cssText = 'position:fixed;left:6px;bottom:96px;z-index:2147482000;background:rgba(0,0,0,.78);color:#fff;font:11px/1.35 monospace;padding:6px 8px;border-radius:8px;pointer-events:none;white-space:pre';
     document.body.appendChild(el);
     var st = { el: el, off: false, raf: 0, iv: 0, sc: null };
-    var last = 0, worst = 0, sum = 0, n = 0, long50 = 0, scrolling = 0, tmr = 0, tick = 0, blurN = 0;
+    var pfN = 0, pfMov = 0, pfLast = 0, last = 0, worst = 0, sum = 0, n = 0, long50 = 0, scrolling = 0, tmr = 0, tick = 0, blurN = 0;
     function loop(t) {
       if (st.off) return;
-      if (last && scrolling) { var d = t - last; sum += d; n++; if (d > worst) worst = d; if (d > 50) long50++; }
+      if (last && scrolling) { var d = t - last; sum += d; n++; if (d > worst) worst = d; if (d > 50) long50++; } if (scrolling) { pfN++; if (window.__piwoF !== pfLast) pfMov++; } pfLast = window.__piwoF;
       last = t; st.raf = requestAnimationFrame(loop);
     }
     st.raf = requestAnimationFrame(loop);
@@ -146,7 +146,7 @@
     function bd() { var c = 0; document.querySelectorAll('*').forEach(function (e) { if (!e.getClientRects().length) return; var cs = getComputedStyle(e); if ((cs.backdropFilter && cs.backdropFilter !== 'none') || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none')) c++; }); return c; }
     st.iv = setInterval(function () {
       if (tick++ % 5 === 0) blurN = bd();
-      el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\nblur aktif: ' + blurN + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?') + '\n(ketuk hak cipta footer 7x = tutup)';
+      el.textContent = 'tier: ' + document.documentElement.dataset.perf + '\nfps~: ' + (n ? Math.round(1000 / (sum / n)) : '-') + '\nterburuk: ' + Math.round(worst) + ' ms\nframe>50ms: ' + long50 + '\npiwo jalan saat scroll: ' + (pfN ? Math.round(100 * pfMov / pfN) + '%' : '-') + '\nblur aktif: ' + blurN + '\nmem: ' + (navigator.deviceMemory || '?') + 'GB  cpu: ' + (navigator.hardwareConcurrency || '?') + '\n(ketuk hak cipta footer 7x = tutup)';
     }, 1000);
     dbg = st;
   }
@@ -168,6 +168,16 @@
       try { if (navigator.vibrate) navigator.vibrate(dbg ? [25, 40, 25] : 30); } catch (_) { }
     });
   }
+
+  /* ---------- Tunda blur kaca saat scroll (lihat perf.css) ---------- */
+  (function () {
+    var root = document.documentElement, on = false, tmr = 0;
+    function off() { on = false; root.classList.remove('xia-scrolling'); }
+    window.addEventListener('scroll', function () {
+      if (!on) { on = true; root.classList.add('xia-scrolling'); }
+      clearTimeout(tmr); tmr = setTimeout(off, 180);
+    }, { passive: true });
+  })();
 
   function boot() { setupDebug(); checkMaint(); loadGroups(); track(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();

@@ -460,16 +460,10 @@ class Mascot {
   /* ---------- input ---------- */
   bindInput() {
     this._pd = e => this.onDown(e); this._pm = e => this.onMove(e); this._pu = e => this.onUp(e);
-    /* FIX scroll: dulu touchstart non-passive + preventDefault tiap jari mendarat di badan Piwo -> scroll terblokir
-       dan Piwo malah ikut terseret. Sekarang touchstart pasif; scroll cuma ditahan saat Piwo SUDAH diangkat (tahan lama). */
-    this._ts = () => { };
-    this._tm = e => { if (this.mode === 'held' && e.cancelable) e.preventDefault(); };
-    this._pc = e => { const d = this.down; if (!d || d.id !== e.pointerId) return; this.down = null; if (this.mode === 'held') this.release(); };
+    this._ts = e => { const t = e.touches[0]; if (t && this.hit(t.clientX, t.clientY)) e.preventDefault(); };
     addEventListener('pointerdown', this._pd, true); addEventListener('pointermove', this._pm, { passive: true });
-    addEventListener('pointerup', this._pu, true); addEventListener('pointercancel', this._pc, true);
-    addEventListener('touchstart', this._ts, { passive: true });
-    addEventListener('touchmove', this._tm, { passive: false });
-    addEventListener('contextmenu', e => { if (this.hit(e.clientX, e.clientY)) e.preventDefault(); });
+    addEventListener('pointerup', this._pu, true); addEventListener('pointercancel', this._pu, true);
+    addEventListener('touchstart', this._ts, { passive: false });
     this._ck = e => { if (this.o.blockClicks && this.hit(e.clientX, e.clientY)) { e.stopPropagation(); e.preventDefault(); } }; addEventListener('click', this._ck, true);
     this._vis = () => { this.last = 0; }; document.addEventListener('visibilitychange', this._vis);
   }
@@ -483,7 +477,6 @@ class Mascot {
     const h = this.hit(e.clientX, e.clientY); this.hover = !!h && this.mode !== 'held' && e.pointerType !== 'touch';
     const d = this.down;
     if (d && d.id === e.pointerId) {
-      if (!d.moved && e.pointerType === 'touch' && this.mode !== 'held' && Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) { this.down = null; return; }
       if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) { d.moved = true; if (['head', 'ear', 'cheek'].includes(d.region)) d.pet = true; else this.startHold(e.clientX, e.clientY); }
       if (this.mode === 'held') { this.holdT.x = e.clientX - this.grab.x; this.holdT.y = e.clientY - this.grab.y; }
       else if (d.pet && h && ['head', 'ear', 'cheek'].includes(h.region)) this.addRub(dist);
@@ -696,7 +689,7 @@ class Mascot {
     if (this.dead) return; this.raf = requestAnimationFrame(this.frame);
     if (document.hidden) { this.last = 0; return; }
     if (this.o.fps && this.last && now - this.last < 1000 / this.o.fps - 3) return;
-    if (!this.last) this.last = now; const dt = Math.min(.033, (now - this.last) / 1000); this.last = now; if (dt <= 0) return;
+    if (!this.last) this.last = now; const dt = Math.min(.033, (now - this.last) / 1000); this.last = now; if (dt <= 0) return; window.__piwoF = (window.__piwoF || 0) + 1;
     const r = this.host.getBoundingClientRect(); this.H = r; this.unit = r.width / 1024; if (r.width < 8) return;
     this.t += dt; this.brain(dt); this.physics(dt);
     for (const s of [this.sx, this.sy, this.rot, this.sway, this.lag, ...this.ear, ...this.arm, ...this.foot]) s.step(dt);
@@ -762,7 +755,7 @@ class Mascot {
   }
   destroy() {
     this.dead = true; cancelAnimationFrame(this.raf); removeEventListener('resize', this._rs); removeEventListener('pointerdown', this._pd, true); removeEventListener('pointermove', this._pm);
-    removeEventListener('pointerup', this._pu, true); removeEventListener('pointercancel', this._pc, true); removeEventListener('touchmove', this._tm); removeEventListener('touchstart', this._ts); document.removeEventListener('visibilitychange', this._vis);
+    removeEventListener('pointerup', this._pu, true); removeEventListener('pointercancel', this._pu, true); removeEventListener('touchstart', this._ts); document.removeEventListener('visibilitychange', this._vis);
     [this.gl, this.fx, this.bub, this.shadow].forEach(n => n && n.remove());
   }
 }

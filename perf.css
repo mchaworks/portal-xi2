@@ -12,3 +12,25 @@
 
 /* tab/PWA di background: hentikan semua animasi CSS (dipasang oleh class xia-page-hidden) */
 html.xia-page-hidden *, html.xia-page-hidden *::before, html.xia-page-hidden *::after { animation-play-state: paused !important; }
+
+/* XI.2: blur kaca (header, dock, lensa, kartu) dimatikan SEMENTARA selama halaman di-scroll, balik otomatis saat berhenti.
+   backdrop-filter harus mengambil sampel ulang isi di belakangnya tiap frame scroll; di GPU HP itu yang bikin Piwo (WebGL) macet.
+   Kaca tetap tampak kaca karena latarnya dinaikkan sedikit selama scroll. Class dipasang oleh portal-extra.js (xia-scrolling). */
+html.xia-scrolling .multi-layer-glass,
+html.xia-scrolling #liquid-glass-dock,
+html.xia-scrolling .liquid-dock-shell,
+html.xia-scrolling .liquid-glass-lens,
+html.xia-scrolling #liquid-glass-lens,
+html.xia-scrolling .hero-slogan-glass,
+html.xia-scrolling .xia-photo-caption,
+html.xia-scrolling .xia-glass-btn,
+html.xia-scrolling .xia-mode-btn,
+html.xia-scrolling .xm-bubble {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html.xia-scrolling .multi-layer-glass,
+html.xia-scrolling #liquid-glass-dock,
+html.xia-scrolling .liquid-dock-shell {
+  background-color: rgba(var(--glass-rgb), max(var(--glass-alpha, .6), .9)) !important;
+}
