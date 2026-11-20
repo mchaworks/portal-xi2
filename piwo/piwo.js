@@ -17,6 +17,8 @@ let m,cur={x:0,y:0,s:90},at='home',busy=false,skip=false,tk=0,lock=false;
 let panelOpen=false,tilt=0; /* tilt (derajat) cuma dipakai intro */
 let hv=0,hr=0,bigS=0; /* hv/hr: offset melayang (px/derajat), cuma dipakai intro */
 let lastS=-1,lastT='';const setT=v=>{if(v!==lastT){lastT=v;host.style.transform=v}};const put=a=>{cur=a;
+ /* intro: Piwo selalu di titik host (tengah). Sentuhan/geser saat intro tidak boleh menggeser gambar maskot dari host-nya */
+ if(lock&&m&&m.pos&&(m.pos.x||m.pos.y||m.mode!=='rest')){m.pos.x=0;m.pos.y=0;m.vel.x=0;m.vel.y=0;m.mode='rest';m.down=null}
  if(bigS){if(lastS!==bigS){lastS=bigS;host.style.width=host.style.height=bigS+'px'}const k=a.s/bigS,o=(a.s-bigS)/2,rr=tilt+hr;setT('translate('+(a.x+o).toFixed(1)+'px,'+(a.y+hv+o).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':'')+' scale('+k.toFixed(4)+')');return}
  if(a.s!==lastS){lastS=a.s;host.style.width=host.style.height=a.s+'px'}const rr=tilt+hr;setT('translate('+a.x.toFixed(1)+'px,'+(a.y+hv).toFixed(1)+'px)'+(rr?' rotate('+rr.toFixed(2)+'deg)':''))};
 const setZ=z=>{[m.gl,m.fx,m.bub].forEach((e,i)=>e.style.zIndex=z+i);const w=$('pp-acc-wrap');if(w)w.style.zIndex=z+1};
