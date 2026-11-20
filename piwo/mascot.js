@@ -400,7 +400,7 @@ class Mascot {
     for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) { let v = 0; for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const xx = x + i, yy = y + j; if (xx >= 0 && yy >= 0 && xx < 256 && yy < 256) v = Math.max(v, a[yy * 256 + xx]); } mk[y * 256 + x] = v; }
     this.mask = mk;
     this.initGL(); this.resize();
-    this._rs = () => this.resize(); addEventListener('resize', this._rs);
+    let rsRaf = 0; this._rs = () => { if (rsRaf) return; rsRaf = requestAnimationFrame(() => { rsRaf = 0; this.resize(); }); }; addEventListener('resize', this._rs, { passive: true });
     this.bindInput(); this.raf = requestAnimationFrame(this.frame);
     if (this.o.greeting) this.later(1, () => this.say(this.o.greeting, { mood: 'happy' }));
     return this;
@@ -424,8 +424,13 @@ class Mascot {
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   }
 
-  resize() {
-    const vw = innerWidth, vh = innerHeight; this.vw = vw; this.vh = vh;
+  resize(force) {
+    /* FIX scroll: di HP, scroll bikin URL bar naik-turun -> event resize terus-terusan. Dulu tiap event
+       canvas WebGL full-layar dialokasi ulang (isi kehapus + GPU stall) sehingga Piwo macet pas scroll.
+       Sekarang cuma realokasi kalau lebar berubah (rotasi) atau tinggi melebihi canvas yang ada / menyusut jauh. */
+    const iw = innerWidth, ih = innerHeight;
+    if (!force && this.vw && Math.abs(iw - this.vw) <= 2 && ih <= this.vh && ih >= this.vh - 220) return;
+    const vw = iw, vh = this.vh && Math.abs(iw - this.vw) <= 2 ? Math.max(ih, this.vh > ih + 220 ? 0 : this.vh) : ih; this.vw = vw; this.vh = vh;
     let dpr = Math.min(devicePixelRatio || 1, this.o.maxDpr || 2); dpr = Math.min(dpr, Math.sqrt(4.2e6 / (vw * vh))); this.dpr = dpr;
     for (const c of [this.gl, this.fx]) { c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); c.style.width = vw + 'px'; c.style.height = vh + 'px'; }
     this.faceKey = ''; this.fxDirty = true;
