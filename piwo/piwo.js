@@ -1,6 +1,6 @@
 /* Piwo: sutradara maskot. Intro loncat ke tengah, tinggal di pojok tiap halaman, ikut masuk ke chat Labz AI. */
 (()=>{
-window.PIWO_BUILD='25-intro-zoom';
+window.PIWO_BUILD='26b-intro-sound-gate';
 const R=document.documentElement,calm=matchMedia('(prefers-reduced-motion: reduce)').matches,tier=R.dataset.perf||'mid';
 /* ---- pause total saat tab/PWA di background: timer, jam animasi, suara, dan semua animasi CSS/WAAPI ---- */
 const WQ=new Set();let hid=0,hAt=0,paused=[];
@@ -63,21 +63,37 @@ async function intro(){
  const S=m.sfx;
  const rm=()=>{const b=document.getElementById('piwo-snd');b&&b.remove()};
  /* browser memblokir suara sebelum ada sentuhan: kalau masih tertahan, tampilkan tombol kecil (tidak ikut melewati intro) */
- const chip=()=>{if(document.getElementById('piwo-snd')||R.classList.contains('piwo-out'))return;const b=document.createElement('button');b.id='piwo-snd';b.type='button';b.textContent='🔊 Ketuk untuk suara';
-  b.style.cssText='position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:215;padding:12px 20px;border:0;border-radius:99px;font:700 14px Inter,system-ui,sans-serif;background:rgba(27,107,81,.94);color:#fff;box-shadow:0 8px 24px -8px rgba(0,0,0,.45);opacity:0;transition:opacity .4s';
-  b.addEventListener('pointerdown',e=>e.stopPropagation());
-  b.addEventListener('click',()=>{S.init();Promise.resolve(S.ctx&&S.ctx.resume&&S.ctx.resume()).then(()=>{if(!skip){S.musicStart();S.pop()}});b.remove()});
-  document.body.appendChild(b);requestAnimationFrame(()=>{b.style.opacity=1})};
- const audioStart=()=>{if(!S.on)return;S.init();setTimeout(()=>{if(skip)return;if(!S.ctx||S.ctx.state==='running')S.musicStart();else chip()},180)};
+ /* Chrome/Safari menahan suara sampai ada sentuhan. Jadi intro ditahan di layar awal sampai ketukan pertama (tanpa tombol),
+   lalu jalan LENGKAP dengan suara. Kalau autoplay diizinkan, langsung jalan. Ketukan kedua = lewati. */
+ const hintEl=()=>document.querySelector('#piwo-splash .pi-hint');
+ let tried=false,gateRes=null;
+ const locked=()=>!!(S.on&&S.ctx&&S.ctx.state!=='running'&&!tried);
+ const UEV=['pointerup','touchend','click','keydown'];
+ const offUnlock=()=>UEV.forEach(e=>removeEventListener(e,unlock,true));
+ const unlock=()=>{if(!S.on||tried)return;tried=true;
+  try{S.init()}catch(e){}
+  const c=S.ctx;if(!c){offUnlock();return}
+  Promise.resolve(c.state!=='running'&&c.resume?c.resume():0).catch(()=>{}).then(()=>{
+   offUnlock();
+   if(c.state==='running'){if(!skip)S.musicStart();const h=hintEl();if(h)h.textContent='ketuk untuk lewati'}
+   if(gateRes){const g=gateRes;gateRes=null;g()}})};
+ const chip=()=>{const h=hintEl();if(h)h.textContent='ketuk layar untuk mulai'};
+ const audioStart=()=>new Promise(res=>{if(!S.on){res();return}S.init();
+ const c=S.ctx;if(!c){res();return}
+ UEV.forEach(e=>addEventListener(e,unlock,{capture:true,passive:true}));
+ let done=false;const go=()=>{if(done)return;done=true;if(!skip)S.musicStart();if(c.state==='running')offUnlock();res()};
+ if(c.state==='running'){go();return}
+ try{const p=c.resume();if(p&&p.then)p.then(()=>{if(c.state==='running')go()},()=>{})}catch(e){}
+ setTimeout(go,900)}); /* tunggu resume() asli, bukan tebakan 180 ms. Kalau browser menahan: intro tetap jalan, musik masuk di ketukan pertama */
  let amb=0,ttl=null,trail=0;
- const out=()=>{clearInterval(amb);clearInterval(trail);try{hoverOff()}catch(e){}R.classList.add('piwo-out');S.musicStop(.7);rm();if(ttl)ttl.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});setTimeout(()=>{R.classList.remove('piwo-intro','piwo-out');ttl&&ttl.remove()},1050)};
+ const out=()=>{offUnlock();clearInterval(amb);clearInterval(trail);try{hoverOff()}catch(e){}R.classList.add('piwo-out');S.musicStop(.7);rm();if(ttl)ttl.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});setTimeout(()=>{R.classList.remove('piwo-intro','piwo-out');ttl&&ttl.remove()},1050)};
  if(calm){put(A.home());out();return}
  lock=true;const W=innerWidth,H=innerHeight,tier2=tier==='lite',s=Math.min(W*.3,H*.16,128),c={x:(W-s)/2,y:(H-s)/2,s},below={x:c.x,y:H+s*.25,s},peek={x:c.x,y:H-s*.72,s},ctr=()=>({x:cur.x+cur.s/2,y:cur.y+cur.s/2});
  const big=Math.min(W*.86,H*.46,330),bc={x:(W-big)/2,y:(H-big)/2-H*.02,s:big};
  const nap=ms=>skip?Promise.resolve():wait(ms);
  const io=t=>t*t*(3-2*t),blurOk=false;
  bigS=Math.max(bc.s,s);put(below);setZ(210);
- const sk=()=>{skip=true;m.hush();S.musicStop(.3);rm()};addEventListener('pointerdown',sk,{once:true});
+ const sk=()=>{if(locked())return;removeEventListener('pointerdown',sk);skip=true;m.hush();S.musicStop(.3);rm()};addEventListener('pointerdown',sk);
  const sp=document.getElementById('piwo-splash'),dark=R.dataset.mode==='dark',ink=dark?'#bfeedd':'#1B6B51';
  /* ---- suara kamera (dirakit dari sfx yang sudah ada, tanpa file baru) ---- */
  const bip=()=>S.vt(1760,1760,.07,{v:.05,a:.004});
@@ -141,7 +157,7 @@ async function intro(){
  const hoverOff=()=>{hovOn=false;cancelAnimationFrame(hovRaf);clearInterval(hovSpark);hv=0;hr=0;if(shadow){shadow.remove();shadow=null}};
  const trailOn=()=>{clearInterval(trail);trail=setInterval(()=>{if(skip||document.hidden||tier2&&Math.random()<.5)return;const q=ctr();PFX.spark(q.x+rnd(-cur.s*.22,cur.s*.22),q.y+cur.s*.3,{dx:rnd(-18,18),dy:rnd(10,40),sz:rnd(9,16),d:rnd(450,700)})},tier2?110:tier==='mid'?80:55)},trailOff=()=>clearInterval(trail);
  const talk=(mood,line)=>{if(line){m.hush();m.react(mood);m.say(line,{mood:'happy',speed:80,hold:.4})}else m.react(mood)};
- audioStart();
+ await audioStart(); /* intro baru mulai setelah suara siap (autoplay diizinkan atau ketukan pertama); cadangan 9 dtk */
  await nap(120);
  /* ===== pacing baru: tiap adegan dikasih jeda napas biar sempat dicerna ===== */
  /* 0. layar tenang + judul + bokeh, mata sempat menetap */
@@ -174,7 +190,7 @@ async function intro(){
  await fly(h,{dur:skip?720:850,h:skip?.15:.09,force:true});
  bigS=0;lastS=-1;put(cur);
  if(!skip){S.pop();const q=ctr();PFX.burst(q.x,q.y,10,h.s*1.1)}
- setZ(60);removeEventListener('pointerdown',sk);skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
+ setZ(60);removeEventListener('pointerdown',sk);offUnlock();skip=false;lock=false;tilt=0;try{sessionStorage.setItem('piwo-intro','1')}catch(e){}
  setTimeout(()=>{PFX.clear();focus(false);sp&&sp.querySelectorAll('.pi-stage,.pi-vf,.pi-hint').forEach(e=>e.remove())},1500);
 }
 /* ikut ke chat AI */

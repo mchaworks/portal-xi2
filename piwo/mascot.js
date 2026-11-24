@@ -76,14 +76,14 @@ class Sfx {
   }
   setVol(v) { this.vol = v; if (this.out) this.out.gain.value = v; }
   tone(f0, f1, dur, type, vol, delay) {
-    if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (delay || 0);
+    if (!this.on || !this.ctx || this.ctx.state !== 'running') return; const c = this.ctx, t = c.currentTime + (delay || 0);
     const o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine';
     o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur);
     g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .15, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
     o.connect(g); g.connect(this.out); o.start(t); o.stop(t + dur + .03);
   }
   noise(dur, f, q, vol, delay, type) {
-    if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (delay || 0);
+    if (!this.on || !this.ctx || this.ctx.state !== 'running') return; const c = this.ctx, t = c.currentTime + (delay || 0);
     if (!this.nb) { const n = c.sampleRate * .3 | 0, b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; this.nb = b; }
     const s = c.createBufferSource(); s.buffer = this.nb; const fl = c.createBiquadFilter(); fl.type = type || 'bandpass'; fl.frequency.value = f; fl.Q.value = q || 1;
     const g = c.createGain(); g.gain.setValueAtTime(vol || .3, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
@@ -91,7 +91,7 @@ class Sfx {
   }
   /* ---- mesin suara imut: nada + vibrato + lowpass + attack halus ---- */
   vt(f0, f1, dur, o) {
-    o = o || {}; if (!this.on || !this.ctx) return; const c = this.ctx, t = c.currentTime + (o.d || 0);
+    o = o || {}; if (!this.on || !this.ctx || this.ctx.state !== 'running') return; const c = this.ctx, t = c.currentTime + (o.d || 0);
     const osc = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(); osc.type = o.type || 'sine';
     osc.frequency.setValueAtTime(f0, t); osc.frequency.exponentialRampToValueAtTime(Math.max(30, f1), t + dur * (o.glide || 1));
     if (o.vib) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = o.vib; lg.gain.value = o.vd || 18; l.connect(lg); lg.connect(osc.frequency); l.start(t); l.stop(t + dur + .05); }

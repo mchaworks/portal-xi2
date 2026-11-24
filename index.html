@@ -959,6 +959,8 @@ html[data-mode="dark"] .les-item{--les-sh:0 8px 20px -14px rgba(0,0,0,.7)}
 html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-surface-container-highest)!important;border-color:rgba(255,255,255,.08)}
 </style>
 <link rel="stylesheet" href="./perf.css?v=6">
+<link rel="stylesheet" href="./event-theme.css?v=2">
+<script src="./event-theme.js?v=3"></script>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
 <div id="piwo-splash" aria-hidden="true"></div>
@@ -1650,7 +1652,8 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
             hero_btn_primary: 'Jelajahi Momen Kelas',
             hero_btn_secondary: 'Tanya Piwo'
         };
-        const HERO_COPY = { ...HERO_DEFAULTS };
+        /* tema event (event-theme.js): kalau aktif, teks hero diganti selama event */
+        const HERO_COPY = { ...HERO_DEFAULTS, ...((window.XIA_EVENT && XIA_EVENT.active && XIA_EVENT.hero) || {}) };
         function heroSetLines(el, text) {
             /* "|" = pindah baris (hanya tampil di layar lebar) */
             if (!el) return;
@@ -1768,7 +1771,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
             applyHeroCopy(cleanName);
             const schoolName = cleanYear.split('•')[0].trim() || 'SMA Negeri 10 Palembang';
             document.getElementById('footer-copyright').textContent = `© ${new Date().getFullYear()} ${cleanName} — ${schoolName}.`;
-            document.title = `${cleanName} — Portal Kelas ${schoolName}`;
+            document.title = (window.XIA_EVENT && XIA_EVENT.active && XIA_EVENT.title) || `${cleanName} — Portal Kelas ${schoolName}`;
             const heroCap = document.querySelector('#hero-glass-root .xia-hero-caption span');
             if (heroCap) heroCap.textContent = schoolName;
 
@@ -2686,7 +2689,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
    if(cn){DEFAULT_SETTINGS.className=cn;uiSettings.className=cn;}
    if(sy){DEFAULT_SETTINGS.schoolYear=sy;uiSettings.schoolYear=sy;}
    let heroChanged=false;
-   Object.keys(HERO_DEFAULTS).forEach(k=>{const v=String(S[k]==null?'':S[k]).trim()||HERO_DEFAULTS[k];if(HERO_COPY[k]!==v){HERO_COPY[k]=v;heroChanged=true;}});
+   Object.keys(HERO_DEFAULTS).forEach(k=>{const evo=window.XIA_EVENT&&XIA_EVENT.active&&XIA_EVENT.hero&&XIA_EVENT.hero[k];const v=evo||String(S[k]==null?'':S[k]).trim()||HERO_DEFAULTS[k];if(HERO_COPY[k]!==v){HERO_COPY[k]=v;heroChanged=true;}});
    if(cn||sy||heroChanged)applyAllSettingsToDOM();
    const hr=document.getElementById('hero-homeroom'),chip=document.getElementById('hero-homeroom-chip');
    if('homeroom_teacher' in S&&hr&&chip){const v=String(S.homeroom_teacher||'').trim();chip.style.display=v?'':'none';hr.textContent='Wali Kelas: '+v;}
@@ -3976,10 +3979,10 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./portal-extra.js?v=10"></script>
 <script defer src="./install.js?v=1"></script>
 <script src="./theme.js?v=2"></script>
-<script defer src="./piwo/mascot.js?v=13"></script>
-<script defer src="./piwo/piwo.js?v=32"></script>
+<script defer src="./piwo/mascot.js?v=16"></script>
+<script defer src="./piwo/piwo.js?v=37"></script>
 <script defer src="./piwo/games.js?v=3"></script>
-<script defer src="./piwo/ambient.js?v=3"></script>
+<script defer src="./piwo/ambient.js?v=4"></script>
 <script defer src="./piwo/pet.js?v=9"></script>
 </body>
 </html>
