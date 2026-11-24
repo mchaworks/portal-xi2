@@ -1,0 +1,23 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tes suara</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;margin:0;padding:20px;background:#10201a;color:#e8f5ee}
+h1{font-size:20px;margin:0 0 12px}pre{white-space:pre-wrap;background:#0b1511;padding:14px;border-radius:12px;font-size:14px}
+.v{font-size:22px;font-weight:800;margin:14px 0;padding:14px;border-radius:12px}.ok{background:#14532d}.no{background:#7f1d1d}
+button{font:700 16px system-ui;padding:14px 20px;border-radius:99px;border:0;background:#6ee7b7;color:#06281c;margin-top:8px}</style></head><body>
+<h1>Tes suara otomatis</h1><div id="v" class="v">…</div><pre id="o"></pre><button id="b">Sentuh: tes bunyi</button>
+<script>
+const o=document.getElementById('o'),v=document.getElementById('v'),log=t=>{o.textContent+=t+'\n'};
+const ua=navigator.userActivation;
+log('mode PWA: '+(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches));
+log('pernah disentuh sebelum halaman ini: '+(ua?ua.hasBeenActive:'?'));
+let c;try{c=new (window.AudioContext||window.webkitAudioContext)()}catch(e){log('AudioContext gagal: '+e)}
+if(c){
+ log('status saat dibuat: '+c.state);
+ const beep=()=>{const t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.frequency.value=660;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.15,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.5);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.55)};
+ const show=()=>{const r=c.state==='running';v.className='v '+(r?'ok':'no');v.textContent=r?'DIIZINKAN: browser ngebolehin suara otomatis':'DIBLOKIR: browser nahan suara sampai disentuh'};
+ c.addEventListener('statechange',()=>{log('berubah jadi: '+c.state);show()});
+ c.resume().catch(()=>{});beep();
+ setTimeout(()=>{log('status setelah 1 detik: '+c.state);show()},1000);
+ document.getElementById('b').onclick=async()=>{await c.resume();beep();log('setelah disentuh: '+c.state)};
+}
+</script></body></html>

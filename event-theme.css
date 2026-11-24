@@ -202,18 +202,22 @@ html.piwo-intro[data-event="hari-guru"] #piwo-splash{
 }
 /* tulisan kapur di atas maskot (maskot ada di tengah layar) */
 html.piwo-intro[data-event="hari-guru"] #piwo-splash::after{
-  content:"Selamat Hari Guru";position:absolute;left:0;right:0;top:11%;text-align:center;
+  content:"Selamat Hari Guru";position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 4.5% + 66px);text-align:center;
   font:700 var(--evt-fs)/1 'Caveat','Bricolage Grotesque',cursive;color:#F3EFDD;
   text-shadow:0 0 1px rgba(243,239,221,.9),2px 2px 0 rgba(0,0,0,.18);
   animation:evtChalk 1.4s steps(28,end) both;
 }
 html.piwo-intro[data-event="hari-guru"] #piwo-splash::before{
-  content:"";position:absolute;left:50%;top:calc(11% + var(--evt-fs) * 1.08);translate:-50% 0;
+  content:"";position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 4.5% + 66px + var(--evt-fs) * 1.08);translate:-50% 0;
   width:min(60vw,400px);height:min(56px,calc(min(60vw,400px) * .14));
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 14' fill='none' stroke='%23FFD966' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 7q5.5-7 11 0t11 0 11 0 11 0 11 0 11 0 11 0 11 0'/%3E%3C/svg%3E") center/100% 100% no-repeat;
   animation:evtChalk 1s steps(20,end) .9s both;
 }
 @keyframes evtChalk{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+/* pil nama kelas & tulisan 'ketuk untuk lewati' ikut warna papan tulis (sebelumnya hijau gelap di atas gelap / pil putih) */
+html.piwo-intro[data-event="hari-guru"] #piwo-splash .pi-ttl{color:#bfeedd!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(191,238,221,.22)!important}
+html.piwo-intro[data-event="hari-guru"] #piwo-splash .pi-hint{color:#d9efe3!important;opacity:.7!important}
+
 
 /* ---------- 9. Konfeti ---------- */
 .evt-confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:2147482000}
