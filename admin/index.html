@@ -328,7 +328,7 @@ if(t&&rank[t]!==undefined&&rank[t]<rank[tier])tier=t;r.dataset.perf=tier})();</s
             pointer-events: none;
             z-index: 1;
             overflow: hidden;
-            will-change: transform, width, backdrop-filter;
+            will-change: transform, width;
             background: rgba(255, 255, 255, 0.38);
             border: 1px solid rgba(255, 255, 255, 0.55);
             box-shadow:
@@ -696,6 +696,7 @@ label.row{font-size:.85rem;color:var(--md-sys-color-on-surface);margin-top:.9rem
 #liquid-glass-lens{z-index:2}
 #liquid-glass-dock .dock-nav-btn{z-index:1}
 /* lensa zoom: isi lensa = klon dock yang diperbesar (sama seperti web utama) */
+.lg-clip{position:absolute;top:6px;bottom:6px;left:0;width:0;border:1px solid transparent;border-radius:24px;overflow:hidden;pointer-events:none;z-index:1;will-change:transform;contain:paint}
 .lg-clone{position:absolute;left:0;top:0;transform-origin:0 0;display:flex;align-items:center;padding:6px;box-sizing:border-box;pointer-events:none}
 .lg-clone .lg-btn{position:relative;border:0;background:none;color:var(--md-sys-color-on-surface-variant);flex:1 1 0;min-width:0;padding-left:2px!important;padding-right:2px!important}
 .lg-clone .lg-btn.is-active{color:var(--md-sys-color-primary)}
@@ -1580,8 +1581,8 @@ const frame=t=>{const dt=Math.min(.032,(t-last)/1000||.016);last=t;const K=drag?
  const vf=v/60,st=1+Math.min(.14,Math.abs(vf)*.012),sq=1/Math.sqrt(st),sk=Math.max(-4,Math.min(4,vf*.08));
  const rest=Math.abs(tx-x)<.1&&Math.abs(v)<2&&Math.abs(tw-w)<.1&&!drag&&Math.abs(sc-1)<.002;
  if(rest){x=tx;w=tw;v=vw=0;sc=1}
- const ws=w.toFixed(1);if(lens._w!==ws){lens._w=ws;lens.style.width=ws+'px'}lens.style.transform='translate3d('+x+'px,0,0)'+(rest?'':' skewX('+sk.toFixed(2)+'deg) scale('+(st*sc).toFixed(3)+','+(sq*sc).toFixed(3)+')');
- window.__lgClone&&__lgClone(x,w);
+ const ws=w.toFixed(1);if(lens._w!==ws){lens._w=ws;lens.style.width=ws+'px'}const tr='translate3d('+x+'px,0,0)'+(rest?'':' skewX('+sk.toFixed(2)+'deg) scale('+(st*sc).toFixed(3)+','+(sq*sc).toFixed(3)+')');lens.style.transform=tr;
+ window.__lgClone&&__lgClone(x,w,tr);
  if(rest){run=false;return}requestAnimationFrame(frame)};
 const wake=()=>{if(!run){run=true;last=performance.now();requestAnimationFrame(frame)}};
 const setT=(i,snap)=>{const b=items[i];if(!b)return;tx=b.offsetLeft-LP;tw=b.offsetWidth+LP*2;if(snap){x=tx;w=tw;v=vw=0}wake()};
@@ -1606,14 +1607,15 @@ document.fonts&&document.fonts.ready.then(()=>setT(cur,true));
 const S=1.08,c=document.createElement('div');c.className='lg-clone';c.setAttribute('aria-hidden','true');
 const real=[...dock.querySelectorAll('.dock-nav-btn')],cls=b=>b.className.replace('dock-nav-btn','lg-btn');
 real.forEach(b=>{const n=b.cloneNode(true);n.removeAttribute('data-tab');n.removeAttribute('data-dock-label');n.removeAttribute('aria-label');n.tabIndex=-1;n.className=cls(b);c.appendChild(n)});
-lens.appendChild(c);
+/* klon TIDAK boleh jadi anak elemen ber-backdrop-filter (di Chrome Android teksnya jadi sobek/gelap). Dipindah ke clip saudara. */
+const clip=document.createElement('div');clip.className='lg-clip';clip.setAttribute('aria-hidden','true');clip.appendChild(c);lens.after(clip);
 let q=0;const sync=()=>{q=0;real.forEach((b,i)=>{const n=c.children[i];if(!n)return;const k=cls(b);if(n.className!==k)n.className=k;if(n.innerHTML!==b.innerHTML)n.innerHTML=b.innerHTML})};
 const mo=new MutationObserver(()=>{if(!q)q=requestAnimationFrame(sync)});
 real.forEach(b=>mo.observe(b,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true}));
 let lx=0,lw=80;
 function apply(){const Hl=lens.offsetHeight,dh=dock.clientHeight;c.style.transform='translate3d('+((lw-2)/2-S*(lx+lw/2))+'px,'+((Hl-2)/2+lens.offsetTop+1-S*dh/2)+'px,0) scale('+S+')'}
-function lay(){c.style.width=dock.clientWidth+'px';c.style.height=dock.clientHeight+'px';c.style.top=-(lens.offsetTop+1)+'px';apply()}
-window.__lgClone=(x,w)=>{lx=x;lw=w;apply()};
+function lay(){clip.style.top=lens.offsetTop+'px';clip.style.bottom=lens.offsetTop+'px';clip.style.width=lens.offsetWidth+'px';clip.style.transform=lens.style.transform;c.style.width=dock.clientWidth+'px';c.style.height=dock.clientHeight+'px';c.style.top=-(lens.offsetTop+1)+'px';apply()}
+window.__lgClone=(x,w,tr)=>{lx=x;lw=w;clip.style.width=w.toFixed(1)+'px';if(tr)clip.style.transform=tr;apply()};
 addEventListener('resize',lay);setTimeout(lay,100);setTimeout(lay,800);document.fonts&&document.fonts.ready.then(lay);
 })();
 /* progress scroll seperti web utama */

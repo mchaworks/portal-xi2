@@ -961,6 +961,18 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
 <link rel="stylesheet" href="./perf.css?v=6">
 <link rel="stylesheet" href="./event-theme.css?v=3">
 <script src="./event-theme.js?v=3"></script>
+<style id="hdr-compact">
+/* dock atas di HP: tombol lebih ramping, Piwo di header disembunyikan (sudah ada "Piwo AI" di dock bawah), nama kelas tidak dipotong */
+@media(max-width:639px){
+ header .hdr-tools{gap:4px!important}
+ header .hdr-tools>*{width:34px!important;height:34px!important;min-width:0!important;padding:0!important}
+ header .hdr-tools>[onclick^="openChatbot"]{display:none!important}
+ #header-badge-code{width:34px!important;height:34px!important}
+ #header-class-title{font-size:13px!important;line-height:1.1!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+ #header-class-subtitle{font-size:10px!important;line-height:1.2!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;margin-top:2px!important}
+ #header-class-title,#header-class-subtitle{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden!important}
+}
+</style>
 </head>
 <body class="font-sans antialiased selection:bg-m3-primary selection:text-m3-onPrimary pb-32 md:pb-28">
 <div id="piwo-splash" aria-hidden="true"></div>
@@ -994,7 +1006,7 @@ html[data-mode="dark"] .les-item:not(.is-live){background:var(--md-sys-color-sur
             </nav>
 
             <!-- Right Controls: Quick Palette + Settings Button -->
-            <div class="relative z-10 flex items-center gap-2 shrink-0">
+            <div class="hdr-tools relative z-10 flex items-center gap-2 shrink-0">
                 <button id="xs-btn" type="button" aria-label="Cari" class="m3-spring-btn xia-glass-btn w-10 h-10 rounded-full text-m3-onSurface inline-flex items-center justify-center"><span class="material-symbols-rounded text-[20px]">search</span></button>
                 <!-- Expressive Settings Trigger -->
                 <button type="button" class="xia-mode-btn" data-xia-mode aria-label="Ganti mode gelap" aria-pressed="false"><svg class="xm-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg><svg class="xm-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -3982,7 +3994,7 @@ document.addEventListener('click',function(e){if(e.target.closest&&e.target.clos
 <script defer src="./piwo/mascot.js?v=16"></script>
 <script defer src="./piwo/piwo.js?v=37"></script>
 <script defer src="./piwo/games.js?v=3"></script>
-<script defer src="./piwo/ambient.js?v=4"></script>
+<script defer src="./piwo/ambient.js?v=5"></script>
 <script defer src="./piwo/pet.js?v=9"></script>
 </body>
 </html>

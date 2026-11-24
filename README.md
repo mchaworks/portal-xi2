@@ -135,6 +135,20 @@ Edit lewat **Admin → Pengaturan → Teks hero Beranda**, lalu klik *Simpan pen
 2. Tambah key dan default di `HERO_DEFAULTS`, lalu isi di `applyHeroCopy()`.
 3. Tambah input di tab Pengaturan `admin/index.html`, baca di `loadSettings()`, simpan di `settings-form.onsubmit`.
 
+## Tema event & koleksi (collectible)
+
+Tema khusus hari besar, aktif otomatis **hanya di tanggalnya (WIB)**, lalu balik normal. Pengunjung yang mengklaim temanya menyimpannya di **Koleksi** dan bisa memasangnya lagi kapan saja.
+
+| File | Fungsi |
+|---|---|
+| `event-theme.js` | Registri event (`EVENTS`), logika tanggal WIB, klaim, koleksi, kartu ucapan |
+| `event-theme.css` | Token warna + dekor tiap tema |
+
+- Tema pertama: **Papan Tulis & Apel Emas** (Hari Guru, 25 Nov 2026). Terang = kertas buku tulis, gelap = papan tulis.
+- Koleksi disimpan di browser (`localStorage`: `xia-collection`, `xia-event-pick`), bukan di Supabase.
+- **Preview/tes:** tambahkan `?evtdate=2026-11-25` ke URL (bertahan selama tab dibuka); `?evtdate=` untuk mematikan.
+- **Tambah event baru:** tambah objek di `EVENTS` (id, attr, start, end, hero, dst), lalu blok token `html[data-event="<attr>"]` di `event-theme.css`.
+
 ## Deploy
 
 Situs ini statis, jadi bisa di-host di GitHub Pages, Netlify, Cloudflare Pages, dan sejenisnya. Domain kustom diatur lewat file `CNAME`.

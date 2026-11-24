@@ -54,23 +54,61 @@ function pause(sec){clearTimeout(timer);if(!ctx)return;fade(0,sec);setTimeout(()
 
 const API=window.XiaAmbient={
  get on(){return on},
- setOn(v){on=!!v;store(KEY,on?'1':'0');if(on)play();else pause(1)}};
+ get playing(){return !!(on&&started&&ctx&&ctx.state==='running')},
+ setOn(v){on=!!v;store(KEY,on?'1':'0');if(on)play();else pause(1);document.dispatchEvent(new CustomEvent('xia-amb',{detail:on}))}};
 
-/* mulai: tunggu intro selesai, lalu sentuhan pertama (aturan autoplay browser) */
-let armed=false;
-function arm(){
- if(armed)return;armed=true;
- const go=()=>{['pointerdown','keydown','touchend'].forEach(e=>removeEventListener(e,go,true));play()};
- ['pointerdown','keydown','touchend'].forEach(e=>addEventListener(e,go,{capture:true,passive:true}));
- /* kalau browser mengizinkan autoplay (mis. sudah pernah berinteraksi), langsung jalan */
- setTimeout(()=>{if(on&&!document.hidden){try{const t=new (window.AudioContext||window.webkitAudioContext)();const ok=t.state==='running';t.close();if(ok)go()}catch(e){}}},400)}
+/* mulai: tunggu intro selesai. Sentuhan SEBELUM intro selesai (mis. ketuk untuk lewati / buka suara intro) tetap dihitung:
+   AudioContext dibuka di dalam gesture itu, jadi begitu intro selesai musik langsung masuk tanpa perlu ketuk lagi.
+   Event aktivasi: touch pakai pointerup/touchend/click (pointerdown TIDAK membuka audio di Chrome Android). */
+const GEV=['pointerup','touchend','click','keydown'];
+let listening=false,gestured=false,introDone=false;
+function onGesture(){
+ gestured=true;
+ if(on){ if(!ctx)build(); if(ctx&&ctx.state!=='running')ctx.resume().catch(()=>{}) }
+ if(introDone)kick()}
+function listen(){if(listening)return;listening=true;GEV.forEach(e=>addEventListener(e,onGesture,{capture:true,passive:true}))}
+function unlisten(){if(!listening)return;listening=false;GEV.forEach(e=>removeEventListener(e,onGesture,{capture:true}))}
+async function kick(){await play();if(started&&ctx&&ctx.state==='running')unlisten()}
+function finish(){
+ if(introDone)return;introDone=true;
+ if(gestured)return kick();
+ /* kalau browser mengizinkan autoplay (mis. sudah sering berinteraksi / PWA terpasang), langsung jalan */
+ setTimeout(()=>{if(on&&!started&&!document.hidden){try{const t=new (window.AudioContext||window.webkitAudioContext)();const ok=t.state==='running';t.close();if(ok)kick()}catch(e){}}},400)}
 function whenIntroDone(){
- if(!R.classList.contains('piwo-intro'))return arm();
- const mo=new MutationObserver(()=>{if(!R.classList.contains('piwo-intro')){mo.disconnect();setTimeout(arm,700)}});
+ listen();
+ if(!R.classList.contains('piwo-intro'))return finish();
+ const mo=new MutationObserver(()=>{if(!R.classList.contains('piwo-intro')){mo.disconnect();setTimeout(finish,700)}});
  mo.observe(R,{attributes:true,attributeFilter:['class']});
- setTimeout(()=>{mo.disconnect();arm()},15000)} /* jaga-jaga */
+ setTimeout(()=>{mo.disconnect();finish()},15000)} /* jaga-jaga */
 
 document.addEventListener('visibilitychange',()=>{hidden=document.hidden;if(hidden)pause(.6);else if(started)play()});
 const bind=()=>{const t=document.getElementById('toggle-amb');if(t){t.checked=on;t.addEventListener('change',()=>API.setOn(t.checked))}};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bind();whenIntroDone()});else{bind();whenIntroDone()}
+
+/* Tombol mute ambient: ikut barisan tombol di header (sebelah mode gelap), sinkron dengan switch "Musik Latar" di Pengaturan.
+   Dulu melayang di kanan bawah dan menutupi Piwo. */
+(()=>{
+ const ON='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+ const OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm13.6 2 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4z"/></svg>';
+ const css=document.createElement('style');
+ css.textContent='#amb-fab{position:relative;flex:none;width:40px;height:40px;padding:0;border-radius:50%;display:inline-grid;place-items:center;color:var(--md-sys-color-primary,#1B6B51);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .15s,opacity .2s}'
+ +'#amb-fab:active{transform:scale(.88)}#amb-fab[aria-pressed="false"]{color:var(--md-sys-color-on-surface-variant,#58655e);opacity:.8}'
+ +'#amb-fab.amb-float{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;z-index:60}'
+ +'html.piwo-intro #amb-fab{display:none}'
+ +'.amb-host{gap:6px!important}@media(max-width:420px){.amb-host>*{width:36px!important;height:36px!important;min-width:0}.amb-host svg.piwo-ico{width:22px;height:22px}}';
+ document.head.appendChild(css);
+ const mk=()=>{
+  if(document.getElementById('amb-fab'))return;
+  const b=document.createElement('button');b.id='amb-fab';b.type='button';b.className='m3-spring-btn xia-glass-btn';
+  let last='';const ui=()=>{const live=API.playing,k=live?'1':'0';if(k===last)return;last=k;b.innerHTML=live?ON:OFF;b.setAttribute('aria-pressed',live?'true':'false');b.setAttribute('aria-label',live?'Matikan musik latar':'Nyalakan musik latar');b.title=b.getAttribute('aria-label')};
+  b.addEventListener('click',async()=>{
+   /* kalau musik 'aktif' tapi belum bunyi (browser menahan), ketukan ini MENYALAKAN, bukan mematikan */
+   if(API.on&&!API.playing){introDone=true;await kick();ui();return}
+   const v=!API.on;const t=document.getElementById('toggle-amb');if(t)t.checked=v;API.setOn(v);if(v){introDone=true;await kick()}last='';ui()});
+  document.addEventListener('xia-amb',()=>{last='';ui()});ui();setInterval(ui,1200);
+  const mode=document.querySelector('header [data-xia-mode]'),host=mode&&mode.parentElement;
+  if(host){host.classList.add('amb-host');host.insertBefore(b,mode)}
+  else{b.classList.add('amb-float');document.body.appendChild(b)}};
+ if(document.body)mk();else document.addEventListener('DOMContentLoaded',mk);
+})();
 })();
