@@ -81,7 +81,7 @@ async function intro(){
  const audioStart=()=>new Promise(res=>{if(!S.on){res();return}S.init();
  const c=S.ctx;if(!c){res();return}
  UEV.forEach(e=>addEventListener(e,unlock,{capture:true,passive:true}));
- let done=false;const go=()=>{if(done)return;done=true;if(!skip)S.musicStart();if(c.state==='running')offUnlock();res()};
+ let done=false;const go=()=>{if(done)return;done=true;if(!skip)S.musicStart();if(c.state==='running')offUnlock();else{const h=hintEl();if(h)h.textContent='🔊 ketuk untuk menyalakan suara'}res()};
  if(c.state==='running'){go();return}
  try{const p=c.resume();if(p&&p.then)p.then(()=>{if(c.state==='running')go()},()=>{})}catch(e){}
  setTimeout(go,900)}); /* tunggu resume() asli, bukan tebakan 180 ms. Kalau browser menahan: intro tetap jalan, musik masuk di ketukan pertama */
